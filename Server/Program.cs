@@ -32,14 +32,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(swaggerUIOptions =>
+    {
+        swaggerUIOptions.SwaggerEndpoint("/swagger/v1/swagger.json", "WarpAPI");
+      
+    });
 }
 
-app.UseSwagger();
-app.UseSwaggerUI(swaggerUIOptions =>
-{
-    swaggerUIOptions.SwaggerEndpoint("/swagger/v1/swagger.json", "WarpAPI");
-    swaggerUIOptions.RoutePrefix = string.Empty;
-});
+
 
 app.UseHttpsRedirection();
 
