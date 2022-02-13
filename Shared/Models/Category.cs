@@ -9,9 +9,10 @@ namespace Shared.Models
 {
     public class Category
     {
+
         [Key]
         public int CategoryID { get; set; }
-        
+
         [Required]
         public string Name { get; set; }
 
@@ -21,8 +22,5 @@ namespace Shared.Models
         public List<Car> Cars { get; set; }
 
 
-
     }
-
-    
 }

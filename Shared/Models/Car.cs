@@ -9,12 +9,13 @@ namespace Shared.Models
 {
     public class Car
     {
+
         [Key]
-        public int Id { get; set; } 
+        public int Id { get; set; }
 
         [Required]
         public string Make { get; set; }
-        
+
         [Required]
         public string Model { get; set; }
 
@@ -23,8 +24,7 @@ namespace Shared.Models
 
         [Required]
         public int CategoryId { get; set; }
-        public Category Category { get; set; }  
-
+        public Category Category { get; set; }
 
     }
 }
