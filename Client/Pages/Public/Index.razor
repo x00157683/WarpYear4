@@ -1,0 +1,193 @@
+﻿@page "/"
+@inject HttpClient Http
+@implements IDisposable
+@using Client.Components.Public.Warp
+
+
+<PageTitle>Warp</PageTitle>
+
+<body class="d-flex flex-column h-100">
+
+
+    <!--The div element for the map -->
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+
+
+
+    <main class="flex-shrink-0">
+        <!-- Navigation-->
+        <!-- Header-->
+        <header class="bg-dark py-5">
+            <div class="container px-5">
+                <div class="row gx-5 align-items-center justify-content-center">
+                    <div class="col-lg-8 col-xl-7 col-xxl-6">
+                        <div class="my-5 text-center text-xl-start">
+                            <h1 class="display-5 fw-bolder text-white mb-2">We Speacialize in Electric</h1>
+                            <p class="lead fw-normal text-white-50 mb-4">Quickly sign up and get driving in no time, we have a range of cars to suit your needs and they are all electric!</p>
+                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                                <a class="btn btn-primary btn-lg px-4 me-sm-3" href="#features">Get Started</a>
+                                <a class="btn btn-outline-light btn-lg px-4" href="">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="..\Static\Images\Tesla-Model-S-Plaid.jpeg" alt="..." /></div>
+                </div>
+            </div>
+        </header>
+        <!-- Features section-->
+        <!-- Testimonial section-->
+        <div class="py-5 bg-light">
+            <div class="container px-5 my-5">
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-10 col-xl-7">
+                        <div class="text-center">
+                            <div class="fs-4 mb-4 fst-italic">"Tons of development coming soon"</div>
+                            <div class="d-flex align-items-center justify-content-center">
+                                <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
+                                <div class="fw-bold">
+                                    Darren McLean
+                                    <span class="fw-bold text-primary mx-1">/</span>
+                                    CEO, Warp
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Blog preview section-->
+        <div id="map"></div>
+
+
+        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+        <section class="py-5">
+            <div class="container px-5 my-5">
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-8 col-xl-6">
+                        <div class="text-center">
+                            <h2 class="fw-bolder">From our Fleet</h2>
+                            <p class="lead fw-normal text-muted mb-5">
+                                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                                Eaque fugit ratione dicta mollitia. Officiis ad.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row gx-5">
+
+                    @if (InMemoryDatabaseCache.Cars != null)
+                    {
+                        foreach ( var x in _cars)
+                        {
+                            <div class ="col">
+                            
+                            <div class="card shadow mb-2">
+                                <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />
+                                <div class="card-body">
+                                   
+                                    <h3 class="card-title">@x.Make</h3>
+                                    <p class="card-text">@x.Model</p>
+                                    <p class="card-text">@x.CategoryId</p>
+                                </div>
+
+                                <a href="/" class="btn btn-primary stretched-link">Click</a>
+                            </div>
+                          </div>
+
+                        }
+                    }
+                      
+                </div>
+            </div>
+            <!-- Call to action-->
+            <aside class="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
+                <div class="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
+                    <div class="mb-4 mb-xl-0">
+                        <div class="fs-3 fw-bold text-white">New products, delivered to you.</div>
+                        <div class="text-white-50">Sign up for our newsletter for the latest updates.</div>
+                    </div>
+                    <div class="ms-xl-4">
+                        <div class="input-group mb-2">
+                            <input class="form-control" type="text" placeholder="Email address..." aria-label="Email address..." aria-describedby="button-newsletter" />
+                            <button class="btn btn-outline-light" id="button-newsletter" type="button">Sign up</button>
+                        </div>
+                        <div class="small text-white-50">We care about privacy, and will never share your data.</div>
+                    </div>
+                </div>
+            </aside>
+
+        </section>
+    </main>
+    <!-- Footer-->
+    <footer class="bg-dark py-4 mt-auto">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#!">Privacy</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Terms</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap core JS-->
+    <!-- Core theme JS-->
+
+</body>
+
+
+@code {
+
+
+
+    [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+    [Parameter] public Category Category { get; set; }
+    [Parameter] public Car Cars { get; set; }
+
+    List<Car> _cars;
+    List<Category> _categories;
+
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        InMemoryDatabaseCache.onCatChange += StateHasChanged;
+
+
+
+        if (InMemoryDatabaseCache.Categories == null)
+        {
+
+
+            await InMemoryDatabaseCache.GetCatCache();
+            _categories = InMemoryDatabaseCache.Categories;
+
+        }
+
+        if (InMemoryDatabaseCache.Cars == null)
+        {
+
+
+            await InMemoryDatabaseCache.GetCarCache();
+
+            _cars = InMemoryDatabaseCache.Cars;
+            Console.WriteLine(_cars.Count);
+
+        }
+    }
+
+    public void Dispose()
+    {
+
+        InMemoryDatabaseCache.onCatChange -= StateHasChanged;
+
+    }
+
+
+}
