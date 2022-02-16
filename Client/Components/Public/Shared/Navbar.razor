@@ -22,7 +22,7 @@
 
     <nav class="navbar nav-underline navbar-expand-lg d-flex flex-wrap navbar-light shadow-no-hover justify-content-between align-items-center pb-lg-3">
     <a href="/" class="navbar-brand md-f-size-1-5 text-dark ps-2 m-0 mx-lg-5 fw-bold">
-        John Doe<span class="text-dark fw-normal"> &#8211; .NET Developer</span>
+        Warp
     </a>
 
     <button class="navbar-toggler mx-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,21 +39,11 @@
 
             <li class="nav-item">
                 <a href="@SkillsPageUri" class="nav-link mx-5 md-and-smaller-my-3 @(IsPageActive(SkillsPageUri) ? "active" : string.Empty)">
-                    Skills
+                    Our Fleet
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a href="@PortfolioPageUri" class="nav-link mx-5 md-and-smaller-my-3 @(IsPageActive(PortfolioPageUri) ? "active" : string.Empty)">
-                    Portfolio
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="@BlogPageUri" class="nav-link mx-5 md-and-smaller-my-3 @(IsPageActive(BlogPageUri) ? "active" : string.Empty)">
-                    Blog
-                </a>
-            </li>
+  
 
             <li class="nav-item">
                 <a href="@AboutPageUri" class="nav-link mx-5 md-and-smaller-my-3 @(IsPageActive(AboutPageUri) ? "active" : string.Empty)">
@@ -85,9 +75,7 @@
     [Inject] public NavigationManager NavigationManager { get; set; }
 
     private const string HomePageUri = "/";
-    private const string SkillsPageUri = "/skills";
-    private const string PortfolioPageUri = "/portfolio";
-    private const string BlogPageUri = "/blog";
+    private const string SkillsPageUri = "/fleet";
     private const string AboutPageUri = "/about";
     private const string ContactPageUri = "/contact";
 
