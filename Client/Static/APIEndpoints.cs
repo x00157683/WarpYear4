@@ -9,7 +9,7 @@
 
 #else
         
-        internal const string SererBaseUrl = "https://year4pipev5.azurewebsites.net/";
+        internal const string SererBaseUrl = "https://year4pipev5.azurewebsites.net";
 
 #endif
 
