@@ -9,7 +9,7 @@
 
 #else
         live
-        internal const string SererBaseUrl = "https://appname.azure";
+        internal const string SererBaseUrl = "https://year4pipev5.azurewebsites.net/index.html";
 
 #endif
 
