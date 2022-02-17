@@ -11,7 +11,7 @@ namespace Shared.Models
     {
 
         [Key]
-        public int Id { get; set; }
+        public int Id { get; set; } //test
         [Required]
         public DateTime StartTime { get; set; }
 
