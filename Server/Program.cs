@@ -12,7 +12,7 @@ builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddCors(
     options =>
     {
-        options.AddPolicy("CorsPolicy",
+     options.AddPolicy("CorsPolicy",
     builder =>
     builder
     .AllowAnyHeader()
