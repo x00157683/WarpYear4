@@ -13,16 +13,23 @@ namespace Shared.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public DateTime TimeRemain { get; set; }
+        public DateTime StartTime { get; set; }
 
-        [Required]
-        public DateTime TimeElapsed { get; set; }
+     
+        public DateTime TimeLapsed { get; set; }
 
         [Required]
         public double Cost { get; set; }
 
         [Required]
-        public Car Cars { get; set; }
+        public bool IsComplete { get; set; }
+
+        public int CarID { get; set; }    
+        public Car car { get; set; }
+
+ 
+
+
 
 
     }

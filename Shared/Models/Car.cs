@@ -24,7 +24,16 @@ namespace Shared.Models
 
         [Required]
         public int CategoryId { get; set; }
+        [Required]
+        public double PricePerUnit { get; set; }
+        [Required]
+        public bool isLocked { get; set; }
+       
+        public double RangeLeft { get; set; }
+        
         public Category Category { get; set; }
+       
+        public Booking Booking { get; set; }  
 
     }
 }
