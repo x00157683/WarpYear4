@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
 namespace Server.Data
 {
-    public class AppDBContext : DbContext
+    public class AppDBContext : IdentityDbContext
     {
 
         public DbSet<Category> Categories {get; set;}
@@ -12,7 +13,7 @@ namespace Server.Data
 
         public DbSet<Booking> Bookings {get; set;}
 
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
 
         public DbSet<License> Licenses { get; set; }
 
@@ -141,19 +142,21 @@ namespace Server.Data
 
             #region
 
+            /*
             User[] usersToSeed = new User[3];
 
             for (int i = 1; i < 4; i++)
             {
-                usersToSeed[i - 1] = new User { UserId = i, EmailAddress = $"Email: {i}", Password = $"Description {i}" };
+                usersToSeed[i - 1] = new User { EmailAddress = $"Email: {i}", Password = $"Description {i}" };
             }
 
             modelBuilder.Entity<User>().HasData(usersToSeed);
 
+            */
             #endregion
 
 
-
+            
 
 
             #region Booking Seed

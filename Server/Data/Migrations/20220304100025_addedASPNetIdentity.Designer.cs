@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Data;
 
@@ -10,9 +11,10 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220304100025_addedASPNetIdentity")]
+    partial class addedASPNetIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -246,7 +248,7 @@ namespace Server.Data.Migrations
                             Cost = 88.0,
                             IsComplete = true,
                             IsCreated = false,
-                            StartTime = "04/03/2022 01:04"
+                            StartTime = "04/03/2022 10:00"
                         },
                         new
                         {
@@ -254,7 +256,7 @@ namespace Server.Data.Migrations
                             Cost = 98.0,
                             IsComplete = true,
                             IsCreated = false,
-                            StartTime = "04/03/2022 01:04"
+                            StartTime = "04/03/2022 10:00"
                         });
                 });
 
@@ -434,6 +436,46 @@ namespace Server.Data.Migrations
                     b.HasKey("LicenseId");
 
                     b.ToTable("Licenses");
+                });
+
+            modelBuilder.Entity("Shared.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            EmailAddress = "Email: 1",
+                            Password = "Description 1"
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            EmailAddress = "Email: 2",
+                            Password = "Description 2"
+                        },
+                        new
+                        {
+                            UserId = 3,
+                            EmailAddress = "Email: 3",
+                            Password = "Description 3"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

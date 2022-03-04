@@ -5,9 +5,7 @@ namespace Shared.Models
     public class User
     {
 
-        [Key]
-        public int UserId { get; set; }
-
+ 
         [Required]
         [EmailAddress]
         [Display(Name = "Email address")]
