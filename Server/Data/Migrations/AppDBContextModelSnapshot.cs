@@ -19,11 +19,8 @@ namespace Server.Data.Migrations
 
             modelBuilder.Entity("Shared.Models.Booking", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("BookingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CarID")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("Cost")
@@ -32,49 +29,46 @@ namespace Server.Data.Migrations
                     b.Property<bool>("IsComplete")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("TimeLapsed")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("UserId")
+                    b.Property<bool>("IsCreated")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.Property<string>("StartTime")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("CarID")
-                        .IsUnique();
+                    b.Property<string>("StopTime")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("BookingId");
 
                     b.ToTable("Bookings");
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CarID = 5,
+                            BookingId = 1,
                             Cost = 88.0,
                             IsComplete = true,
-                            StartTime = new DateTime(2022, 2, 18, 10, 23, 16, 572, DateTimeKind.Local).AddTicks(8404),
-                            TimeLapsed = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            IsCreated = false,
+                            StartTime = "01/03/2022 10:45"
                         },
                         new
                         {
-                            Id = 2,
-                            CarID = 1,
+                            BookingId = 2,
                             Cost = 98.0,
                             IsComplete = true,
-                            StartTime = new DateTime(2022, 2, 18, 10, 23, 16, 572, DateTimeKind.Local).AddTicks(8500),
-                            TimeLapsed = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            IsCreated = false,
+                            StartTime = "01/03/2022 10:45"
                         });
                 });
 
             modelBuilder.Entity("Shared.Models.Car", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CarId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Active")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("CategoryId")
@@ -100,7 +94,7 @@ namespace Server.Data.Migrations
                     b.Property<bool>("isLocked")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("CarId");
 
                     b.HasIndex("CategoryId");
 
@@ -109,7 +103,8 @@ namespace Server.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            CarId = 1,
+                            Active = false,
                             CategoryId = 1,
                             Make = "Tesla",
                             Model = "Model X",
@@ -120,7 +115,8 @@ namespace Server.Data.Migrations
                         },
                         new
                         {
-                            Id = 2,
+                            CarId = 2,
+                            Active = false,
                             CategoryId = 2,
                             Make = "Tesla",
                             Model = "Model S",
@@ -131,7 +127,8 @@ namespace Server.Data.Migrations
                         },
                         new
                         {
-                            Id = 3,
+                            CarId = 3,
+                            Active = false,
                             CategoryId = 3,
                             Make = "Porsche",
                             Model = "Taycan",
@@ -142,7 +139,8 @@ namespace Server.Data.Migrations
                         },
                         new
                         {
-                            Id = 4,
+                            CarId = 4,
+                            Active = false,
                             CategoryId = 1,
                             Make = "Nissan",
                             Model = "Leaf",
@@ -153,7 +151,8 @@ namespace Server.Data.Migrations
                         },
                         new
                         {
-                            Id = 5,
+                            CarId = 5,
+                            Active = false,
                             CategoryId = 2,
                             Make = "Honda",
                             Model = "Up!",
@@ -164,7 +163,8 @@ namespace Server.Data.Migrations
                         },
                         new
                         {
-                            Id = 6,
+                            CarId = 6,
+                            Active = false,
                             CategoryId = 3,
                             Make = "Toyota",
                             Model = "GT",
@@ -177,7 +177,7 @@ namespace Server.Data.Migrations
 
             modelBuilder.Entity("Shared.Models.Category", b =>
                 {
-                    b.Property<int>("CategoryID")
+                    b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -190,26 +190,26 @@ namespace Server.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("CategoryID");
+                    b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
 
                     b.HasData(
                         new
                         {
-                            CategoryID = 1,
+                            CategoryId = 1,
                             Description = "Description 1",
                             Name = "Category 1"
                         },
                         new
                         {
-                            CategoryID = 2,
+                            CategoryId = 2,
                             Description = "Description 2",
                             Name = "Category 2"
                         },
                         new
                         {
-                            CategoryID = 3,
+                            CategoryId = 3,
                             Description = "Description 3",
                             Name = "Category 3"
                         });
@@ -217,7 +217,7 @@ namespace Server.Data.Migrations
 
             modelBuilder.Entity("Shared.Models.License", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("LicenseId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -235,14 +235,14 @@ namespace Server.Data.Migrations
                     b.Property<DateTime>("dob")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("LicenseId");
 
-                    b.ToTable("License");
+                    b.ToTable("Licenses");
                 });
 
             modelBuilder.Entity("Shared.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -250,34 +250,34 @@ namespace Server.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("LicenseId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("LicenseId");
+                    b.HasKey("UserId");
 
                     b.ToTable("Users");
-                });
 
-            modelBuilder.Entity("Shared.Models.Booking", b =>
-                {
-                    b.HasOne("Shared.Models.Car", "car")
-                        .WithOne("Booking")
-                        .HasForeignKey("Shared.Models.Booking", "CarID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Shared.Models.User", null)
-                        .WithMany("Bookings")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("car");
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            EmailAddress = "Email: 1",
+                            Password = "Description 1"
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            EmailAddress = "Email: 2",
+                            Password = "Description 2"
+                        },
+                        new
+                        {
+                            UserId = 3,
+                            EmailAddress = "Email: 3",
+                            Password = "Description 3"
+                        });
                 });
 
             modelBuilder.Entity("Shared.Models.Car", b =>
@@ -291,31 +291,9 @@ namespace Server.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Shared.Models.User", b =>
-                {
-                    b.HasOne("Shared.Models.License", "License")
-                        .WithMany()
-                        .HasForeignKey("LicenseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("License");
-                });
-
-            modelBuilder.Entity("Shared.Models.Car", b =>
-                {
-                    b.Navigation("Booking")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Shared.Models.Category", b =>
                 {
                     b.Navigation("Cars");
-                });
-
-            modelBuilder.Entity("Shared.Models.User", b =>
-                {
-                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }

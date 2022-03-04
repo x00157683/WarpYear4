@@ -11,7 +11,7 @@ namespace Shared.Models
     {
 
         [Key]
-        public int Id { get; set; }
+        public int CarId { get; set; }
 
         [Required]
         public string Make { get; set; }
@@ -31,9 +31,11 @@ namespace Shared.Models
        
         public double RangeLeft { get; set; }
         
-        public Category Category { get; set; }
+        public Category ?Category { get; set; }
+
+        public bool Active { get; set; }    
+
        
-        public Booking Booking { get; set; }  
 
     }
 }

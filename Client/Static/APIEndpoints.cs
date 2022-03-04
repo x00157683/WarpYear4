@@ -15,6 +15,11 @@
 
         internal static readonly string s_categories = $"{SererBaseUrl}/api/categories";
         internal static readonly string s_cars = $"{SererBaseUrl}/api/cars";
+        internal static readonly string s_bookings = $"{SererBaseUrl}/api/bookings";
+        internal static readonly string s_bookingsDTO = $"{SererBaseUrl}/api/bookings/dto";
+        internal readonly static string s_categoriesWithCars = $"{SererBaseUrl}/api/categories/withcars";
+        internal readonly static string s_carsDTO = $"{SererBaseUrl}/api/cars/dto";
+        internal readonly static string s_signIn = $"{SererBaseUrl}/api/signin";
 
     }
 }

@@ -136,9 +136,11 @@
     [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
     [Parameter] public Category Category { get; set; }
     [Parameter] public Car Cars { get; set; }
+    [Parameter] public Booking Bookings { get; set; }
 
     List<Car> _cars;
     List<Category> _categories;
+    List<Booking> _bookings;
 
 
 
@@ -147,7 +149,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        InMemoryDatabaseCache.onCatChange += StateHasChanged;
+        InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
 
 
 
@@ -155,7 +157,7 @@
         {
 
 
-            await InMemoryDatabaseCache.GetCatCache();
+            await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
             _categories = InMemoryDatabaseCache.Categories;
 
         }
@@ -164,7 +166,7 @@
         {
 
 
-            await InMemoryDatabaseCache.GetCarCache();
+            await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
 
             _cars = InMemoryDatabaseCache.Cars;
             Console.WriteLine(_cars.Count);
@@ -175,7 +177,7 @@
     public void Dispose()
     {
 
-        InMemoryDatabaseCache.onCatChange -= StateHasChanged;
+        InMemoryDatabaseCache.OnCategoriesDataChanged -= StateHasChanged;
 
     }
 

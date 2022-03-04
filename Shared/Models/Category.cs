@@ -11,7 +11,7 @@ namespace Shared.Models
     {
 
         [Key]
-        public int CategoryID { get; set; }
+        public int CategoryId { get; set; }
 
         [Required]
         public string Name { get; set; }

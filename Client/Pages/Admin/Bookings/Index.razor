@@ -1,0 +1,200 @@
+﻿@page "/admin/booking"
+@using System.Net
+
+<AuthorizeView Roles="Administrator">
+	<Authorized Context="Auth">
+		<main class="admin-area-main">
+
+			<Client.Components.Admin.Sidebar />
+
+			<div class="admin-area-content container-fluid bg-white">
+				<div class="row g-0">
+					<div class="col">
+						<h1>Cars</h1>
+						<br />
+						<hr />
+						<br />
+
+						@if (InMemoryDatabaseCache.Cars == null || _attemptingToDeleteACar == true)
+						{
+							<LoadingDot />
+						}
+						else
+						{
+							<a href="/admin/cars/create" class="btn btn-success shadow me-5 md-f-size-1-5">
+								<i class="fas fa-plus"></i> Create car
+							</a>
+
+							<button @onclick="() => InMemoryDatabaseCache.GetCarsFromDatabaseAndCache()" class="btn btn-primary shadow md-f-size-1-5">
+								<i class="fas fa-sync"></i> Refresh data
+							</button>
+
+							<br />
+							<br />
+							<br />
+
+							@if (InMemoryDatabaseCache.Cars.Count < 1)
+							{
+								<h1>No cars found. Please create one.</h1>
+							}
+							else
+							{
+								<div class="table-responsive">
+									<table class="table table-striped table-bordered table-sm">
+										<thead>
+											<tr>
+												<th scope="col">Category</th>
+												<th scope="col">Thumbnail</th>
+												<th scope="col">Title</th>
+									
+											</tr>
+										</thead>
+										<tbody>
+											@foreach (var car in InMemoryDatabaseCache.Cars)
+											{
+												<tr>
+													<th class="w-8" scope="row">
+														<p>@car.Category.Name</p>
+													</th>
+												
+													<td class="w-8">
+														<p>@car.Make</p>
+													</td>
+													<td class="w-8">
+														<p>@car.Model</p>
+													</td>
+								
+												
+													<td class="w-14">
+														<div class="d-flex flex-column">
+
+														
+
+															<br />
+
+															<button @onclick="(() => DeleteCar(car))" class="btn btn-danger shadow md-f-size-1-5">
+																<i class="fas fa-trash"></i> Delete
+															</button>
+														</div>
+													</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+							}
+						}
+
+						<div class="position-fixed bottom-0 end-5 z-index-5">
+
+							@if (_successfullyDeletedACar == true)
+							{
+								<Toast IsError="false" ToastTitle="Successfully deleted a car."
+								   ToastBody="The car has been removed from the database."
+								   ParentMethodToCallOnClickBtnClose="() => _successfullyDeletedACar = false" />
+							}
+
+							@if (_unsuccessfullyTriedToDeleteACar == true)
+							{
+								<Toast IsError="true" ToastTitle="Delete failed."
+								   ToastBody="@($"The reason is \"{_reasonUnsuccessfullyTriedToDeleteACar}\" Please try again and if the issue persists contact the administrator.")"
+								   ParentMethodToCallOnClickBtnClose="() => _unsuccessfullyTriedToDeleteACar = false" />
+							}
+
+						
+
+							@if (_unsuccessfullyTriedToPublishOrUnpublish == true)
+							{
+								<Toast IsError="true" ToastTitle="Publish or unpublish failed."
+								   ToastBody="Something went wrong when communicating with the server. Please try again and if the issue persists contact the administrator."
+								   ParentMethodToCallOnClickBtnClose="() => _unsuccessfullyTriedToPublishOrUnpublish = false" />
+							}
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</main>
+	</Authorized>
+	<NotAuthorized>
+		<Client.Components.Admin.SignIn />
+	</NotAuthorized>
+</AuthorizeView>
+
+@implements IDisposable
+@code
+{
+	[Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+	protected override async Task OnInitializedAsync()
+	{
+		InMemoryDatabaseCache.OnCarsDataChanged += StateHasChanged;
+
+		if (InMemoryDatabaseCache.Cars == null)
+		{
+			await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
+		}
+	}
+
+	public void Dispose() => InMemoryDatabaseCache.OnCarsDataChanged -= StateHasChanged;
+
+	[Inject] HttpClient HttpClient { get; set; }
+	private bool _attemptingToDeleteACar = false;
+	private bool _successfullyDeletedACar = false;
+	private bool _unsuccessfullyTriedToDeleteACar = false;
+	private string _reasonUnsuccessfullyTriedToDeleteACar = null;
+	private async void DeleteCar(Car carToDelete)
+	{
+		_attemptingToDeleteACar = true;
+
+		HttpResponseMessage response = await HttpClient.DeleteAsync($"{APIEndpoints.s_cars}/{carToDelete.CarId}");
+
+		if (response.StatusCode == HttpStatusCode.NoContent)
+		{
+			if (InMemoryDatabaseCache.Cars.Remove(carToDelete))
+			{
+				_successfullyDeletedACar = true;
+			}
+			else
+			{
+				_reasonUnsuccessfullyTriedToDeleteACar = "An unexpected error has occurred. Please try again and if the issue persists contact the administrator.";
+				_unsuccessfullyTriedToDeleteACar = true;
+			}
+		}
+		else
+		{
+			_reasonUnsuccessfullyTriedToDeleteACar = $"The API didn't return an HttpStatusCode.NoContent status code. Instead the API returned the status code {response.StatusCode} and gave the following reason for failure: {response.ReasonPhrase}.";
+			_unsuccessfullyTriedToDeleteACar = true;
+		}
+
+		_attemptingToDeleteACar = false;
+		StateHasChanged();
+	}
+
+	private bool _successfullyPublishedOrUnpublished = false;
+	private bool _unsuccessfullyTriedToPublishOrUnpublish = false;
+	private Car _lastPublishedOrUnpublishedCar = null;
+	private async Task PublishOrUnpublishCar(Car carToPublishOrUnpublish)
+	{
+		carToPublishOrUnpublish.Active = !carToPublishOrUnpublish.Active;
+
+		HttpResponseMessage httpResponseMessage = await HttpClient.PutAsJsonAsync<Car>($"{APIEndpoints.s_cars}/{carToPublishOrUnpublish.CarId}", carToPublishOrUnpublish);
+
+		if (httpResponseMessage.StatusCode == HttpStatusCode.Created)
+		{
+			Car updatedCar = await httpResponseMessage.Content.ReadFromJsonAsync<Car>();
+
+			_lastPublishedOrUnpublishedCar = updatedCar;
+
+			Car uneditedCarInList = await InMemoryDatabaseCache.GetCarByCarId(carToPublishOrUnpublish.CarId);
+			uneditedCarInList.Active = updatedCar.Active;
+			
+
+			_successfullyPublishedOrUnpublished = true;
+		}
+		else
+		{
+			_unsuccessfullyTriedToPublishOrUnpublish = true;
+		}
+	}
+}

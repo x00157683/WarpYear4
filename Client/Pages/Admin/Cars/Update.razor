@@ -1,0 +1,190 @@
+﻿@page "/admin/cars/update/{CarId:int}"
+@using System.Net;
+
+
+
+<AuthorizeView Roles="Administrator">
+	<Authorized Context="Auth">
+		<main class="admin-area-main">
+			<Client.Components.Admin.Sidebar />
+
+			<div class="admin-area-content container-fluid bg-white">
+				<div class="row g-0">
+					<div class="col">
+
+						<h1 class="mb-4">Update car</h1>
+
+						@if (_carToUpdate == null)
+						{
+							<LoadingDot />
+						}
+						else
+						{
+							<EditForm Model="_carToUpdate" OnValidSubmit="UpdateCar">
+								<DataAnnotationsValidator />
+
+								@if (InMemoryDatabaseCache.Categories == null)
+								{
+									<LoadingDot />
+								}
+								else
+								{
+									<div class="form-group mb-5">
+										<label for="carCategory">Category</label>
+										<InputSelect @bind-Value="@_carToUpdate.CategoryId" class="form-control" id="carCategory">
+											@foreach (var category in InMemoryDatabaseCache.Categories)
+											{
+										<option value="@category.CategoryId">@category.Name</option>
+											}
+								</InputSelect>
+							</div>
+								}
+
+							
+								<div class="form-group mb-5">
+									<label for="carMake">Car Make</label>
+									<InputText @bind-Value="_carToUpdate.Make" class="form-control" id="carMake"></InputText>
+								</div>
+
+								<div class="form-group mb-5">
+									<label for="carRange">Car Range</label>
+									<InputNumber @bind-Value="_carToUpdate.Range" class="form-control" id="carRange"></InputNumber>
+								</div>
+
+								<div class="form-group mb-5">
+									<label for="carPricePerUnti">Car Price Per Unit</label>
+									<InputNumber @bind-Value="_carToUpdate.PricePerUnit" class="form-control" id="carPrice"></InputNumber>
+								</div>
+						
+								<div class="form-group mb-5">
+									<label for="carModel">Car Model</label>
+									<InputText @bind-Value="_carToUpdate.Model" class="form-control" id="carModel"></InputText>
+								</div>
+
+							
+
+								<div class="form-group mb-5">
+									<label for="carActive">Car Active</label>
+									<InputCheckbox @bind-Value="@_carToUpdate.Active" class="form-check-input" id="carActive" aria-describedby="carActiveHelp" />
+									<div id="carActiveHelp" class="form-text">
+										The value of this specifies whether this car is visible on the user facing site or not.
+										
+									</div>
+								</div>
+
+
+								<ValidationSummary />
+
+								@if (_attemptingToUpdate == true)
+								{
+									<LoadingDot />
+								}
+								else
+								{
+									<button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
+										<i class="far fa-save"></i> Save
+									</button>
+
+									<a href="/admin/cars" class="btn btn-primary shadow mt-5 md-f-size-1-5">
+										<i class="fas fa-arrow-left"></i> Back to all cars
+									</a>
+								}
+							</EditForm>
+						}
+
+						<div class="position-fized bottom-0 end-5 z-index-5">
+
+							@if (_updateSuccessful == true)
+							{
+								<Toast IsError="false" ToastTitle="Update successful"
+								   ToastBody="Your changes have been saved to the database."
+								   ParentMethodToCallOnClickBtnClose="() => _updateSuccessful = false" />
+							}
+
+							@if (_attemptToUpdateFailed == true)
+							{
+								<Toast IsError="true" ToastTitle="Update failed"
+								   ToastBody="Update failed. Please try again and if the issue persists contact the administrator."
+								   ParentMethodToCallOnClickBtnClose="() => _attemptToUpdateFailed = false" />
+							}
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</main>
+	</Authorized>
+	<NotAuthorized>
+		<Client.Components.Admin.SignIn />
+	</NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+	[Parameter] public int CarId { get; set; }
+
+	[Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+	[Inject] IJSRuntime JSRuntime { get; set; }
+	private CarDTO _carToUpdate = null;
+	private ElementReference _quillJSEditorDiv;
+	protected async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			_carToUpdate = await InMemoryDatabaseCache.GetCarDTOByCarId(CarId);
+
+			if (InMemoryDatabaseCache.Categories == null)
+			{
+				await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
+			}
+
+			StateHasChanged();
+
+		
+
+			
+		}
+	}
+
+	[Inject] HttpClient HttpClient { get; set; }
+	private bool _attemptingToUpdate = false;
+	private bool _attemptToUpdateFailed = false;
+	private bool _updateSuccessful = false;
+	private async Task UpdateCar()
+	{
+		_attemptingToUpdate = true;
+
+
+
+		HttpResponseMessage response = await HttpClient.PutAsJsonAsync<CarDTO>($"{APIEndpoints.s_cars}/{_carToUpdate.CarDTOId}", _carToUpdate);
+
+		if (response.StatusCode == HttpStatusCode.Created)
+		{
+			Car updatedCar = await response.Content.ReadFromJsonAsync<Car>();
+
+			Car unupdatedCarInList = await InMemoryDatabaseCache.GetCarByCarId(updatedCar.CarId);
+
+			updatedCar.Category = await InMemoryDatabaseCache.GetCategoryByCategoryId(updatedCar.CategoryId, false);
+
+			UtilityFunctions.CopyObjectProperties(updatedCar, unupdatedCarInList);
+
+			
+			
+
+			_updateSuccessful = true;
+		}
+		else
+		{
+			_attemptToUpdateFailed = true;
+		}
+
+		_attemptingToUpdate = false;
+	}
+
+	private bool _attemptingToUploadImage = false;
+	private bool _attemptToUploadFailed = false;
+	private string _reasonImageUploadFailed = null;
+	
+	
+}

@@ -5,7 +5,7 @@ namespace Shared.Models
     public class License
     {
         [Key]
-        public int Id { get; set; }
+        public int LicenseId { get; set; }
         [Required]
         public string FName { get; set; }
 
@@ -17,6 +17,7 @@ namespace Shared.Models
 
         public int YearsHeld { get; set; }
 
+        //public int UserId { get; set; }
 
 
     }
