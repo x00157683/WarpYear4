@@ -133,7 +133,7 @@
 		if (response.StatusCode == HttpStatusCode.Created)
 		{
 			Car addedCar = await response.Content.ReadFromJsonAsync<Car>();
-			addedCar.Category = await InMemoryDatabaseCache.GetCategoryByCategoryId(addedCar.CategoryId, false);
+		
 			InMemoryDatabaseCache.Cars.Add(addedCar);
 
 			_createSuccessful = true;

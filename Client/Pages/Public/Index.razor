@@ -1,9 +1,12 @@
 ﻿@page "/"
 @inject HttpClient Http
 @implements IDisposable
+@using Blazored.LocalStorage
 @using Client.Components.Public.Warp
+@using Client.Providers
 @using Client.Services
 @using global::Shared.Models
+@using System.Net.Http.Headers
 
 
 <Client.Components.Public.Shared.Navbar />
@@ -131,9 +134,11 @@
 
 @code {
 
-
-
+    [Inject] HttpClient HttpClient { get; set; }
+    [Inject] ILocalStorageService LocalStorageService { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
     [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     [Parameter] public Category Category { get; set; }
     [Parameter] public Car Cars { get; set; }
     [Parameter] public Booking Bookings { get; set; }
@@ -146,11 +151,12 @@
 
 
 
-
     protected override async Task OnInitializedAsync()
     {
-        InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
 
+      
+        InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
+       
 
 
         if (InMemoryDatabaseCache.Categories == null)
@@ -180,6 +186,9 @@
         InMemoryDatabaseCache.OnCategoriesDataChanged -= StateHasChanged;
 
     }
-
+    
+    
+ 
+   
 
 }

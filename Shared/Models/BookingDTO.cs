@@ -12,7 +12,7 @@ namespace Shared.Models
 
         [Key]
         public int BookingDTOId { get; set; } //test
-        [Required]
+       
         public string StartTime { get; set; }
 
         public string ?StopTime { get; set; }
