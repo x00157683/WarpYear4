@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Data;
 
@@ -10,9 +11,10 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220325153707_customFieldsForUser5")]
+    partial class customFieldsForUser5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -158,6 +160,10 @@ namespace Server.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("Dob")
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
@@ -237,7 +243,7 @@ namespace Server.Data.Migrations
                             Cost = 88.0,
                             IsComplete = true,
                             IsCreated = false,
-                            StartTime = "26/03/2022 08:59"
+                            StartTime = "25/03/2022 03:37"
                         },
                         new
                         {
@@ -245,7 +251,7 @@ namespace Server.Data.Migrations
                             Cost = 98.0,
                             IsComplete = true,
                             IsCreated = false,
-                            StartTime = "26/03/2022 08:59"
+                            StartTime = "25/03/2022 03:37"
                         });
                 });
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Shared.Models;
 
 namespace Server.Data
 {
@@ -8,7 +9,7 @@ namespace Server.Data
         internal const string AdministratorRoleName = "Administrator";
         internal const string AdministratorUserName = "admin@year4.com";
 
-        internal async static Task Seed(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager) 
+        internal async static Task Seed(RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager) 
         {
             await SeedAdministratorRole(roleManager);
             await SeedUserRole(userManager);
@@ -30,7 +31,7 @@ namespace Server.Data
 
         }
 
-        private async static Task SeedUserRole(UserManager<IdentityUser> userManager)
+        private async static Task SeedUserRole(UserManager<AppUser> userManager)
         {
 
             bool adminUserExists = await userManager.FindByEmailAsync(AdministratorUserName)!=null;
@@ -38,9 +39,12 @@ namespace Server.Data
             if (adminUserExists == false)
             {
 
-                var user = new IdentityUser { 
+                var user = new AppUser { 
+                    FirstName = AdministratorUserName,
                     UserName = AdministratorUserName, 
-                    Email = AdministratorUserName
+                    Email = AdministratorUserName,
+                    LastName = AdministratorUserName,
+
                 
                 };
 
@@ -58,6 +62,6 @@ namespace Server.Data
 
         }
 
-
+        
     }
 }

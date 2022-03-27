@@ -1,0 +1,249 @@
+﻿@page "/register"
+@using System.Net;
+@using Client.Components.Public.Warp
+@using Client.Services
+@using System.Net.Http.Json;
+@using global::Shared.Models;
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.IdentityModel.Tokens;
+@using System.IdentityModel.Tokens.Jwt;
+@using System.Security.Claims;
+@using System.Text;
+
+
+	  <Client.Components.Admin.Nav></Client.Components.Admin.Nav>
+
+		<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico" />
+  </head>
+  <body>
+   
+      <!-- partial:partials/_navbar.html -->
+      <div>
+      
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+   <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item nav-profile">
+              <a href="#" class="nav-link">
+                <div class="nav-profile-image">
+                  <!--<img src="" alt="profile">-->
+                  <span class="login-status online"></span>
+                  <!--change to offline or busy as needed-->
+                </div>
+                <div class="nav-profile-text d-flex flex-column">
+                  <span class="font-weight-bold mb-2">Admin</span>
+                 
+                </div>
+                <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin">
+                <span class="menu-title">Home</span>
+                <i class="mdi mdi-home menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/cars">
+                <span class="menu-title">Cars</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-car-connected menu-icon"></i>
+              </a>      
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/booking">
+                <span class="menu-title">Bookings</span>
+                <i class="mdi mdi-contacts menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/users">
+                <span class="menu-title">Users</span>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="pages/charts/chartjs.html">
+                <span class="menu-title">Charts</span>
+                <i class="mdi mdi-chart-bar menu-icon"></i>
+              </a>
+            </li>
+ 
+         
+          </ul>
+        </nav>
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                  <i class="mdi mdi-home"></i>
+                </span> Home
+              </h3>
+              <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item active" aria-current="page">
+                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+     	<div class="row g-0">
+					<div class="col">
+
+						<h1 class="mb-4">@(_createSuccessful ? "Success! Go back to all cars to see the created car." : "Create car")</h1>
+
+						
+						
+							<EditForm Model="_userToCreate1" OnValidSubmit="CreateUser">
+								<DataAnnotationsValidator />
+
+							
+
+                        
+					<div class="form-group my-3">
+						<label for="email">Email address</label>
+						<InputText @bind-Value="_userToCreate1.EmailAddress" id="email" class="form-control" />
+						<ValidationMessage For="@(() => _userToCreate1.EmailAddress)" />
+					</div>
+                    <div class="form-group my-3">
+						<label for="first">First Name</label>
+						<InputText @bind-Value="_userToCreate1.FirstName" id="first" class="form-control" />
+						<ValidationMessage For="@(() => _userToCreate1.FirstName)" />
+					</div>
+                    <div class="form-group my-3">
+						<label for="last">Last Name</label>
+						<InputText @bind-Value="_userToCreate1.LastName" id="last" class="form-control" />
+						<ValidationMessage For="@(() => _userToCreate1.LastName)" />
+					</div>
+
+					<div class="form-group my-3">
+						<label for="password">Password</label>
+						<InputText @bind-Value="_userToCreate1.Password" id="password" type="password" class="form-control" />
+						<ValidationMessage For="@(() => _userToCreate1.Password)" />
+					</div>
+                        
+                    <div class="form-group my-3">
+						<label for="phonenumber">Phone Number</label>
+						<InputText @bind-Value="_userToCreate1.PhoneNumber" id="phonenumber" class="form-control" />
+						<ValidationMessage For="@(() => _userToCreate1.PhoneNumber)" />
+					</div>
+
+                       <!-- partial 
+                    <div class="form-group my-3">
+						<label for="dob">Date Of Birth</label>
+						<InputDate @bind-Value="_userToCreate1.Dob" id="dob" class="form-control" />
+						<ValidationMessage For="@(() => _userToCreate1.Dob)" />
+					</div>-->
+
+						
+								<ValidationSummary />
+
+								<button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
+									<i class="far fa-save"></i> Save
+								</button>
+
+							</EditForm>
+						
+
+						<a href="/admin/cars" class="btn btn-primary shadow mt-5 md-f-size-1-5">
+							<i class="fas fa-arrow-left"></i> Back to all cars
+						</a>
+					</div>
+				</div>
+       
+  
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <footer class="footer">
+            <div class="container-fluid d-flex justify-content-between">
+              
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div> 
+    <!-- End custom js for this page -->
+  </body>
+</html>
+		
+
+@code
+{
+    [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+    [Inject] IJSRuntime JSRuntime { get; set; }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (InMemoryDatabaseCache.Cars == null)
+            {
+                await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
+                StateHasChanged();
+            }
+
+
+        }
+    }
+
+    [Inject] HttpClient HttpClient { get; set; }
+    private CarDTO _carToCreate = new CarDTO() {  };
+    private UserDTO _userToCreate1 = new UserDTO() { };
+    
+    private bool _attemptingToCreate = false;
+	private bool _attemptToCreateFailed = false;
+	private bool _createSuccessful = false;
+	private async Task CreateUser()
+	{
+		_attemptingToCreate = true;
+
+
+		HttpResponseMessage response = await HttpClient.PostAsJsonAsync<UserDTO>(APIEndpoints.s_userRegister, _userToCreate1);
+
+        
+		
+
+		if (response.StatusCode == HttpStatusCode.Created)
+		{
+			
+
+			_createSuccessful = true;
+		}
+		else
+		{
+			_attemptToCreateFailed = true;
+		}
+
+		_attemptingToCreate = false;
+	}
+
+	
+	private bool _attemptToUploadFailed = false;
+	private string _reasonImageUploadFailed = null;
+	}
+}

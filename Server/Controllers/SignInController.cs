@@ -15,11 +15,11 @@ namespace Server.Controllers {
     [ApiController]
     public class SignInController : ControllerBase
     {
-    private SignInManager<IdentityUser> _signInManager;
-    private UserManager<IdentityUser> _userManager;
+    private SignInManager<AppUser> _signInManager;
+    private UserManager<AppUser> _userManager;
     private IConfiguration _configuration;
 
-    public SignInController(SignInManager<IdentityUser> signInManager,UserManager<IdentityUser> userManager,IConfiguration configuration)
+    public SignInController(SignInManager<AppUser> signInManager,UserManager<AppUser> userManager,IConfiguration configuration)
         {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -39,12 +39,14 @@ namespace Server.Controllers {
 
         if (signInResult.Succeeded)
         {
-            IdentityUser identityUser = await _userManager.FindByNameAsync(username);
+            AppUser identityUser = await _userManager.FindByNameAsync(username);
             string JSONWebTokenAsString = await GenerateJSONWebToken(identityUser);
             return Ok(JSONWebTokenAsString);
         }
         else
         {
+
+                Console.WriteLine("Not today chap");
             return Unauthorized(user);
         }
     }
@@ -52,7 +54,7 @@ namespace Server.Controllers {
 
     [NonAction]
     [ApiExplorerSettings(IgnoreApi =true)]
-    private async Task<string> GenerateJSONWebToken(IdentityUser identityUser)
+    private async Task<string> GenerateJSONWebToken(AppUser identityUser)
     {
 
         SymmetricSecurityKey symmetricSecurityKey = new(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

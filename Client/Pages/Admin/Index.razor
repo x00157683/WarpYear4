@@ -108,7 +108,7 @@
               <nav aria-label="breadcrumb">
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item active" aria-current="page">
-                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    <span></span>Overview @temp1<i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
                   </li>
                 </ul>
               </nav>
@@ -227,9 +227,9 @@
     List<Category> _categories;
     List<Booking> _bookings;
 
-    int temp = 0;
-    int temp1 = 0;
-    int temp2 = 0;
+    int temp;
+    int temp1;
+    int temp2;
     private bool _signInAttemptFailed = false;
     private bool _signInSuccessful = false;
     private User _user1 = new();
@@ -260,21 +260,23 @@
     protected override async Task OnInitializedAsync()
     {
 
+        temp = 0;
+        temp1 = 0;
+        temp2 = 0;
 
-
-        if (InMemoryDatabaseCache.Categories == null)
+        if (InMemoryDatabaseCache.Cars == null)
         {
-            await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(true);
+            await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
 
-            temp = InMemoryDatabaseCache.Categories.Count;
+            temp1 = InMemoryDatabaseCache.Cars.Count;
 
-            Console.WriteLine("In 1 "+temp);
+          
 
         }
         if (InMemoryDatabaseCache.Cars == null)
         {
-            await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
-            temp1 = InMemoryDatabaseCache.Cars.Count;
+            
+            
             Console.WriteLine("In 2 "+InMemoryDatabaseCache.Cars.Count+" "+temp1);
 
         }

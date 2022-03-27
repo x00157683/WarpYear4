@@ -4,7 +4,7 @@ using Shared.Models;
 
 namespace Server.Data
 {
-    public class AppDBContext : IdentityDbContext
+    public class AppDBContext : IdentityDbContext<AppUser>
     {
 
         public DbSet<Category> Categories {get; set;}
@@ -24,6 +24,23 @@ namespace Server.Data
         {
             //call the base verision of this method or we get an error
             base.OnModelCreating(modelBuilder);
+
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<AppUser>()
+                .Property(e => e.FirstName)
+                .HasMaxLength(250);
+
+            modelBuilder.Entity<AppUser>()
+                .Property(e => e.LastName)
+                .HasMaxLength(250);
+
+            modelBuilder.Entity<AppUser>()
+                .Property(e => e.PhoneNumber)
+                .HasMaxLength(250);
+
+         
+
 
             #region
 
@@ -241,5 +258,7 @@ namespace Server.Data
 
 
         }
+
+      
     }
 }

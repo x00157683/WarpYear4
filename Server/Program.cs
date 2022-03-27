@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Server.Data;
+using Shared.Models;
 using System.Text;
 
 
@@ -24,7 +25,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options => options.Serialize
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlite(
 builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>()
+builder.Services.AddDefaultIdentity<AppUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AppDBContext>();
 
@@ -69,9 +70,9 @@ if (app.Environment.IsDevelopment())
     {
         // Access injected services via serviceScope.ServiceProvider.
         var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
-        SeedAdministratorRoleAndUser.Seed(roleManager, userManager).Wait();
+        SeedAdministratorRoleAndUser.Seed(roleManager,userManager).Wait();
     }
 
     app.UseDeveloperExceptionPage();
