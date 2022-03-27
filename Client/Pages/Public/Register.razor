@@ -11,7 +11,7 @@
 @using System.Text;
 
 
-	  <Client.Components.Admin.Nav></Client.Components.Admin.Nav>
+	 <Client.Components.Public.Shared.NavB></Client.Components.Public.Shared.NavB>
 
 		<html lang="en">
   <head>
@@ -40,66 +40,12 @@
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_sidebar.html -->
-   <nav class="sidebar sidebar-offcanvas" id="sidebar">
-          <ul class="nav">
-            <li class="nav-item nav-profile">
-              <a href="#" class="nav-link">
-                <div class="nav-profile-image">
-                  <!--<img src="" alt="profile">-->
-                  <span class="login-status online"></span>
-                  <!--change to offline or busy as needed-->
-                </div>
-                <div class="nav-profile-text d-flex flex-column">
-                  <span class="font-weight-bold mb-2">Admin</span>
-                 
-                </div>
-                <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin">
-                <span class="menu-title">Home</span>
-                <i class="mdi mdi-home menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/cars">
-                <span class="menu-title">Cars</span>
-                <i class="menu-arrow"></i>
-                <i class="mdi mdi-car-connected menu-icon"></i>
-              </a>      
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/booking">
-                <span class="menu-title">Bookings</span>
-                <i class="mdi mdi-contacts menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/users">
-                <span class="menu-title">Users</span>
-                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="pages/charts/chartjs.html">
-                <span class="menu-title">Charts</span>
-                <i class="mdi mdi-chart-bar menu-icon"></i>
-              </a>
-            </li>
- 
-         
-          </ul>
-        </nav>
-        <!-- partial -->
+
+           <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper">
             <div class="page-header">
-              <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
-                  <i class="mdi mdi-home"></i>
-                </span> Home
-              </h3>
+         
               <nav aria-label="breadcrumb">
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item active" aria-current="page">
@@ -111,7 +57,7 @@
      	<div class="row g-0">
 					<div class="col">
 
-						<h1 class="mb-4">@(_createSuccessful ? "Success! Go back to all cars to see the created car." : "Create car")</h1>
+						
 
 						
 						
@@ -160,15 +106,13 @@
 								<ValidationSummary />
 
 								<button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
-									<i class="far fa-save"></i> Save
+									<i class="far fa-save"></i> Register
 								</button>
 
 							</EditForm>
 						
 
-						<a href="/admin/cars" class="btn btn-primary shadow mt-5 md-f-size-1-5">
-							<i class="fas fa-arrow-left"></i> Back to all cars
-						</a>
+				
 					</div>
 				</div>
        
@@ -242,8 +186,5 @@
 		_attemptingToCreate = false;
 	}
 
-	
-	private bool _attemptToUploadFailed = false;
-	private string _reasonImageUploadFailed = null;
 	}
 }
