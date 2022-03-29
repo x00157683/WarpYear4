@@ -1,6 +1,6 @@
 ﻿namespace Client.Static
 {
-    internal static class APIEndpoints
+    public static class APIEndpoints
     {
 
 #if DEBUG
