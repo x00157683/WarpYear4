@@ -149,32 +149,33 @@
     [Inject] ILocalStorageService LocalStorageService { get; set; }
     [Inject] AuthenticationStateProvider authenticationStateProvider { get; set; }
     [Inject] AppAuthenticationStateProvider appAuthenticationStateProvider { get; set; }
+    [Inject] public NavigationManager NavigationManager { get; set; }
 
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            if (InMemoryDatabaseCache.Cars == null)
-            {
-                await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
-                StateHasChanged();
-            }
-        }
-    }
+    //protected async override Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        if (InMemoryDatabaseCache.Cars == null)
+    //        {
+    //            await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
+    //            StateHasChanged();
+    //        }
+    //    }
+    //}
 
 
 
-    private UserDTO _userToSignin = new UserDTO() { };
+    private User _userToSignin = new User();
     private bool _attemptingToSignin = false;
     private bool _signinSuccessful = false;
     private bool _signinFailed = false;
 
     private async Task SigninUser()
     {
-        _attemptingToSignin = true;
+        _attemptingToSignin = false;
 
 
-        HttpResponseMessage response = await HttpClient.PostAsJsonAsync<UserDTO>(APIEndpoints.s_signIn, _userToSignin);
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync<User>(APIEndpoints.s_signIn, _userToSignin);
 
         if (response.IsSuccessStatusCode)
         {
@@ -187,10 +188,14 @@
             HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", jsonWebToken);
 
             _signinSuccessful = true;
+
+             StateHasChanged();
+             NavigationManager.NavigateTo("/");
+            
         }
         else
         {
-            _attemptingToSignin = false;
+            _attemptingToSignin = true;
 
         }
 

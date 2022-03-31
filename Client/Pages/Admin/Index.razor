@@ -10,10 +10,7 @@
 
  
 
-<AuthorizeView Roles="Administrator">
-	<Authorized Context="Auth">
 
-       <Nav></Nav>
 		<!DOCTYPE html>
 <html lang="en">
 
@@ -120,7 +117,7 @@
                     <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Bookings <i class="mdi mdi-receipt mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">Total Bookings @temp2</h2>
+                    <h2 class="mb-5">Total Bookings: @temp2</h2>
                     <h6 class="card-text">Increased by 60%</h6>
                   </div>
                 </div>
@@ -131,7 +128,7 @@
                     <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Users <i class="mdi mdi-human mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">45,6334</h2>
+                    <h2 class="mb-5">Total Users: @temp3</h2>
                     <h6 class="card-text">Decreased by 10%</h6>
                   </div>
                 </div>
@@ -142,7 +139,7 @@
                     <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Our Fleet <i class="mdi mdi-car-connected mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">Number of Cars @temp1</h2>
+                    <h2 class="mb-5">Number of Cars: @temp1</h2>
                     <h6 class="card-text">Increased by 5%</h6>
                   </div>
                 </div>
@@ -170,50 +167,17 @@
     <!-- End custom js for this page -->
   </body>
 </html>
-	</Authorized>
 
-</AuthorizeView>
 
-	<NotAuthorized>
-		<div class="d-flex w-100 min-vh-90 justify-content-center align-items-center">
+
 	<div class="row">
 		<div class="col shadow-no-hover p-5">
-			@if (_signInSuccessful == true)
-			{
-				<h3 class="text-center my-3">Sign in successful. You should be redirected automatically in a few seconds.</h3>
-			}
-			else
-			{
-				<h3 class="text-center fw-bold">You must be signed in to access the admin area.</h3>
-				<h5 class="text-center mt-2 mb-5">After signing in you'll be remembered for 4 weeks.</h5>
-
-				<EditForm Model="_user1" OnValidSubmit="SignInUser">
-					<DataAnnotationsValidator />
-
-					<div class="form-group my-3">
-						<label for="email">Email address</label>
-						<InputText @bind-Value="_user1.EmailAddress" id="email" class="form-control" />
-						<ValidationMessage For="@(() => _user1.EmailAddress)" />
-					</div>
-
-					<div class="form-group my-3">
-						<label for="password">Password</label>
-						<InputText @bind-Value="_user1.Password" id="password" type="password" class="form-control" />
-						<ValidationMessage For="@(() => _user1.Password)" />
-					</div>
-
-					<ValidationSummary />
-
-					<button type="submit" class="btn btn-primary shadow w-100 md-f-size-1-5">
-						Sign in
-					</button>
-                    </EditForm>
-                }
+		
             </div>
         </div>
        
-    </div>
-	</NotAuthorized>
+
+
 
 @code
 {
@@ -226,44 +190,30 @@
     List<Car> _cars;
     List<Category> _categories;
     List<Booking> _bookings;
+    List<AppUser> _users;
 
     int temp;
     int temp1;
     int temp2;
+    int temp3;
     private bool _signInAttemptFailed = false;
     private bool _signInSuccessful = false;
-    private User _user1 = new();
-    private async Task SignInUser()
-    {
-        var response = await HttpClient.PostAsJsonAsync<User>(APIEndpoints.s_signIn, _user1);
+ 
 
-        if (response.IsSuccessStatusCode == false)
-        {
-            _signInAttemptFailed = true;
-        }
-        else
-        {
-            string JSONWebToken = await response.Content.ReadAsStringAsync();
-
-            await LocalStorageService.SetItemAsync("bearerToken", JSONWebToken);
-
-            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
-
-            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", JSONWebToken);
-
-            _signInSuccessful = true;
-
-            NavigationManager.NavigateTo("/admin");
-        }
-    }
-
+ 
     protected override async Task OnInitializedAsync()
     {
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+		{
+			string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
 
-        temp = 0;
-        temp1 = 0;
-        temp2 = 0;
+			await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
 
+			HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+			StateHasChanged();
+		}
+   
         if (InMemoryDatabaseCache.Cars == null)
         {
             await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
@@ -273,6 +223,14 @@
           
 
         }
+
+        	if (InMemoryDatabaseCache.Users == null)
+		{
+			await InMemoryDatabaseCache.GetUsersFromDatabaseAndCache();
+
+            temp3 = InMemoryDatabaseCache.Users.Count;
+
+		}
         if (InMemoryDatabaseCache.Cars == null)
         {
             

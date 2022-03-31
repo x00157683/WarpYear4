@@ -10,111 +10,120 @@
 
 
 <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-  <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-    <a class="navbar-brand brand-logo" href="/"><img src="" alt="logo"/></a>
-    <a class="navbar-brand brand-logo-mini" href="/"><img src="" alt="logoT" /></a>
-  </div>
-  <div class="navbar-menu-wrapper d-flex align-items-stretch">
-   <li class="nav-item">
-                <a href="" class="nav-link  @(IsPageActive(SkillsPageUri) ? "active" : string.Empty)">
-                   Fleet
-                </a>
-            </li>
-              <li class="nav-item">
-                <a href="" class="nav-link  @(IsPageActive(SkillsPageUri) ? "active" : string.Empty)">
-                   Contact
-                </a>
-            </li>
-                 <li class="nav-item">
-                <a href="" class="nav-link  @(IsPageActive(SkillsPageUri) ? "active" : string.Empty)">
-                   About
-                </a>
-            </li>
-             
-                 <li class="nav-item">
-                <a href="/register" class="nav-link  @(IsPageActive(SkillsPageUri) ? "active" : string.Empty)">
-                   Register
-                </a>
-            </li>
-    <div class="search-field d-none d-md-block">
-      <form class="d-flex align-items-center h-100" action="#">
-        <div class="input-group">
-          <div class="input-group-prepend bg-transparent">
-            <i class="input-group-text border-0 mdi mdi-magnify"></i>
-          </div>
-          <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
-        </div>
-      </form>
-    </div>
-    <ul class="navbar-nav navbar-nav-right">
-      <li class="nav-item nav-profile dropdown">
-        <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-          <div class="nav-profile-img">
-            <img src="assets/images/faces/face1.jpg" alt="image">
-            <span class="availability-status online"></span>
-          </div>
-          <div class="nav-profile-text">
-            <p class="mb-1 text-black">User</p>
-          </div>
-        </a>
-        <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-          <a class="dropdown-item" href="#">
-            <i class="mdi mdi-cached me-2 text-success"></i> Signup </a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">
-            <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
-        </div>
-      </li>
-      <AuthorizeView>
-      <li class="nav-item d-none d-lg-block full-screen-link">
-        <a class="nav-link">
-         <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
-      </li>
-      </AuthorizeView>
+    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo" href="/"><img src="assets/images/WarpLogo.svg.svg" alt="logo" /></a>
 
-      <li class="nav-item nav-logout d-none d-lg-block">
-        <a class="nav-link" href="#">
-              <i class="mdi mdi-cached me-2 text-success"></i> Signup </a>
-      </li>
-      <li class="nav-item nav-settings d-none d-lg-block">
-        <a class="nav-link" href="#">
-          <i class="mdi mdi-format-line-spacing"></i>
-        </a>
-      </li>
-    </ul>
-    <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-      <span class="mdi mdi-menu"></span>
-    </button>
-  </div>
+    </div>
+    <div class="navbar-menu-wrapper d-flex align-items-stretch float-left">
+         <ul class="navbar-nav navbar-nav-left">
+        <li class="nav-item nav-logout d-none d-lg-block">
+                    <a class="nav-link" href="">
+                        <i class="mdi mdi-cached me-2 text-success"></i> Fleet
+                    </a>
+                </li>
+         <li class="nav-item nav-logout d-none d-lg-block">
+            <a href="" class="nav-link">
+               <i class="mdi mdi-cached me-2 text-success"></i> Contact
+            </a>
+        </li>
+        <li class="nav-item nav-logout d-none d-lg-block">
+            <a href="" class="nav-link">
+               <i class="mdi mdi-cached me-2 text-success"></i> About
+            </a>
+        </li>
+
+         <li class="nav-item nav-logout d-none d-lg-block">
+            <a href="/register" class="nav-link">
+               <i class="mdi mdi-cached me-2 text-success"></i> Register
+            </a>
+        </li>
+        </ul>
+        <div class="search-field d-none d-md-block">
+            <form class="d-flex align-items-center h-100" action="#">
+                <div class="input-group">
+                    <div class="input-group-prepend bg-transparent">
+                        <i class="input-group-text border-0 mdi mdi-magnify"></i>
+                    </div>
+                    <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
+                </div>
+            </form>
+        </div>
+        <ul class="navbar-nav navbar-nav-right">
+            <AuthorizeView>
+                <li class="nav-item nav-profile dropdown">
+                    <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="nav-profile-img">
+                            <img src="assets/images/faces/face1.jpg" alt="image">
+                            <span class="availability-status online"></span>
+                        </div>
+                        <div class="nav-profile-text">
+                            <p class="mb-1 text-black">User</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+                        <a class="dropdown-item" href="#">
+                            <i class="mdi mdi-cached me-2 text-success"></i> Signup
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-link" type="button" onclick="@SignOut">
+                            <i class="mdi mdi-cached me-2 text-success"></i> Sign Out
+                        </a>
+                    </div>
+                </li>
+            </AuthorizeView>
+            <AuthorizeView>
+
+                <li class="nav-item nav-logout d-none d-lg-block">
+                    <a class="nav-link" type="button" onclick="@SignOut">
+                        <i class="mdi mdi-cached me-2 text-success"></i> Sign Out
+                    </a>
+                </li>
+            </AuthorizeView>
+            @if (_isSignedOut == true)
+            {
+                <li class="nav-item nav-logout d-none d-lg-block">
+                    <a class="nav-link" href="/signin">
+                        <i class="mdi mdi-cached me-2 text-success"></i> Sign In
+                    </a>
+                </li>
+                <li class="nav-item nav-settings d-none d-lg-block">
+                    <a class="nav-link" href="#">
+                        <i class="mdi mdi-format-line-spacing"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+        </button>
+    </div>
 </nav>
-@code 
+@code
 {
-    protected override async Task OnInitializedAsync() => await SignInWithBrowserLocalStorageBearerToken();
+
 
     [Inject] HttpClient HttpClient { get; set; }
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     [Inject] ILocalStorageService LocalStorageService { get; set; }
-    private async Task SignInWithBrowserLocalStorageBearerToken()
-    {
-        Console.WriteLine("hello im in token " + LocalStorageService.ContainKeyAsync("bearerToken"));
+    [Inject] public NavigationManager NavigationManager { get; set; }
 
-         await LocalStorageService.RemoveItemAsync("bearerToken");
+    bool _isSignedOut;
+
+    protected override async Task OnInitializedAsync()
+    {
 
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
         {
+            _isSignedOut = false;
+        }
 
-            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+        else
+        {
 
-            Console.WriteLine("hello im in token pt2 " + savedToken);
+            _isSignedOut = true;
+        }
 
-            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
-
-			HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
-
-            StateHasChanged();
-        }        
     }
-
     private async Task SignOut()
     {
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
@@ -123,49 +132,11 @@
 
             ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignOut();
 
-            StateHasChanged();
+            _isSignedOut = true;
         }
+
+        StateHasChanged();
+        NavigationManager.NavigateTo("/");
     }
 
-    // Public and CamelCase because C# properties are methods.
-    [Inject] public NavigationManager NavigationManager { get; set; }
-
-    private const string HomePageUri = "/";
-    private const string SkillsPageUri = "/skills";
-    private const string PortfolioPageUri = "/portfolio";
-    private const string BlogPageUri = "/blog";
-    private const string AboutPageUri = "/about";
-    private const string ContactPageUri = "/contact";
-
-    private bool IsPageActive(string pageToCheckUri)
-    {
-        // Skip(3) to remove https://domainname/
-        string[] currentUriSplitBetweenSlashes = NavigationManager.Uri.Split('/').Skip(3).ToArray();
-
-        if (pageToCheckUri == HomePageUri)
-        {
-            if (currentUriSplitBetweenSlashes.Last().Length == 0)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            string[] pageToCheckUriSplitBetweenSlashes = pageToCheckUri.Split('/').Skip(1).ToArray();
-
-            foreach (string currentUriPart in currentUriSplitBetweenSlashes)
-            {
-                foreach (string pageToCheckUriPart in pageToCheckUriSplitBetweenSlashes)
-                {
-                    if (pageToCheckUriPart == currentUriPart)
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        // If the code gets here pageToCheckUri is not the active page. So return false.
-        return false;
-    }
 }

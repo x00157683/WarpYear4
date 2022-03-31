@@ -247,6 +247,67 @@ namespace Client.Services
 
         #endregion
 
+        #region Users
+
+        private List<AppUser> _users = null;
+        internal List<AppUser> Users
+        {
+            get
+            {
+                return _users;
+            }
+            set
+            {
+                _users = value;
+                NotifyUsersDataChanged();
+            }
+        }
+
+        internal async Task<AppUser> GetUserByUserId(string email)
+        {
+            if (_users == null)
+            {
+                await GetUsersFromDatabaseAndCache();
+            }
+
+            return _users.First(user => user.NormalizedUserName == email);
+        }
+
+        internal async Task<UserDTO> GetUserDTOByUserId(string email) => await _httpClient.GetFromJsonAsync<UserDTO>($"{APIEndpoints.s_users}/{email}");
+
+        private bool _gettingUsersFromDatabaseAndCaching = false;
+        internal async Task GetUsersFromDatabaseAndCache()
+        {
+
+         
+            // Only allow one Get to run at a time
+            if (_gettingUsersFromDatabaseAndCaching == false)
+            {
+                _gettingUsersFromDatabaseAndCaching = true;
+
+                if (_users != null)
+                {
+                    _users = null;
+                }
+
+                List<AppUser> usersFromDatabase = await _httpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
+
+                _users = usersFromDatabase.OrderByDescending(user => user.NormalizedUserName).ToList();
+
+          
+
+
+                _gettingUsersFromDatabaseAndCaching = false;
+            }
+
+            
+        }
+
+        internal event Action OnUsersDataChanged;
+        private void NotifyUsersDataChanged() => OnUsersDataChanged?.Invoke();
+
+        #endregion
+
 
     }
 }

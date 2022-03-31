@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -62,7 +63,7 @@ public class UserController : ControllerBase
     [AllowAnonymous]
     [Route("signin")]
     [HttpPost]
-    public async Task<IActionResult> SignIn([FromBody] UserDTO userForSignIn)
+    public async Task<IActionResult> SignIn([FromBody] User userForSignIn)
     {
         string username = userForSignIn.EmailAddress;
         string password = userForSignIn.Password;
@@ -132,5 +133,17 @@ public class UserController : ControllerBase
 
         return Ok(identityUser);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+            //List<AppUser> usersFromDatabase = (List<AppUser>)await _userManager.Users.FirstOrDefault();
+
+        var users = await _userManager.Users.ToListAsync();
+
+        return Ok(users);
+    }
+
+  
 
 }

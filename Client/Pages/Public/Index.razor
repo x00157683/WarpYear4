@@ -103,7 +103,7 @@
                 </div>
                 <div class="row gx-5">
 
-                    @if (InMemoryDatabaseCache.Cars != null)
+               @*   @if (_cars != null)
                     {
                         foreach ( var x in _cars)
                         {
@@ -113,7 +113,7 @@
                                 <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />
                                 <div class="card-body">
                                    
-                                    <h3 class="card-title">@x.Make</h3>
+                                   <h3 class="card-title">@x.Make</h3>
                                     <p class="card-text">@x.Model</p>
                                     <p class="card-text">@x.CategoryId</p>
                                 </div>
@@ -123,7 +123,7 @@
                           </div>
 
                         }
-                    }
+                    }*@
                       
                 </div>
             </div>
@@ -155,35 +155,28 @@
 
 @code {
 
-    [Inject] HttpClient HttpClient { get; set; }
-    [Inject] ILocalStorageService LocalStorageService { get; set; }
-    [Inject] NavigationManager NavigationManager { get; set; }
-    [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
-    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-    [Parameter] public Category Category { get; set; }
-    [Parameter] public Car Cars { get; set; }
-    [Parameter] public Booking Bookings { get; set; }
-
-    List<Car> _cars;
-    List<Category> _categories;
-    List<Booking> _bookings;
+    [Inject] HttpClient ?HttpClient { get; set; }
+    [Inject] ILocalStorageService ?LocalStorageService { get; set; }
+    [Inject] NavigationManager ?NavigationManager { get; set; }
+    [Inject] InMemoryDatabaseCache ?InMemoryDatabaseCache { get; set; }
+    [Inject] AuthenticationStateProvider ?AuthenticationStateProvider { get; set; }
+    [Parameter] public Category ?Category { get; set; }
+    [Parameter] public Car ?Cars { get; set; }
+    [Parameter] public Booking ?Bookings { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState> ?AuthenticationState { get; set; } 
 
 
-
-
+    List<Car> ?_cars =  null;
+    List<Category> ?_categories = null;
+    List<Booking> ?_bookings = null;
 
     protected override async Task OnInitializedAsync()
     {
 
-      
-        InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
-       
-
-
+          InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
+  
         if (InMemoryDatabaseCache.Categories == null)
         {
-
-
             await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
             _categories = InMemoryDatabaseCache.Categories;
 
@@ -191,15 +184,38 @@
 
         if (InMemoryDatabaseCache.Cars == null)
         {
-
-
             await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
 
             _cars = InMemoryDatabaseCache.Cars;
             Console.WriteLine(_cars.Count);
 
         }
+
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+
+            Console.WriteLine(savedToken);
+
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+            StateHasChanged();
+        }
+
+        var user = (await AuthenticationState).User;
+
+        if (user.Identity.IsAuthenticated == true)
+        {
+            Console.WriteLine(user.ToString());
+            Console.WriteLine("whatsupp");
+            Console.WriteLine(user.Identity.Name);
+        }   
+    
     }
+
+   
 
     public void Dispose()
     {
