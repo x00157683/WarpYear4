@@ -195,7 +195,7 @@
     {
         _attemptingToCreate = true;
 
-         _bookingToCreate.StartTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
+         //_bookingToCreate.StartTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
         HttpResponseMessage response = await HttpClient.PostAsJsonAsync<BookingDTO>(APIEndpoints.s_bookings, _bookingToCreate);
 
 		

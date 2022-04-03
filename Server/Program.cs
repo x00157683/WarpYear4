@@ -64,8 +64,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
+
     using (var serviceScope = app.Services.CreateScope())
     {
         // Access injected services via serviceScope.ServiceProvider.
@@ -76,7 +75,7 @@ if (app.Environment.IsDevelopment())
     }
 
     app.UseDeveloperExceptionPage();
-}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

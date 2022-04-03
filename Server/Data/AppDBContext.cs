@@ -27,6 +27,7 @@ namespace Server.Data
 
             base.OnModelCreating(modelBuilder);
 
+
             modelBuilder.Entity<AppUser>()
                 .Property(e => e.FirstName)
                 .HasMaxLength(250);
@@ -64,14 +65,18 @@ namespace Server.Data
             
             });
 
+            modelBuilder.Entity<Booking>()
+          .HasOne(p => p.AppUser)
+          .WithMany(b => b.Bookings)
+          .HasForeignKey(p=>p.Id).OnDelete(DeleteBehavior.Cascade); 
 
 
             #region Car Seed
- 
 
-   
 
-        Car [] carsToSeed = new Car[6];
+
+
+            Car [] carsToSeed = new Car[6];
 
             for (int i = 1; i < 7; i++)
             {
@@ -176,81 +181,7 @@ namespace Server.Data
             
 
 
-            #region Booking Seed
-
-            modelBuilder.Entity<Booking>(entity =>
-            {
-                //entity.HasOne(b => b.User)
-                //.WithMany(u => u.Bookings)
-                //.HasForeignKey("UserId");
-
-                //entity.HasOne(c => c.Car);
-
-            });
-
-
-            Booking[] bookingsToSeed = new Booking[2];
-
-  
-
-            for (int i = 1; i < 3; i++)
-            {
-                string dNow = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
-                DateTime dLap;
-                bool isComplete = true;
-                double cost = 0;
-                int userId= 0;
-                int carId = 0;
-
-
-
-                switch (i)
-                {
-
-                    case 1:
-
-                        cost = 88;
-                        userId = 1;
-                        carId = 1;
-                        break;
-                    case 2:
-
-                        cost = 98;
-                        userId = 2;
-                        carId = 2;
-                        break;
-
-                    case 3:
-
-                        cost = 998;
-                        userId = 3;
-                        carId = 5;
-
-                        break;
-
-
-                    default:
-                        break;
-
-                }
-
-                bookingsToSeed[i - 1] = new Booking
-                {
-                    BookingId = i,
-                    StartTime = dNow,
-                    Cost = cost,
-                    IsComplete = isComplete,
-                    //UserId = userId,
-                    //CarId = carId
-                    
-                    
-                };
-
-            }
-
-            modelBuilder.Entity<Booking>().HasData(bookingsToSeed);
-
-            #endregion
+          
 
 
             //

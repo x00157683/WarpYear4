@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Server.Data.Migrations
 {
-    public partial class addedASPNetIdentity : Migration
+    public partial class AddedDBRelations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,24 +28,49 @@ namespace Server.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
                     PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Licenses",
+                columns: table => new
+                {
+                    LicenseId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FName = table.Column<string>(type: "TEXT", nullable: false),
+                    LName = table.Column<string>(type: "TEXT", nullable: false),
+                    dob = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    YearsHeld = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Licenses", x => x.LicenseId);
                 });
 
             migrationBuilder.CreateTable(
@@ -154,19 +179,100 @@ namespace Server.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.UpdateData(
-                table: "Bookings",
-                keyColumn: "BookingId",
-                keyValue: 1,
-                column: "StartTime",
-                value: "04/03/2022 10:00");
+            migrationBuilder.CreateTable(
+                name: "Bookings",
+                columns: table => new
+                {
+                    BookingId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StartTime = table.Column<string>(type: "TEXT", nullable: false),
+                    StopTime = table.Column<string>(type: "TEXT", nullable: true),
+                    Cost = table.Column<double>(type: "REAL", nullable: false),
+                    IsCreated = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsComplete = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Id = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bookings", x => x.BookingId);
+                    table.ForeignKey(
+                        name: "FK_Bookings_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.UpdateData(
-                table: "Bookings",
-                keyColumn: "BookingId",
-                keyValue: 2,
-                column: "StartTime",
-                value: "04/03/2022 10:00");
+            migrationBuilder.CreateTable(
+                name: "Cars",
+                columns: table => new
+                {
+                    CarId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Make = table.Column<string>(type: "TEXT", nullable: false),
+                    Model = table.Column<string>(type: "TEXT", nullable: false),
+                    Range = table.Column<double>(type: "REAL", nullable: false),
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PricePerUnit = table.Column<double>(type: "REAL", nullable: false),
+                    isLocked = table.Column<bool>(type: "INTEGER", nullable: false),
+                    RangeLeft = table.Column<double>(type: "REAL", nullable: false),
+                    Active = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cars", x => x.CarId);
+                    table.ForeignKey(
+                        name: "FK_Cars_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "CategoryId", "Description", "Name" },
+                values: new object[] { 1, "Description 1", "Category 1" });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "CategoryId", "Description", "Name" },
+                values: new object[] { 2, "Description 2", "Category 2" });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "CategoryId", "Description", "Name" },
+                values: new object[] { 3, "Description 3", "Category 3" });
+
+            migrationBuilder.InsertData(
+                table: "Cars",
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
+                values: new object[] { 1, false, 1, "Tesla", "Model X", 7.0, 250.0, 100.0, true });
+
+            migrationBuilder.InsertData(
+                table: "Cars",
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
+                values: new object[] { 2, false, 2, "Tesla", "Model S", 7.0, 200.0, 100.0, true });
+
+            migrationBuilder.InsertData(
+                table: "Cars",
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
+                values: new object[] { 3, false, 3, "Porsche", "Taycan", 7.0, 270.0, 100.0, true });
+
+            migrationBuilder.InsertData(
+                table: "Cars",
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
+                values: new object[] { 4, false, 1, "Nissan", "Leaf", 7.0, 150.0, 100.0, true });
+
+            migrationBuilder.InsertData(
+                table: "Cars",
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
+                values: new object[] { 5, false, 2, "Honda", "Up!", 7.0, 220.0, 100.0, true });
+
+            migrationBuilder.InsertData(
+                table: "Cars",
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
+                values: new object[] { 6, false, 3, "Toyota", "GT", 7.0, 200.0, 100.0, true });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -204,6 +310,16 @@ namespace Server.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_Id",
+                table: "Bookings",
+                column: "Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cars_CategoryId",
+                table: "Cars",
+                column: "CategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -224,24 +340,22 @@ namespace Server.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Bookings");
+
+            migrationBuilder.DropTable(
+                name: "Cars");
+
+            migrationBuilder.DropTable(
+                name: "Licenses");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
-            migrationBuilder.UpdateData(
-                table: "Bookings",
-                keyColumn: "BookingId",
-                keyValue: 1,
-                column: "StartTime",
-                value: "01/03/2022 10:45");
-
-            migrationBuilder.UpdateData(
-                table: "Bookings",
-                keyColumn: "BookingId",
-                keyValue: 2,
-                column: "StartTime",
-                value: "01/03/2022 10:45");
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

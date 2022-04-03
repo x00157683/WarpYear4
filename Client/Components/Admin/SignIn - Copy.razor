@@ -43,7 +43,7 @@
 
 <div class="position-fized bottom-0 end-5 z-index-5">
 
-	@if (_signInSuccessful == true)
+@*	@if (_signInSuccessful == true)
 	{
 		<Toast IsError="false" ToastTitle="Sign in successful"
 		   ToastBody="You should be redirected automatically within a few seconds."
@@ -55,7 +55,7 @@
 		<Toast IsError="true" ToastTitle="Sign in attempt failed"
 		   ToastBody="Please try again and if the issue persists contact the administrator."
 		   ParentMethodToCallOnClickBtnClose="() => _signInAttemptFailed = false" />
-	}
+	}*@
 
 </div>
 

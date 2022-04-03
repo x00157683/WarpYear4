@@ -11,8 +11,8 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20220323162658_customFieldsForUser3")]
-    partial class customFieldsForUser3
+    [Migration("20220402134423_switchedBookingString")]
+    partial class switchedBookingString
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -156,23 +156,13 @@ namespace Server.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly>("Dob")
-                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -184,23 +174,12 @@ namespace Server.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(80)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordHash")
@@ -210,15 +189,6 @@ namespace Server.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -245,40 +215,27 @@ namespace Server.Data.Migrations
                     b.Property<double>("Cost")
                         .HasColumnType("REAL");
 
+                    b.Property<string>("Id")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsComplete")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsCreated")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("StartTime")
-                        .IsRequired()
+                    b.Property<DateTime?>("StartTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("StopTime")
+                    b.Property<DateTime?>("StopTime")
                         .HasColumnType("TEXT");
 
                     b.HasKey("BookingId");
 
-                    b.ToTable("Bookings");
+                    b.HasIndex("Id");
 
-                    b.HasData(
-                        new
-                        {
-                            BookingId = 1,
-                            Cost = 88.0,
-                            IsComplete = true,
-                            IsCreated = false,
-                            StartTime = "23/03/2022 04:26"
-                        },
-                        new
-                        {
-                            BookingId = 2,
-                            Cost = 98.0,
-                            IsComplete = true,
-                            IsCreated = false,
-                            StartTime = "23/03/2022 04:26"
-                        });
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("Shared.Models.Car", b =>
@@ -510,6 +467,17 @@ namespace Server.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Shared.Models.Booking", b =>
+                {
+                    b.HasOne("Shared.Models.AppUser", "AppUser")
+                        .WithMany("Bookings")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("Shared.Models.Car", b =>
                 {
                     b.HasOne("Shared.Models.Category", "Category")
@@ -519,6 +487,11 @@ namespace Server.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Shared.Models.AppUser", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("Shared.Models.Category", b =>

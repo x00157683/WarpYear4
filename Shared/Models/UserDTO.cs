@@ -25,6 +25,7 @@ namespace Shared.Models
 
         public DateOnly ?Dob { get; set; }
 
+        [Required]
         public string ?PhoneNumber { get; set; } 
 
         //public License License { get; set; }

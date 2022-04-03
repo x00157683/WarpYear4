@@ -6,6 +6,8 @@ namespace Shared.Models
     {
 
  
+     
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email address")]
@@ -17,11 +19,8 @@ namespace Shared.Models
         [Display(Name = "Password")]
         public string Password { get; set; }
 
- 
-
         //public License License { get; set; }
 
-        //public List<Booking> Bookings { get; set; }
 
 
 

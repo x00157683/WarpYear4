@@ -11,8 +11,8 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20220330083611_fixingusercontroller")]
-    partial class fixingusercontroller
+    [Migration("20220401121006_AddedDBRelations")]
+    partial class AddedDBRelations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -215,6 +215,10 @@ namespace Server.Data.Migrations
                     b.Property<double>("Cost")
                         .HasColumnType("REAL");
 
+                    b.Property<string>("Id")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsComplete")
                         .HasColumnType("INTEGER");
 
@@ -230,25 +234,9 @@ namespace Server.Data.Migrations
 
                     b.HasKey("BookingId");
 
-                    b.ToTable("Bookings");
+                    b.HasIndex("Id");
 
-                    b.HasData(
-                        new
-                        {
-                            BookingId = 1,
-                            Cost = 88.0,
-                            IsComplete = true,
-                            IsCreated = false,
-                            StartTime = "30/03/2022 08:36"
-                        },
-                        new
-                        {
-                            BookingId = 2,
-                            Cost = 98.0,
-                            IsComplete = true,
-                            IsCreated = false,
-                            StartTime = "30/03/2022 08:36"
-                        });
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("Shared.Models.Car", b =>
@@ -480,6 +468,17 @@ namespace Server.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Shared.Models.Booking", b =>
+                {
+                    b.HasOne("Shared.Models.AppUser", "AppUser")
+                        .WithMany("Bookings")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("Shared.Models.Car", b =>
                 {
                     b.HasOne("Shared.Models.Category", "Category")
@@ -489,6 +488,11 @@ namespace Server.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Shared.Models.AppUser", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("Shared.Models.Category", b =>

@@ -213,40 +213,27 @@ namespace Server.Data.Migrations
                     b.Property<double>("Cost")
                         .HasColumnType("REAL");
 
+                    b.Property<string>("Id")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsComplete")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsCreated")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("StartTime")
-                        .IsRequired()
+                    b.Property<DateTime?>("StartTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("StopTime")
+                    b.Property<DateTime?>("StopTime")
                         .HasColumnType("TEXT");
 
                     b.HasKey("BookingId");
 
-                    b.ToTable("Bookings");
+                    b.HasIndex("Id");
 
-                    b.HasData(
-                        new
-                        {
-                            BookingId = 1,
-                            Cost = 88.0,
-                            IsComplete = true,
-                            IsCreated = false,
-                            StartTime = "30/03/2022 08:36"
-                        },
-                        new
-                        {
-                            BookingId = 2,
-                            Cost = 98.0,
-                            IsComplete = true,
-                            IsCreated = false,
-                            StartTime = "30/03/2022 08:36"
-                        });
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("Shared.Models.Car", b =>
@@ -478,6 +465,17 @@ namespace Server.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Shared.Models.Booking", b =>
+                {
+                    b.HasOne("Shared.Models.AppUser", "AppUser")
+                        .WithMany("Bookings")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("Shared.Models.Car", b =>
                 {
                     b.HasOne("Shared.Models.Category", "Category")
@@ -487,6 +485,11 @@ namespace Server.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Shared.Models.AppUser", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("Shared.Models.Category", b =>

@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Shared.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+
+
 
 namespace Server.Controllers
 {
@@ -15,12 +19,16 @@ namespace Server.Controllers
         private readonly AppDBContext _appDBContext;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public BookingsController(AppDBContext appDBContext, IWebHostEnvironment webHostEnvironment,IMapper mapper )
+        public BookingsController(AppDBContext appDBContext, IWebHostEnvironment webHostEnvironment,IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration)
         {
             _appDBContext = appDBContext;
             _webHostEnvironment = webHostEnvironment;
             _mapper = mapper;
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
         #region CRUD operations
@@ -29,7 +37,7 @@ namespace Server.Controllers
         public async Task<IActionResult> Get()
         {
             //.Include(booking => booking.User)
-            List<Booking> Bookings = await _appDBContext.Bookings.ToListAsync();
+            List<Booking> Bookings = await _appDBContext.Bookings.Include(b => b.AppUser).ToListAsync();
 
             return Ok(Bookings);
         }
@@ -51,6 +59,13 @@ namespace Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BookingDTO bookingToCreateDTO)
         {
+            AppUser user = null;
+            if (bookingToCreateDTO.Email !=null)
+            {
+
+                user  = await _userManager.FindByEmailAsync(bookingToCreateDTO.Email);
+                Console.WriteLine(user.Email + "so close");
+            }
             try
             {
                 if (bookingToCreateDTO == null)
@@ -65,10 +80,15 @@ namespace Server.Controllers
 
                 Booking bookingToCreate = _mapper.Map<Booking>(bookingToCreateDTO);
 
-                if(bookingToCreateDTO.IsCreated == true)
+
+                bookingToCreate.AppUser = user;
+
+                Console.WriteLine(bookingToCreate.AppUser + "soooo close");
+
+                if (bookingToCreateDTO.IsCreated == true)
                 {
 
-                    bookingToCreateDTO.StartTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
+                    //bookingToCreateDTO.StartTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
 
                 }
 
@@ -89,7 +109,12 @@ namespace Server.Controllers
             {
                 return StatusCode(500, $"Something aint quite right son Error message: {e.Message}.");
             }
+
+            
+            
         }
+
+     
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] Booking updatedBookingDTO)
@@ -118,7 +143,7 @@ namespace Server.Controllers
                 if (updatedBooking.IsComplete == true)
                 {
 
-                    updatedBooking.StopTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
+                    //updatedBooking.StopTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
                     Console.WriteLine("Booking Complete");
 
                 }

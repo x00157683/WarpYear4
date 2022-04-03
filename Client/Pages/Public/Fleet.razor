@@ -1,12 +1,188 @@
 ﻿@page "/fleet"
+@inject HttpClient Http
+@implements IDisposable
+@using Blazored.LocalStorage
+@using Client.Components.Public.Warp
+@using Client.Providers
+@using Client.Services
+@using global::Shared.Models
+@using System.Net.Http.Headers
 
-<Client.Components.Public.Shared.Navbar />
 
-<main class="container min-vh-90 py-md-5">
-   
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Warp</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico" />
+</head>
 
-    Search our fleet!
+
+<Client.Components.Public.Shared.NavB />
+
+<PageTitle>Warp</PageTitle>
+
+<body class="d-flex flex-column h-100">
 
 
-</main>
+    <!--The div element for the map -->
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+
+
+
+    <main class="flex-shrink-0">
+
+        <div id="map"></div>
+
+
+        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+        <section class="py-5">
+            <div class="container px-5 my-5">
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-8 col-xl-6">
+                        <div class="text-center">
+                            <h2 class="fw-bolder">From our Fleet</h2>
+                            <p class="lead fw-normal text-muted mb-5">
+                                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                                Eaque fugit ratione dicta mollitia. Officiis ad.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row gx-5">
+
+                    @if (_cars != null)
+                    {
+                        foreach (var x in _cars)
+                        {
+
+                            <div class="col-4">
+                                <div class="card shadow mb-2">
+                                    <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />
+                                    <div class="card-body">
+
+                                        <h3 class="card-title">@x.Make</h3>
+                                        <p class="card-text">@x.Model</p>
+                                        <p class="card-text">@x.CategoryId</p>
+                                    </div>
+                                    <a href="/book" class="btn btn-primary stretched-link">Click</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <!-- Call to action-->
+        </section>
+    </main>
+    <!-- Footer-->
+    <footer class="bg-dark py-4 mt-auto">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#!">Privacy</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Terms</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap core JS-->
+    <!-- Core theme JS-->
+
+</body>
+
+
+@code {
+
+    [Inject] HttpClient? HttpClient { get; set; }
+    [Inject] ILocalStorageService? LocalStorageService { get; set; }
+    [Inject] NavigationManager? NavigationManager { get; set; }
+    [Inject] InMemoryDatabaseCache? InMemoryDatabaseCache { get; set; }
+    [Inject] AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    [Parameter] public Category? Category { get; set; }
+    [Parameter] public Car? Cars { get; set; }
+    [Parameter] public Booking? Bookings { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState>? AuthenticationState { get; set; }
+
+
+    List<Car>? _cars = null;
+    List<Category>? _categories = null;
+    List<Booking>? _bookings = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
+
+        if (InMemoryDatabaseCache.Categories == null)
+        {
+            await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
+            _categories = InMemoryDatabaseCache.Categories;
+
+        }
+
+        if (InMemoryDatabaseCache.Cars == null)
+        {
+            await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
+
+            _cars = InMemoryDatabaseCache.Cars;
+            Console.WriteLine(_cars.Count);
+
+        }
+
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+
+            Console.WriteLine(savedToken);
+
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+            StateHasChanged();
+        }
+
+        var user = (await AuthenticationState).User;
+
+        if (user.Identity.IsAuthenticated == true)
+        {
+            Console.WriteLine(user.ToString());
+            Console.WriteLine("whatsupp");
+            Console.WriteLine(user.Identity.Name);
+        }
+
+    }
+
+
+
+    public void Dispose()
+    {
+
+        InMemoryDatabaseCache.OnCategoriesDataChanged -= StateHasChanged;
+
+    }
+
+
+
+
+
+}
 
