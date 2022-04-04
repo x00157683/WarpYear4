@@ -27,7 +27,6 @@
     <PackageReference Include="Smart.Blazor" Version="13.1.21" />
     <PackageReference Include="SQLite" Version="3.13.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
-    <PackageReference Include="Telerik.UI.for.Blazor.Trial" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
