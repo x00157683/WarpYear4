@@ -25,7 +25,7 @@ namespace Server.Data
             //call the base verision of this method or we get an error
             base.OnModelCreating(modelBuilder);
 
-            base.OnModelCreating(modelBuilder);
+  
 
 
             modelBuilder.Entity<AppUser>()
@@ -176,16 +176,6 @@ namespace Server.Data
 
             */
             #endregion
-
-
-            
-
-
-          
-
-
-            //
-
 
 
         }

@@ -68,22 +68,22 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 
+   
+
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
     using (var serviceScope = app.Services.CreateScope())
     {
         // Access injected services via serviceScope.ServiceProvider.
         var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
-        SeedAdministratorRoleAndUser.Seed(roleManager,userManager).Wait();
+        SeedAdministratorRoleAndUser.Seed(roleManager, userManager).Wait();
     }
 
-    app.UseDeveloperExceptionPage();
-
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-
+   
     app.UseDeveloperExceptionPage();
    
 }
