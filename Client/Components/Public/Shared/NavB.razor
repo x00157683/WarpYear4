@@ -11,29 +11,31 @@
 
 <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo" href="/"><img src="assets/images/WarpLogo.svg.svg" alt="logo" /></a>
+        <a class="navbar-brand brand-logo @(IsPageActive(FleetPageUri) ? "active" : string.Empty)" href="@HomePageUri"><img src="assets/images/WarpLogo.svg.svg" alt="logo" /></a>
 
     </div>
+         
+           
     <div class="navbar-menu-wrapper d-flex align-items-stretch float-left">
          <ul class="navbar-nav navbar-nav-left">
         <li class="nav-item nav-logout d-none d-lg-block">
-                    <a class="nav-link" href="/fleet">
+                    <a href="@FleetPageUri" class="nav-link @(IsPageActive(FleetPageUri) ? "active" : string.Empty)" >
                         <i class="mdi mdi-cached me-2 text-success"></i> Fleet
                     </a>
                 </li>
          <li class="nav-item nav-logout d-none d-lg-block">
-            <a href="" class="nav-link">
+            <a href="@ContactPageUri" class="nav-link @(IsPageActive(ContactPageUri) ? "active" : string.Empty)">
                <i class="mdi mdi-cached me-2 text-success"></i> Contact
             </a>
         </li>
         <li class="nav-item nav-logout d-none d-lg-block">
-            <a href="" class="nav-link">
+              <a href="@AboutPageUri" class="nav-link @(IsPageActive(AboutPageUri) ? "active" : string.Empty)">
                <i class="mdi mdi-cached me-2 text-success"></i> About
             </a>
         </li>
 
          <li class="nav-item nav-logout d-none d-lg-block">
-            <a href="/register" class="nav-link">
+             <a href="@RegisterPageUri" class="nav-link @(IsPageActive(RegisterPageUri) ? "active" : string.Empty)">
                <i class="mdi mdi-cached me-2 text-success"></i> Register
             </a>
         </li>
@@ -138,5 +140,46 @@
         StateHasChanged();
         NavigationManager.NavigateTo("/");
     }
+
+    
+
+    private const string HomePageUri = "/";
+    private const string FleetPageUri = "/fleet";
+    private const string RegisterPageUri = "/register";
+    private const string AboutPageUri = "/about";
+    private const string ContactPageUri = "/contact";
+
+    private bool IsPageActive(string pageToCheckUri)
+    {
+        // Skip(3) to remove https://domainname/
+        string[] currentUriSplitBetweenSlashes = NavigationManager.Uri.Split('/').Skip(3).ToArray();
+
+        if (pageToCheckUri == HomePageUri)
+        {
+            if (currentUriSplitBetweenSlashes.Last().Length == 0)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            string[] pageToCheckUriSplitBetweenSlashes = pageToCheckUri.Split('/').Skip(1).ToArray();
+
+            foreach (string currentUriPart in currentUriSplitBetweenSlashes)
+            {
+                foreach (string pageToCheckUriPart in pageToCheckUriSplitBetweenSlashes)
+                {
+                    if (pageToCheckUriPart == currentUriPart)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // If the code gets here pageToCheckUri is not the active page. So return false.
+        return false;
+    }
+
 
 }

@@ -5,8 +5,12 @@
 @using Client.Components.Public.Warp
 @using Client.Providers
 @using Client.Services
+@using Newtonsoft.Json
 @using global::Shared.Models
 @using System.Net.Http.Headers
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Net.Http;
 
 
 <head>
@@ -126,26 +130,38 @@
     List<Category>? _categories = null;
     List<Booking>? _bookings = null;
 
+    private static readonly HttpClient client = new HttpClient();
+
+
+
     protected override async Task OnInitializedAsync()
     {
 
-        InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
 
-        if (InMemoryDatabaseCache.Categories == null)
-        {
-            await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
-            _categories = InMemoryDatabaseCache.Categories;
 
-        }
 
-        if (InMemoryDatabaseCache.Cars == null)
-        {
-            await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
+        HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
 
-            _cars = InMemoryDatabaseCache.Cars;
-            Console.WriteLine(_cars.Count);
+        _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
 
-        }
+
+        //InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
+
+        //if (InMemoryDatabaseCache.Categories == null)
+        //{
+        //    await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
+        //    _categories = InMemoryDatabaseCache.Categories;
+
+        //}
+
+        //if (InMemoryDatabaseCache.Cars == null)
+        //{
+        //    await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
+
+        //    _cars = InMemoryDatabaseCache.Cars;
+        //    Console.WriteLine(_cars.Count);
+
+        //}
 
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
         {
