@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @implements IDisposable
 @using Blazored.LocalStorage
+@using Client.Components.Public.Shared
 @using Client.Components.Public.Warp
 @using Client.Providers
 @using Client.Services
@@ -14,27 +15,21 @@ using System.Net.Http;
 
 
 <head>
-    <!-- Required meta tags -->
+  
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Warp</title>
-    <!-- plugins:css -->
     <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/">
-    <!-- End layout styles -->
+
     <link rel="shortcut icon" href="assets/images/favicon.ico" />
 </head>
 
 
-<Client.Components.Public.Shared.NavB />
+
+<NavB/>
 
 <PageTitle>Warp</PageTitle>
 
@@ -107,8 +102,6 @@ using System.Net.Http;
             </div>
         </div>
     </footer>
-    <!-- Bootstrap core JS-->
-    <!-- Core theme JS-->
 
 </body>
 
@@ -181,7 +174,7 @@ using System.Net.Http;
         if (user.Identity.IsAuthenticated == true)
         {
             Console.WriteLine(user.ToString());
-            Console.WriteLine("whatsupp");
+  
             Console.WriteLine(user.Identity.Name);
         }
 
