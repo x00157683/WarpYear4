@@ -77,7 +77,7 @@ using System.Net.Http;
                                         <p class="card-text">@x.Model</p>
                                         <p class="card-text">@x.CategoryId</p>
                                     </div>
-                                    <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Click</a>
+                                    <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Book</a>
                                 </div>
                             </div>
                         }
@@ -136,25 +136,6 @@ using System.Net.Http;
         HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
 
         _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
-
-
-        //InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
-
-        //if (InMemoryDatabaseCache.Categories == null)
-        //{
-        //    await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
-        //    _categories = InMemoryDatabaseCache.Categories;
-
-        //}
-
-        //if (InMemoryDatabaseCache.Cars == null)
-        //{
-        //    await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
-
-        //    _cars = InMemoryDatabaseCache.Cars;
-        //    Console.WriteLine(_cars.Count);
-
-        //}
 
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
         {
