@@ -59,13 +59,7 @@ namespace Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BookingDTO bookingToCreateDTO)
         {
-            AppUser user = null;
-            if (bookingToCreateDTO.Email !=null)
-            {
-
-                user  = await _userManager.FindByEmailAsync(bookingToCreateDTO.Email);
-                Console.WriteLine(user.Email + "so close");
-            }
+           
             try
             {
                 if (bookingToCreateDTO == null)
@@ -77,23 +71,17 @@ namespace Server.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-
+                AppUser? user = await _userManager.FindByEmailAsync(bookingToCreateDTO.Email);
+   
                 Booking bookingToCreate = _mapper.Map<Booking>(bookingToCreateDTO);
 
-
                 bookingToCreate.AppUser = user;
-
-                Console.WriteLine(bookingToCreate.AppUser + "soooo close");
-
-                if (bookingToCreateDTO.IsCreated == true)
-                {
-
-                    //bookingToCreateDTO.StartTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
-
-                }
+                bookingToCreate.Id = user.Email;
 
                 await _appDBContext.Bookings.AddAsync(bookingToCreate);
+                Console.WriteLine(bookingToCreate.AppUser + "soooo close");
 
+  
                 bool changesPersistedToDatabase = await PersistChangesToDatabase();
 
                 if (changesPersistedToDatabase == false)
@@ -110,8 +98,8 @@ namespace Server.Controllers
                 return StatusCode(500, $"Something aint quite right son Error message: {e.Message}.");
             }
 
-            
-            
+        
+
         }
 
      
