@@ -126,6 +126,8 @@ public class UserController : ControllerBase
         return identityUser;
     }
 
+
+
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(string id)
     {
@@ -144,6 +146,78 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
-  
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        try
+        {
+
+            AppUser user = await _userManager.FindByEmailAsync(id);
+            if (user != null)
+            {
+                IdentityResult result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+
+
+                    return NoContent();
+                }
+                else
+                    return StatusCode(500, $"Something went wrong on our side. Please contact the administrator. Error message: {result.ToString}.");
+            }
+            else
+                return StatusCode(500, "User Not Found");
+      
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, $"Something went wrong on our side. Please contact the administrator. Error message: {e.Message}.");
+        }
+    }
+
+    [Route("update")]
+    [HttpPost]
+    public async Task<IActionResult> UpdateUser([FromBody] UserDTO userForRegistration)
+    {
+        AppUser user = await _userManager.FindByIdAsync(userForRegistration.EmailAddress);
+
+
+        if (user != null)
+        {
+            user.UserName = userForRegistration.EmailAddress;
+            user.Email = userForRegistration.EmailAddress;
+            user.FirstName = userForRegistration.FirstName;
+            user.LastName = userForRegistration.LastName;
+            user.PhoneNumber = userForRegistration.PhoneNumber;
+            IdentityResult identityResult = await _userManager.UpdateAsync(user);
+
+            if (identityResult.Succeeded == true)
+            {
+                return Ok(identityResult.Succeeded);
+            }
+            else
+            {
+                string errorsToReturn = "Update failed with the following errors";
+
+                foreach (var err in identityResult.Errors)
+                {
+                    errorsToReturn += Environment.NewLine;
+                    errorsToReturn += $"Error Code: {err.Code} - {err.Description}";
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorsToReturn);
+            }
+            
+        }
+
+        else
+        {
+            return StatusCode(201);
+
+        }
+    
+    }
+
+
 
 }

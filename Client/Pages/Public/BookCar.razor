@@ -1,4 +1,4 @@
-﻿@page "/fleet"
+﻿@page "/bookcar/{Id:int}"
 @inject HttpClient Http
 @implements IDisposable
 @using Blazored.LocalStorage
@@ -15,7 +15,7 @@ using System.Net.Http;
 
 
 <head>
-  
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Warp</title>
@@ -29,7 +29,7 @@ using System.Net.Http;
 
 
 
-<NavB/>
+<NavB />
 
 <PageTitle>Warp</PageTitle>
 
@@ -68,18 +68,48 @@ using System.Net.Http;
                         foreach (var x in _cars)
                         {
 
-                            <div class="col-4">
-                                <div class="card shadow mb-2">
-                                    <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />
-                                    <div class="card-body">
-
-                                        <h3 class="card-title">@x.Make</h3>
-                                        <p class="card-text">@x.Model</p>
-                                        <p class="card-text">@x.CategoryId</p>
-                                    </div>
-                                    <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Click</a>
+                            if (x.CarId == Id)
+                            {
+                                <div class="col-4">
                                 </div>
-                            </div>
+                                <div class="col-4">
+                                    <div class="card shadow mb-2">
+
+                                        <div class="card-body">
+
+                                            <h3 class="card-title">Make: @x.Make</h3>
+                                            <p class="card-text">Model: @x.Model</p>
+                                            <p class="card-text">Tier: @x.Category.Name</p>
+                                            <p class="card-text">Range: @x.Range Km</p>
+                                            <p class="card-text">Price: $@x.PricePerUnit</p>
+                                                   <EditForm Model="_booking" OnValidSubmit="CreateBooking">
+                                            <DataAnnotationsValidator />
+                                            <div class="form-group my-3 mx-2 ">
+                                                <label for="first">Start Date</label>
+                                                <InputDate @bind-Value="_booking.StartTime" id="first" @bind-Value:format="dd/MM/yyyy" class="form-control" placeholder= />
+                                                <ValidationMessage For="@(() => _booking.StartTime)" />
+
+                                                <label for="first">End Date</label>
+                                                <InputDate @bind-Value="_booking.StopTime" id="first" @bind-Value:format="dd/MM/yyyy" class="form-control" />
+                                                <ValidationMessage For="@(() => _booking.StopTime)" />
+
+
+                                            </div>
+
+                                            <ValidationSummary />
+
+                                            <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
+                                                <i class="far fa-save"></i> Book
+                                            </button>
+
+                                        </EditForm>
+                                        </div>
+                                 
+
+                                    </div>
+                                </div>
+                            }
+
                         }
                     }
                 </div>
@@ -113,15 +143,25 @@ using System.Net.Http;
     [Inject] NavigationManager? NavigationManager { get; set; }
     [Inject] InMemoryDatabaseCache? InMemoryDatabaseCache { get; set; }
     [Inject] AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
-    [Parameter] public Category? Category { get; set; }
-    [Parameter] public Car? Cars { get; set; }
-    [Parameter] public Booking? Bookings { get; set; }
+
+    [Parameter] public int Id { get; set; }
     [CascadingParameter] protected Task<AuthenticationState>? AuthenticationState { get; set; }
 
 
     List<Car>? _cars = null;
-    List<Category>? _categories = null;
-    List<Booking>? _bookings = null;
+    List<AppUser>? _users = null;
+    AppUser ?_user = null;
+
+    private bool _attemptingToRegister = false;
+    private string? _attemptToRegisterFailed = "";
+    private bool _registerSuccessful = false;
+    private bool _registerFailed = false;
+    private BookingDTO _booking = new BookingDTO() { };
+    Car? ThisCar = null;
+    public DateTime? StartValue { get; set; } = DateTime.Now;
+    public DateTime? EndValue { get; set; } = DateTime.Now.AddDays(10);
+
+
 
     private static readonly HttpClient client = new HttpClient();
 
@@ -129,32 +169,23 @@ using System.Net.Http;
 
     protected override async Task OnInitializedAsync()
     {
-
-
-
+        _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
 
         HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
+
 
         _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
 
 
-        //InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
+        foreach (var i in _cars)
+        {
+            if (i.CarId == Id)
+            {
+                ThisCar = i;
+            }
+        }
 
-        //if (InMemoryDatabaseCache.Categories == null)
-        //{
-        //    await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
-        //    _categories = InMemoryDatabaseCache.Categories;
 
-        //}
-
-        //if (InMemoryDatabaseCache.Cars == null)
-        //{
-        //    await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
-
-        //    _cars = InMemoryDatabaseCache.Cars;
-        //    Console.WriteLine(_cars.Count);
-
-        //}
 
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
         {
@@ -173,13 +204,38 @@ using System.Net.Http;
 
         if (user.Identity.IsAuthenticated == true)
         {
-            Console.WriteLine(user.ToString());
-  
-            Console.WriteLine(user.Identity.Name);
+
         }
 
     }
 
+    private async Task CreateBooking()
+    {
+
+        var user2 = (await AuthenticationState).User;
+
+        // _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
+
+        _booking.Email = "test@gmail.com";//_user.Email;
+
+        _booking.Cost = 100;
+
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync<BookingDTO>(APIEndpoints.s_bookings, _booking);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _registerSuccessful = true;
+        }
+        else
+        {
+            string serverError = await response.Content.ReadAsStringAsync();
+            _attemptToRegisterFailed = $"{serverError} The following error has occured";
+            _registerFailed = true;
+
+        }
+
+        _attemptingToRegister = false;
+    }
 
 
     public void Dispose()
@@ -188,7 +244,6 @@ using System.Net.Http;
         InMemoryDatabaseCache.OnCategoriesDataChanged -= StateHasChanged;
 
     }
-
 
 
 

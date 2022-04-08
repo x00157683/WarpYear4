@@ -9,21 +9,7 @@
 
 
 <header>
-     <AuthorizeView Roles="Administrator">
-        <Authorized Context="Auth">
-            <div class="shadow-no-hover bg-light p-3">
-                <p class="d-inline ms-lg-5">You're seeing this bar because you're signed in as the administrator</p>
-
-                <a href="/admin" class="btn bg-lightgray hover-bg-white shadow text-dark ms-3 mx-2 md-and-smaller-my-3">
-                    <i class="fas fa-wrench"></i> <p class="md-and-smaller-d-none d-inline">Admin area</p>
-				</a>
-
-                <button @onclick="SignOut" class="btn bg-lightgray hover-bg-white shadow text-dark mx-2 md-and-smaller-my-3">
-                    <i class="fas fa-sign-out-alt"></i> <p class="md-and-smaller-d-none d-inline">Sign out</p>
-				</button>
-			</div>
-		</Authorized>
-	</AuthorizeView>
+  
 <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
         <a class="navbar-brand brand-logo @(IsPageActive(FleetPageUri) ? "active" : string.Empty)" href="@HomePageUri"><img src="assets/images/WarpLogo.svg.svg" alt="logo" /></a>
@@ -74,21 +60,18 @@
                             <span class="availability-status online"></span>
                         </div>
                         <div class="nav-profile-text">
-                            <p class="mb-1 text-black">User</p>
+                            <p class="mb-1 text-black">@UserName</p>
                         </div>
                     </a>
                     <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                        <a class="dropdown-item" href="#">
-                            <i class="mdi mdi-cached me-2 text-success"></i> Signup
+                        <a class="dropdown-item" href="/profile">
+                            <i class="mdi mdi-cached me-2 text-success"></i> Edit Profile
                         </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="nav-link" type="button" onclick="@SignOut">
-                            <i class="mdi mdi-cached me-2 text-success"></i> Sign Out
-                        </a>
-                    </div>
+                        </div>
+                   
                 </li>
             </AuthorizeView>
-            <AuthorizeView>
+            <AuthorizeView Context="context">
 
                 <li class="nav-item nav-logout d-none d-lg-block">
                     <a class="nav-link" type="button" onclick="@SignOut">
@@ -124,6 +107,9 @@
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     [Inject] ILocalStorageService LocalStorageService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState> ?AuthenticationState { get; set; } 
+
+    string UserName{ get;set; }
 
     bool _isSignedOut;
 
@@ -133,6 +119,9 @@
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
         {
             _isSignedOut = false;
+            var user = (await AuthenticationState).User;
+
+            UserName = user.Identity.Name;
         }
 
         else

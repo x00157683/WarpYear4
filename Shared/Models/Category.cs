@@ -19,6 +19,8 @@ namespace Shared.Models
         [MaxLength(100)]
         public string Description { get; set; }
 
+        public double PriceRate { get; set; }
+
         public List<Car> Cars { get; set; }
 
 

@@ -22,5 +22,6 @@
         internal readonly static string s_signIn = $"{SererBaseUrl}/api/signin";
         internal readonly static string s_userRegister = $"{SererBaseUrl}/api/user/register";
         internal readonly static string s_users = $"{SererBaseUrl}/api/user/";
+        internal readonly static string s_userupdate = $"{SererBaseUrl}/api/user/update";
     }
 }

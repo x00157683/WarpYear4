@@ -17,6 +17,8 @@ namespace Shared.Models
 
         public string ?StopTime { get; set; }
 
+        public string Location { get; set; }
+
         [Required]
         public double Cost { get; set; }
 

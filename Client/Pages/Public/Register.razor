@@ -111,17 +111,11 @@
                             {
                                 <p class="my-3 text-danger"> @_attemptToRegisterFailed</p>
                             }
-                            else
-                            {
-
-                                <h4>Register Sucessfull click to sign in</h4>
-
-                                <a href="/signin" class="btn btn-primary shadow mt-5 md-f-size-1-5">
-                                    <i class="fas fa-arrow-left"></i> Sign In
-                                </a>
-                            }
+                          
                         
                         }
+                         
+
                         </div>
                       
                 </div>
@@ -158,22 +152,10 @@
     [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
     [Inject] IJSRuntime JSRuntime { get; set; }
     [Inject] HttpClient HttpClient { get; set; }
+    [Inject] public NavigationManager NavigationManager { get; set; }
 
 
-    protected async override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            if (InMemoryDatabaseCache.Cars == null)
-            {
-                await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
-                StateHasChanged();
-            }
-        }
-    }
-
-
-
+ 
     private UserDTO _userToRegister = new UserDTO() { };
     private bool _attemptingToRegister = false;
     private string? _attemptToRegisterFailed = "";
@@ -190,6 +172,7 @@
         if (response.IsSuccessStatusCode)
         {
             _registerSuccessful = true;
+            NavigationManager.NavigateTo("/signin");
         }
         else
         {

@@ -38,13 +38,9 @@
 
 <PageTitle>Warp</PageTitle>
 
+
+
 <body class="d-flex flex-column h-100">
-
-
-    <!--The div element for the map -->
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-
-
 
     <main class="flex-shrink-0">
         <!-- Navigation-->
@@ -53,7 +49,6 @@
         <!-- Testimonial section-->
         <!-- Blog preview section-->
         <div id="map"></div>
-
 
         <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
         <section class="py-5">
@@ -65,7 +60,7 @@
                         @if (_registerSuccessful == false)
                         {
 
-                            <EditForm Model="_booking" OnValidSubmit="BookCar">
+                            <EditForm Model  ="_booking" OnValidSubmit="BookCar">
                                 <DataAnnotationsValidator />
 
                                 <div class="form-group my-3">
@@ -112,9 +107,16 @@
             </div>
             <!-- Call to action-->
 
-
         </section>
+       
+
+
+
     </main>
+    
+
+     
+   
     <!-- Footer-->
     <footer class="bg-dark py-4 mt-auto">
         <div class="container px-5">
@@ -153,6 +155,8 @@
 
     bool firstRender = true;
     private List<AppUser> _users { get; set; }
+
+
     protected override async Task OnInitializedAsync()
     {
         _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);

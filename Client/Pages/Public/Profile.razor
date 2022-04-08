@@ -1,0 +1,236 @@
+﻿@page "/profile"
+@using System.Net;
+@using Client.Components.Public.Warp
+@using Client.Providers
+@using Client.Services
+@using System.Net.Http.Json;
+@using System.Net.Http.Headers
+@using global::Shared.Models;
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.IdentityModel.Tokens;
+@using System.IdentityModel.Tokens.Jwt;
+@using System.Security.Claims;
+@using System.Text;
+@using Blazored.LocalStorage
+
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico" />
+    <style>
+input::placeholder {
+  color: black;
+  opacity: 1; /* Firefox */
+}
+
+input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color: black;
+}
+
+input::-ms-input-placeholder { /* Microsoft Edge */
+ color: black;
+}
+</style>
+
+</head>
+
+<Client.Components.Public.Shared.NavB />
+
+<PageTitle>Warp</PageTitle>
+
+<body class="d-flex flex-column h-100">
+
+
+    <!--The div element for the map -->
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+
+
+
+    <main class="flex-shrink-0">
+        <!-- Navigation-->
+        <!-- Header-->
+
+        <!-- Features section-->
+        <!-- Testimonial section-->
+    
+        <!-- Blog preview section-->
+        <div id="map"></div>
+
+
+        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+        <section class="py-5">
+            <div class="container px-5 my-5">
+             
+                <div class="row gx-5">
+
+                     <div class="col">
+                            @if (_updateSuccessful == false)
+                        {
+                                <EditForm Model="_userToUpdate" OnSubmit="UpdateUser">
+                               
+                                <div class="form-group my-3">
+                                    <label for="email">Email address</label>
+                                    <InputText @bind-Value="_userToUpdate.EmailAddress" id="email" class="form-control" placeholder ="@User" />
+                                    <ValidationMessage For="@(() => _userToUpdate.EmailAddress)" />
+                                </div>
+                                  <div class="form-group my-3">
+                                    <label for="password">Password</label>
+                                    <InputText @bind-Value="_userToUpdate.Password" id="password" type="password" class="form-control" />
+                                    <ValidationMessage For="@(() => _userToUpdate.Password)" />
+                                </div>
+
+                                <div class="form-group my-3">
+                                    <label for="first">First Name</label>
+                                    <InputText @bind-Value="_userToUpdate.FirstName" id="first" class="form-control" placeholder ="@First"/>
+                                    <ValidationMessage For="@(() => _userToUpdate.FirstName)" />
+                                </div>
+                                <div class="form-group my-3">
+                                    <label for="last">Last Name</label>
+                                    <InputText @bind-Value="_userToUpdate.LastName" id="last" class="form-control"placeholder ="@Last" />
+                                    <ValidationMessage For="@(() => _userToUpdate.LastName)" />
+                                </div>
+
+                                <div class="form-group my-3">
+                                    <label for="phonenumber">Phone Number</label>
+                                    <InputText @bind-Value="_userToUpdate.PhoneNumber" id="phonenumber" class="form-control" placeholder ="@Phone"/>
+                                    <ValidationMessage For="@(() => _userToUpdate.PhoneNumber)" />
+                                </div>
+
+                                <!-- if(image) -->
+
+
+                                <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
+                                    <i class="far fa-save"></i> Update
+                                </button>
+
+                            </EditForm>
+                        
+                            @if (_updateFailed == true)
+                            {
+                                <p class="my-3 text-danger"> @_attemptToRegisterFailed</p>
+                            }
+                             
+                            @if (_updateSuccessful == true)
+                            {
+
+                                <p class="my-3 text-success"> Update Sucessful</p>
+                            }
+                        
+                        }
+                        </div>
+                      
+                </div>
+            </div>
+            <!-- Call to action-->
+           
+
+        </section>
+    </main>
+    <!-- Footer-->
+    <footer class="bg-dark py-4 mt-auto">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#!">Privacy</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Terms</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap core JS-->
+    <!-- Core theme JS-->
+
+</body>
+
+
+
+@code
+{
+    [Inject] HttpClient ?HttpClient { get; set; }
+    [Inject] ILocalStorageService ?LocalStorageService { get; set; }
+    [Inject] NavigationManager ?NavigationManager { get; set; }
+    [Inject] InMemoryDatabaseCache ?InMemoryDatabaseCache { get; set; }
+    [Inject] AuthenticationStateProvider ?AuthenticationStateProvider { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState> ?AuthenticationState { get; set; }
+
+    string User ="";
+    string First ="";
+    string Last ="";
+    string Phone = "";
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+
+            Console.WriteLine(savedToken);
+
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+            StateHasChanged();
+        }
+
+        var user = (await AuthenticationState).User;
+
+        if (user.Identity.IsAuthenticated == true)
+        {
+            string us2 = user.Identity.Name;
+
+            HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_users+us2);
+
+            AppUser _user =  await response.Content.ReadFromJsonAsync<AppUser>();
+            User = _user.Email;
+            First =_user.FirstName;
+            Last = _user.LastName;
+            Phone = _user.PhoneNumber;
+
+        }   
+
+    }
+
+
+
+    private UserDTO _userToUpdate = new UserDTO() { };
+    private bool _attemptingToRegister = false;
+    private string? _attemptToRegisterFailed = "";
+    private bool _updateSuccessful = false;
+    private bool _updateFailed = false;
+ 
+
+    private async Task UpdateUser()
+    {
+       
+        HttpResponseMessage response = await HttpClient.PutAsJsonAsync<UserDTO>($"{APIEndpoints.s_userupdate}", _userToUpdate);
+
+		if (response.StatusCode == HttpStatusCode.Created)
+		{
+		
+
+			_updateSuccessful = true;
+		}
+		else
+		{
+			_updateFailed = true;
+		}
+}
+}

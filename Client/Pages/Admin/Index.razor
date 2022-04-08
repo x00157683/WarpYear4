@@ -14,6 +14,9 @@
 		<!DOCTYPE html>
 <html lang="en">
 
+
+    <AuthorizeView Roles="Administrator">
+	<Authorized Context="Auth">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -32,13 +35,11 @@
     <!-- End layout styles -->
     <link rel="shortcut icon" href="assets/images/favicon.ico" />
   </head>
+
   <body>
    
       <!-- partial:partials/_navbar.html -->
       <div>
- 
-
-    
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_sidebar.html -->
@@ -161,22 +162,18 @@
       </div>
       <!-- page-body-wrapper ends -->
     </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
-   
-    <!-- End custom js for this page -->
   </body>
+
+
+  	</Authorized>
+
+</AuthorizeView>
+
+	<NotAuthorized>
+		<Client.Components.Admin.SignIn />
+	</NotAuthorized>
+
 </html>
-
-
-
-	<div class="row">
-		<div class="col shadow-no-hover p-5">
-		
-            </div>
-        </div>
-       
-
 
 
 @code
@@ -198,50 +195,58 @@
     int temp3;
     private bool _signInAttemptFailed = false;
     private bool _signInSuccessful = false;
- 
 
- 
+
+
     protected override async Task OnInitializedAsync()
     {
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
-		{
-			string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
 
-			await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
 
-			HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
 
-			StateHasChanged();
-		}
-   
+            StateHasChanged();
+        }
+
         if (InMemoryDatabaseCache.Cars == null)
         {
             await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
 
             temp1 = InMemoryDatabaseCache.Cars.Count;
 
-          
+
 
         }
 
-        	if (InMemoryDatabaseCache.Users == null)
-		{
-			await InMemoryDatabaseCache.GetUsersFromDatabaseAndCache();
+        if (InMemoryDatabaseCache.Users == null)
+        {
+            await InMemoryDatabaseCache.GetUsersFromDatabaseAndCache();
 
             temp3 = InMemoryDatabaseCache.Users.Count;
 
-		}
+        }
         if (InMemoryDatabaseCache.Cars == null)
         {
-            
-            
+
+
             Console.WriteLine("In 2 "+InMemoryDatabaseCache.Cars.Count+" "+temp1);
 
         }
-          if (InMemoryDatabaseCache.Bookings == null)
+        if (InMemoryDatabaseCache.Bookings == null)
         {
-            await InMemoryDatabaseCache.GetBookingsFromDatabaseAndCache();
-            temp2 = InMemoryDatabaseCache.Bookings.Count;
+            try
+            {
+                await InMemoryDatabaseCache.GetBookingsFromDatabaseAndCache();
+                temp2 = InMemoryDatabaseCache.Bookings.Count;
+            }
+            catch{
+
+                Console.WriteLine("Error loading");
+            }
+          
 
         }
     
