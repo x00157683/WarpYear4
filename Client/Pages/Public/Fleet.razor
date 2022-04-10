@@ -77,7 +77,12 @@ using System.Net.Http;
                                         <p class="card-text">@x.Model</p>
                                         <p class="card-text">@x.CategoryId</p>
                                     </div>
+                                    <AuthorizeView>
                                     <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Book</a>
+                                    </AuthorizeView>
+                                    	<NotAuthorized>
+		 <a href="/register" class="btn btn-primary stretched-link">Register</a>
+	</NotAuthorized>
                                 </div>
                             </div>
                         }
