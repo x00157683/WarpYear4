@@ -214,9 +214,9 @@ using System.Net.Http;
 
         var user2 = (await AuthenticationState).User;
 
-        // _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
+        _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
 
-        _booking.Email = "test@gmail.com";//_user.Email;
+        _booking.UserEmail = _user.Email;
 
         _booking.Cost = 100;
 
