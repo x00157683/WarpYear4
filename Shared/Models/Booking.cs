@@ -19,22 +19,22 @@ namespace Shared.Models
 
         public string Location { get; set; }
 
-        [Required]
+ 
         public double Cost { get; set; }
 
-        [Required]
+
         public bool IsCreated { get; set; }
 
-        [Required]
+
         public bool IsComplete { get; set; }
 
         //public int CarId { get; set; }
 
         //public Car Car { get; set; }
 
-        public string Id { get; set; }
+        public string ?UserEmail { get; set; }
 
-        public virtual AppUser AppUser { get; set; }  
+        public virtual AppUser? AppUser { get; set; }  
 
 
 

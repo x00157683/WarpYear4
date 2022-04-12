@@ -59,17 +59,15 @@
                     <div class="col-6">
                         @if (_registerSuccessful == false)
                         {
-
                             <EditForm Model  ="_booking" OnValidSubmit="BookCar">
                                 <DataAnnotationsValidator />
-
                                 <div class="form-group my-3">
                                     <label for="first">First Name</label>
                                     <InputNumber @bind-Value="_booking.Cost" id="first" class="form-control" />
                                     <ValidationMessage For="@(() => _booking.Cost)" />
                                 </div>
 
-                            
+                           
 
                                   <div class="form-group my-3">
                                     <label for="first">Start Date</label>

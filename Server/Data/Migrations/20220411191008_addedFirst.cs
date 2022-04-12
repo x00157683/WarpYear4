@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Server.Data.Migrations
 {
-    public partial class AddedDBRelations : Migration
+    public partial class addedFirst : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -50,7 +50,8 @@ namespace Server.Data.Migrations
                     CategoryId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
+                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    PriceRate = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,17 +188,18 @@ namespace Server.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     StartTime = table.Column<string>(type: "TEXT", nullable: false),
                     StopTime = table.Column<string>(type: "TEXT", nullable: true),
+                    Location = table.Column<string>(type: "TEXT", nullable: false),
                     Cost = table.Column<double>(type: "REAL", nullable: false),
                     IsCreated = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsComplete = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Id = table.Column<string>(type: "TEXT", nullable: false)
+                    UserEmail = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bookings", x => x.BookingId);
                     table.ForeignKey(
-                        name: "FK_Bookings_AspNetUsers_Id",
-                        column: x => x.Id,
+                        name: "FK_Bookings_AspNetUsers_UserEmail",
+                        column: x => x.UserEmail,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -231,18 +233,18 @@ namespace Server.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "CategoryId", "Description", "Name" },
-                values: new object[] { 1, "Description 1", "Category 1" });
+                columns: new[] { "CategoryId", "Description", "Name", "PriceRate" },
+                values: new object[] { 1, "Description 1", "Category 1", 0.0 });
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "CategoryId", "Description", "Name" },
-                values: new object[] { 2, "Description 2", "Category 2" });
+                columns: new[] { "CategoryId", "Description", "Name", "PriceRate" },
+                values: new object[] { 2, "Description 2", "Category 2", 0.0 });
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "CategoryId", "Description", "Name" },
-                values: new object[] { 3, "Description 3", "Category 3" });
+                columns: new[] { "CategoryId", "Description", "Name", "PriceRate" },
+                values: new object[] { 3, "Description 3", "Category 3", 0.0 });
 
             migrationBuilder.InsertData(
                 table: "Cars",
@@ -312,9 +314,9 @@ namespace Server.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookings_Id",
+                name: "IX_Bookings_UserEmail",
                 table: "Bookings",
-                column: "Id");
+                column: "UserEmail");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cars_CategoryId",

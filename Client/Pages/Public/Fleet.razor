@@ -15,7 +15,7 @@ using System.Net.Http;
 
 
 <head>
-  
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Warp</title>
@@ -29,7 +29,7 @@ using System.Net.Http;
 
 
 
-<NavB/>
+<NavB />
 
 <PageTitle>Warp</PageTitle>
 
@@ -78,11 +78,9 @@ using System.Net.Http;
                                         <p class="card-text">@x.CategoryId</p>
                                     </div>
                                     <AuthorizeView>
-                                    <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Book</a>
+                                        <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Book</a>
                                     </AuthorizeView>
-                                    	<NotAuthorized>
-		 <a href="/register" class="btn btn-primary stretched-link">Register</a>
-	</NotAuthorized>
+                               
                                 </div>
                             </div>
                         }
@@ -160,7 +158,7 @@ using System.Net.Http;
         if (user.Identity.IsAuthenticated == true)
         {
             Console.WriteLine(user.ToString());
-  
+
             Console.WriteLine(user.Identity.Name);
         }
 

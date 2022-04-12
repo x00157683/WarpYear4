@@ -11,8 +11,8 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20220408084002_addedCategoryField")]
-    partial class addedCategoryField
+    [Migration("20220411191008_addedFirst")]
+    partial class addedFirst
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -215,10 +215,6 @@ namespace Server.Data.Migrations
                     b.Property<double>("Cost")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("Id")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("IsComplete")
                         .HasColumnType("INTEGER");
 
@@ -236,9 +232,12 @@ namespace Server.Data.Migrations
                     b.Property<string>("StopTime")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("BookingId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("UserEmail");
 
                     b.ToTable("Bookings");
                 });
@@ -482,9 +481,8 @@ namespace Server.Data.Migrations
                 {
                     b.HasOne("Shared.Models.AppUser", "AppUser")
                         .WithMany("Bookings")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserEmail")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("AppUser");
                 });

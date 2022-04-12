@@ -13,30 +13,26 @@ namespace Shared.Models
         [Key]
         public int BookingDTOId { get; set; } //test
        
-        public DateTime StartTime { get; set; }
+        public string StartTime { get; set; }
 
-        public DateTime ?StopTime { get; set; }
+        public string ?StopTime { get; set; }
 
-        [Required]
         public double Cost { get; set; }
 
-        [Required]
+        public string Location { get; set; }
+
         public bool IsCreated { get; set; }
 
-        [Required]
         public bool IsComplete { get; set; }
 
-    
-
-        public string Email { get; set; }
 
         //public int CarId { get; set; }
 
         //public Car Car { get; set; }
 
-        //public int UserId { get; set; }
+        public string? UserEmail { get; set; }
 
-        //public User User { get; set; }  
+
 
 
 

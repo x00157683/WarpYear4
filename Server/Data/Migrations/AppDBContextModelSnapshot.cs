@@ -213,10 +213,6 @@ namespace Server.Data.Migrations
                     b.Property<double>("Cost")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("Id")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("IsComplete")
                         .HasColumnType("INTEGER");
 
@@ -234,9 +230,12 @@ namespace Server.Data.Migrations
                     b.Property<string>("StopTime")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("BookingId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("UserEmail");
 
                     b.ToTable("Bookings");
                 });
@@ -480,9 +479,8 @@ namespace Server.Data.Migrations
                 {
                     b.HasOne("Shared.Models.AppUser", "AppUser")
                         .WithMany("Bookings")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserEmail")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("AppUser");
                 });

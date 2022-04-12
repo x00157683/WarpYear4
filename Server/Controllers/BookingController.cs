@@ -22,7 +22,7 @@ namespace Server.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public BookingsController(AppDBContext appDBContext, IWebHostEnvironment webHostEnvironment,IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration)
+        public BookingsController(AppDBContext appDBContext, IWebHostEnvironment webHostEnvironment, IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration)
         {
             _appDBContext = appDBContext;
             _webHostEnvironment = webHostEnvironment;
@@ -43,7 +43,7 @@ namespace Server.Controllers
         }
 
 
-   
+
 
         // website.com/api/Bookings/2
         [HttpGet("{id}")]
@@ -59,50 +59,36 @@ namespace Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BookingDTO bookingToCreateDTO)
         {
+            AppUser user = await GetUserById(bookingToCreateDTO.UserEmail);
            
-            try
+            Booking booking = new Booking();//_mapper.Map<Booking>(bookingToCreateDTO);
+            booking.StartTime = DateTime.UtcNow.ToString();
+            booking.AppUser = user;
+            booking.Location = bookingToCreateDTO.Location;
+            booking.Cost = bookingToCreateDTO.Cost;
+
+
+            if (bookingToCreateDTO == null || !ModelState.IsValid)
+                return BadRequest();
+            
+
+            await _appDBContext.Bookings.AddAsync(booking);
+
+
+            bool changesPersistedToDatabase = await PersistChangesToDatabase();
+
+            if (changesPersistedToDatabase == false)
             {
-                if (bookingToCreateDTO == null)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                if (ModelState.IsValid == false)
-                {
-                    return BadRequest(ModelState);
-                }
-                AppUser? user = await _userManager.FindByEmailAsync(bookingToCreateDTO.Email);
-   
-                Booking bookingToCreate = _mapper.Map<Booking>(bookingToCreateDTO);
-
-                bookingToCreate.AppUser = user;
-                bookingToCreate.Id = user.Email;
-
-                await _appDBContext.Bookings.AddAsync(bookingToCreate);
-                Console.WriteLine(bookingToCreate.AppUser + "soooo close");
-
-  
-                bool changesPersistedToDatabase = await PersistChangesToDatabase();
-
-                if (changesPersistedToDatabase == false)
-                {
-                    return StatusCode(500, "Something went wrong broski on our side .");
-                }
-                else
-                {
-                    return Created("Create", bookingToCreate);
-                }
+                return StatusCode(500, "Something went wrong on our side. Please contact the administrator.");
             }
-            catch (Exception e)
+            else
             {
-                return StatusCode(500, $"Something aint quite right son Error message: {e.Message}.");
+                return NoContent();
             }
 
-        
 
         }
 
-     
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] Booking updatedBookingDTO)
@@ -179,8 +165,6 @@ namespace Server.Controllers
 
                 Booking BookingToDelete = await GetBookingByBookingId(id, false);
 
-
-
                 _appDBContext.Bookings.Remove(BookingToDelete);
 
                 bool changesPersistedToDatabase = await PersistChangesToDatabase();
@@ -223,6 +207,18 @@ namespace Server.Controllers
             
 
             return BookingToGet;
+        }
+
+        [NonAction]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private async Task<AppUser> GetUserById(string emailIn)
+        {
+             
+
+            AppUser UserToGet = await _userManager.FindByEmailAsync(emailIn);
+
+
+            return UserToGet;
         }
 
         #endregion

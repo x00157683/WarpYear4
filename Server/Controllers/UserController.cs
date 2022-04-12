@@ -126,13 +126,10 @@ public class UserController : ControllerBase
         return identityUser;
     }
 
-
-
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(string id)
     {
         IdentityUser identityUser = await GetUserByUserId(id);
-
         return Ok(identityUser);
     }
 
