@@ -1,9 +1,13 @@
 ﻿@page "/admin/cars"
 @using System.Net
+@using Client.Components.Public.Shared
+@using Client.Components.Admin
+@using Smart.Blazor
+
 
 <AuthorizeView Roles="Administrator">
 	<Authorized Context="Auth">
-	  <Client.Components.Admin.Nav></Client.Components.Admin.Nav>
+	 
 
 		<html lang="en">
   <head>
@@ -177,32 +181,7 @@
 							}
 						}
 
-						<div class="position-fixed bottom-0 end-5 z-index-5">
 
-							@if (_successfullyDeletedACar == true)
-							{
-								<Toast IsError="false" ToastTitle="Successfully deleted a car."
-								   ToastBody="The car has been removed from the database."
-								   ParentMethodToCallOnClickBtnClose="() => _successfullyDeletedACar = false" />
-							}
-
-							@if (_unsuccessfullyTriedToDeleteACar == true)
-							{
-								<Toast IsError="true" ToastTitle="Delete failed."
-								   ToastBody="@($"The reason is \"{_reasonUnsuccessfullyTriedToDeleteACar}\" Please try again and if the issue persists contact the administrator.")"
-								   ParentMethodToCallOnClickBtnClose="() => _unsuccessfullyTriedToDeleteACar = false" />
-							}
-
-						
-
-							@if (_unsuccessfullyTriedToPublishOrUnpublish == true)
-							{
-								<Toast IsError="true" ToastTitle="Publish or unpublish failed."
-								   ToastBody="Something went wrong when communicating with the server. Please try again and if the issue persists contact the administrator."
-								   ParentMethodToCallOnClickBtnClose="() => _unsuccessfullyTriedToPublishOrUnpublish = false" />
-							}
-
-						</div>
 
 					</div>
 				</div>
@@ -249,13 +228,15 @@
 	public void Dispose() => InMemoryDatabaseCache.OnCarsDataChanged -= StateHasChanged;
 
 	[Inject] HttpClient HttpClient { get; set; }
-	private bool _attemptingToDeleteACar = false;
-	private bool _successfullyDeletedACar = false;
-	private bool _unsuccessfullyTriedToDeleteACar = false;
-	private string _reasonUnsuccessfullyTriedToDeleteACar = null;
+	private bool _attemptingToDeleteACar { get; set; }= false;
+	private bool _successfullyDeletedACar { get; set; }= false;
+	private bool _unsuccessfullyTriedToDeleteACar { get; set; }= false;
+	private string _reasonUnsuccessfullyTriedToDeleteACar { get; set; }= null;
 	private async void DeleteCar(Car carToDelete)
 	{
 		_attemptingToDeleteACar = true;
+
+
 
 		HttpResponseMessage response = await HttpClient.DeleteAsync($"{APIEndpoints.s_cars}/{carToDelete.CarId}");
 
@@ -281,12 +262,15 @@
 		StateHasChanged();
 	}
 
-	private bool _successfullyPublishedOrUnpublished = false;
-	private bool _unsuccessfullyTriedToPublishOrUnpublish = false;
+	private bool _successfullyPublishedOrUnpublished { get; set; }= false;
+	private bool _unsuccessfullyTriedToPublishOrUnpublish { get; set; }= false;
 	private Car _lastPublishedOrUnpublishedCar = null;
 	private async Task PublishOrUnpublishCar(Car carToPublishOrUnpublish)
 	{
 		carToPublishOrUnpublish.Active = !carToPublishOrUnpublish.Active;
+
+
+		
 
 		HttpResponseMessage httpResponseMessage = await HttpClient.PutAsJsonAsync<Car>($"{APIEndpoints.s_cars}/{carToPublishOrUnpublish.CarId}", carToPublishOrUnpublish);
 

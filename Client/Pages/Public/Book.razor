@@ -192,7 +192,7 @@
 
         var user2 = (await AuthenticationState).User;
         AppUser _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
-        _booking.Email = _user.Email;
+        _booking.UserEmail = _user.Email;
 
         HttpResponseMessage response = await HttpClient.PostAsJsonAsync<BookingDTO>(APIEndpoints.s_bookings, _booking);
 

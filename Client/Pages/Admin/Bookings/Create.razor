@@ -4,10 +4,13 @@
 @using Client.Services
 @using System.Net.Http.Json;
 @using global::Shared.Models
+@using Client.Components.Public.Shared
+@using Client.Components.Admin
+
 
 <AuthorizeView Roles="Administrator">
 	<Authorized Context="Auth">
-	  <Client.Components.Admin.Nav></Client.Components.Admin.Nav>
+	 	  <NavB></NavB>
 
 		<html lang="en">
   <head>
@@ -187,10 +190,10 @@
     }
 
     [Inject] HttpClient HttpClient { get; set; }
-    private BookingDTO _bookingToCreate = new BookingDTO() {  };
-    private bool _attemptingToCreate = false;
-    private bool _attemptToCreateFailed = false;
-    private bool _createSuccessful = false;
+    private BookingDTO _bookingToCreate = new BookingDTO();
+    private bool _attemptingToCreate { get; set; }= false;
+    private bool _attemptToCreateFailed { get; set; }= false;
+    private bool _createSuccessful { get; set; }= false;
     private async Task CreateBooking()
     {
         _attemptingToCreate = true;
@@ -215,8 +218,4 @@
 		_attemptingToCreate = false;
 	}
 
-
-	private bool _attemptToUploadFailed = false;
-	private string _reasonImageUploadFailed = null;
-	}
 }

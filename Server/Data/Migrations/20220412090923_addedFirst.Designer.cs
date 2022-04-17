@@ -11,7 +11,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20220411191008_addedFirst")]
+    [Migration("20220412090923_addedFirst")]
     partial class addedFirst
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

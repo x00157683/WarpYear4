@@ -1,9 +1,12 @@
 ﻿@page "/admin/users"
 @using System.Net
+@using Client.Components.Public.Shared
+@using Client.Components.Admin
+@using Smart.Blazor
 
 <AuthorizeView Roles="Administrator">
 	<Authorized Context="Auth">
-	  <Client.Components.Admin.Nav></Client.Components.Admin.Nav>
+	<NavB></NavB>
 
 		<html lang="en">
   <head>
@@ -177,32 +180,7 @@
 							}
 						}
 
-						<div class="position-fixed bottom-0 end-5 z-index-5">
 
-							@if (_successfullyDeletedAUser == true)
-							{
-								<Toast IsError="false" ToastTitle="Successfully deleted a user."
-								   ToastBody="The user has been removed from the database."
-								   ParentMethodToCallOnClickBtnClose="() => _successfullyDeletedAUser = false" />
-							}
-
-							@if (_unsuccessfullyTriedToDeleteAUser == true)
-							{
-								<Toast IsError="true" ToastTitle="Delete failed."
-								   ToastBody="@($"The reason is \"{_reasonUnsuccessfullyTriedToDeleteAUser}\" Please try again and if the issue persists contact the administrator.")"
-								   ParentMethodToCallOnClickBtnClose="() => _unsuccessfullyTriedToDeleteAUser = false" />
-							}
-
-						
-
-							@if (_unsuccessfullyTriedToPublishOrUnpublish == true)
-							{
-								<Toast IsError="true" ToastTitle="Publish or unpublish failed."
-								   ToastBody="Something went wrong when communicating with the server. Please try again and if the issue persists contact the administrator."
-								   ParentMethodToCallOnClickBtnClose="() => _unsuccessfullyTriedToPublishOrUnpublish = false" />
-							}
-
-						</div>
 
 					</div>
 				</div>
@@ -251,41 +229,45 @@
 
 	public void Dispose() => InMemoryDatabaseCache.OnUsersDataChanged -= StateHasChanged;
 
-	[Inject] HttpClient HttpClient { get; set; }
-	private bool _attemptingToDeleteAUser = false;
-	private bool _successfullyDeletedAUser = false;
-	private bool _unsuccessfullyTriedToDeleteAUser = false;
-	private string _reasonUnsuccessfullyTriedToDeleteAUser = null;
+	[Inject] HttpClient ?HttpClient { get; set; }
+	private bool ?_attemptingToDeleteAUser { get; set; } = false;
+	private bool ?_successfullyDeletedAUser { get; set; } = false;
+	private bool ?_unsuccessfullyTriedToDeleteAUser { get; set; } = false;
+	private string ?_reasonUnsuccessfullyTriedToDeleteAUser = null;
 	private async void DeleteUser(AppUser userToDelete)
 	{
 		_attemptingToDeleteAUser = true;
 
-		HttpResponseMessage response = await HttpClient.DeleteAsync($"{APIEndpoints.s_users}/{userToDelete.Email}");
-
-		if (response.StatusCode == HttpStatusCode.NoContent)
+		if(HttpClient !=null)
 		{
-			if (InMemoryDatabaseCache.Users.Remove(userToDelete))
+			HttpResponseMessage response = await HttpClient.DeleteAsync($"{APIEndpoints.s_users}/{userToDelete.Email}");
+
+
+			if (response.StatusCode == HttpStatusCode.NoContent)
 			{
-				_successfullyDeletedAUser = true;
+				if (InMemoryDatabaseCache.Users.Remove(userToDelete))
+				{
+					_successfullyDeletedAUser = true;
+				}
+				else
+				{
+					_reasonUnsuccessfullyTriedToDeleteAUser = "An unexpected error has occurred. Please try again and if the issue persists contact the administrator.";
+					_unsuccessfullyTriedToDeleteAUser = true;
+				}
 			}
 			else
 			{
-				_reasonUnsuccessfullyTriedToDeleteAUser = "An unexpected error has occurred. Please try again and if the issue persists contact the administrator.";
+				_reasonUnsuccessfullyTriedToDeleteAUser = $"The API didn't return an HttpStatusCode.NoContent status code. Instead the API returned the status code {response.StatusCode} and gave the following reason for failure: {response.ReasonPhrase}.";
 				_unsuccessfullyTriedToDeleteAUser = true;
 			}
 		}
-		else
-		{
-			_reasonUnsuccessfullyTriedToDeleteAUser = $"The API didn't return an HttpStatusCode.NoContent status code. Instead the API returned the status code {response.StatusCode} and gave the following reason for failure: {response.ReasonPhrase}.";
-			_unsuccessfullyTriedToDeleteAUser = true;
-		}
+
+
 
 		_attemptingToDeleteAUser = false;
 		StateHasChanged();
 	}
 
-	private bool _successfullyPublishedOrUnpublished = false;
-	private bool _unsuccessfullyTriedToPublishOrUnpublish = false;
-	private User _lastPublishedOrUnpublishedUser = null;
+
 
 }

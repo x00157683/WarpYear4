@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -54,15 +55,17 @@ namespace Server.Controllers
             return Ok(Booking);
         }
 
-
-
+        [AllowAnonymous]
+        [Route("book")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BookingDTO bookingToCreateDTO)
         {
             AppUser user = await GetUserById(bookingToCreateDTO.UserEmail);
-           
+
             Booking booking = new Booking();//_mapper.Map<Booking>(bookingToCreateDTO);
-            booking.StartTime = DateTime.UtcNow.ToString();
+
+            booking.StartTime = bookingToCreateDTO.StartTime.ToString();
+            booking.StopTime = bookingToCreateDTO.StopTime.ToString();
             booking.AppUser = user;
             booking.Location = bookingToCreateDTO.Location;
             booking.Cost = bookingToCreateDTO.Cost;

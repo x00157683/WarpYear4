@@ -1,9 +1,12 @@
 ﻿@page "/admin/booking"
 @using System.Net
 
+@using Client.Components.Admin
+@using Client.Components.Public.Shared
+
 <AuthorizeView Roles="Administrator">
 	<Authorized Context="Auth">
-	  <Client.Components.Admin.Nav></Client.Components.Admin.Nav>
+	  <NavB></NavB>
 
 		<html lang="en">
   <head>
@@ -177,32 +180,7 @@
 							}
 						}
 
-						<div class="position-fixed bottom-0 end-5 z-index-5">
-
-							@if (_successfullyDeletedABooking == true)
-							{
-								<Toast IsError="false" ToastTitle="Successfully deleted a booking."
-								   ToastBody="The booking has been removed from the database."
-								   ParentMethodToCallOnClickBtnClose="() => _successfullyDeletedABooking = false" />
-							}
-
-							@if (_unsuccessfullyTriedToDeleteABooking == true)
-							{
-								<Toast IsError="true" ToastTitle="Delete failed."
-								   ToastBody="@($"The reason is \"{_reasonUnsuccessfullyTriedToDeleteABooking}\" Please try again and if the issue persists contact the administrator.")"
-								   ParentMethodToCallOnClickBtnClose="() => _unsuccessfullyTriedToDeleteABooking = false" />
-							}
-
-						
-
-							@if (_unsuccessfullyTriedToPublishOrUnpublish == true)
-							{
-								<Toast IsError="true" ToastTitle="Publish or unpublish failed."
-								   ToastBody="Something went wrong when communicating with the server. Please try again and if the issue persists contact the administrator."
-								   ParentMethodToCallOnClickBtnClose="() => _unsuccessfullyTriedToPublishOrUnpublish = false" />
-							}
-
-						</div>
+		
 
 					</div>
 				</div>
@@ -231,7 +209,7 @@
 		
 	</Authorized>
 	<NotAuthorized>
-		<Client.Components.Admin.SignIn />
+		<SignIn />
 	</NotAuthorized>
 </AuthorizeView>
 
@@ -252,10 +230,10 @@
 	public void Dispose() => InMemoryDatabaseCache.OnBookingsDataChanged -= StateHasChanged;
 
 	[Inject] HttpClient HttpClient { get; set; }
-	private bool _attemptingToDeleteABooking = false;
-	private bool _successfullyDeletedABooking = false;
-	private bool _unsuccessfullyTriedToDeleteABooking = false;
-	private string _reasonUnsuccessfullyTriedToDeleteABooking = null;
+	private bool ?_attemptingToDeleteABooking { get; set; }= false;
+	private bool ?_successfullyDeletedABooking{ get; set; } = false;
+	private bool ?_unsuccessfullyTriedToDeleteABooking { get; set; }= false;
+	private string ?_reasonUnsuccessfullyTriedToDeleteABooking { get; set; }= null;
 	private async void DeleteBooking(Booking bookingToDelete)
 	{
 		_attemptingToDeleteABooking = true;
@@ -284,14 +262,14 @@
 		StateHasChanged();
 	}
 
-	private bool _successfullyPublishedOrUnpublished = false;
-	private bool _unsuccessfullyTriedToPublishOrUnpublish = false;
-	private Booking _lastPublishedOrUnpublishedBooking = null;
+	private bool _successfullyPublishedOrUnpublished { get; set; }= false;
+	private bool _unsuccessfullyTriedToPublishOrUnpublish { get; set; }= false;
+	private Booking _lastPublishedOrUnpublishedBooking { get; set; }= null;
 	private async Task PublishOrUnpublishBooking(Booking bookingToPublishOrUnpublish)
 	{
 		bookingToPublishOrUnpublish.IsCreated = !bookingToPublishOrUnpublish.IsCreated;
 
-		HttpResponseMessage httpResponseMessage = await HttpClient.PutAsJsonAsync<Booking>($"{APIEndpoints.s_bookings}/{bookingToPublishOrUnpublish.BookingId}", bookingToPublishOrUnpublish);
+		HttpResponseMessage? httpResponseMessage = await HttpClient.PutAsJsonAsync<Booking>($"{APIEndpoints.s_bookings}/{bookingToPublishOrUnpublish.BookingId}", bookingToPublishOrUnpublish);
 
 		if (httpResponseMessage.StatusCode == HttpStatusCode.Created)
 		{

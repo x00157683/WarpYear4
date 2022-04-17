@@ -12,11 +12,12 @@
 
 
 		<!DOCTYPE html>
-<html lang="en">
+<html>
 
 
     <AuthorizeView Roles="Administrator">
 	<Authorized Context="Auth">
+          <Nav></Nav>
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -170,7 +171,7 @@
 </AuthorizeView>
 
 	<NotAuthorized>
-		<Client.Components.Admin.SignIn />
+		<SignIn />
 	</NotAuthorized>
 
 </html>
@@ -178,25 +179,16 @@
 
 @code
 {
-    [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
-    [Inject] HttpClient HttpClient { get; set; }
-    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-    [Inject] ILocalStorageService LocalStorageService { get; set; }
-    [Inject] NavigationManager NavigationManager { get; set; }
-
-    List<Car> _cars;
-    List<Category> _categories;
-    List<Booking> _bookings;
-    List<AppUser> _users;
-
-    int temp;
-    int temp1;
-    int temp2;
-    int temp3;
-    private bool _signInAttemptFailed = false;
-    private bool _signInSuccessful = false;
+    [Inject] InMemoryDatabaseCache ?InMemoryDatabaseCache { get; set; }
+    [Inject] HttpClient ?HttpClient { get; set; }
+    [Inject] AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    [Inject] ILocalStorageService ?LocalStorageService { get; set; }
+    [Inject] NavigationManager ?NavigationManager { get; set; }
 
 
+    int ?temp1;
+    int ?temp2;
+    int ?temp3;
 
     protected override async Task OnInitializedAsync()
     {
@@ -231,8 +223,7 @@
         if (InMemoryDatabaseCache.Cars == null)
         {
 
-
-            Console.WriteLine("In 2 "+InMemoryDatabaseCache.Cars.Count+" "+temp1);
+            temp1 = InMemoryDatabaseCache.Cars.Count;
 
         }
         if (InMemoryDatabaseCache.Bookings == null)

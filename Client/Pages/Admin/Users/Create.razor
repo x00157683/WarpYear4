@@ -4,11 +4,16 @@
 @using Client.Services
 @using System.Net.Http.Json;
 @using global::Shared.Models
+@using Client.Components.Public.Shared
+@using Client.Components.Admin
+@using Smart.Blazor
 
 <AuthorizeView Roles="Administrator">
 	<Authorized Context="Auth">
+		<NavB></NavB>
 		<main class="admin-area-main">
-			<Client.Components.Admin.Sidebar />
+				  
+			<SideBarAdmin />
 
 			<div class="admin-area-content container-fluid bg-white">
 				<div class="row g-0">
@@ -100,8 +105,9 @@
 @code
 {
 	[Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
-	[Inject] IJSRuntime JSRuntime { get; set; }
-	private ElementReference _quillJSEditorDiv;
+	[Inject] IJSRuntime ?JSRuntime { get; set; }
+	
+
 	protected async override Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
@@ -112,27 +118,29 @@
 				StateHasChanged();
 			}
 
-			await JSRuntime.InvokeVoidAsync("QuillFunctions.createQuill", _quillJSEditorDiv, true);
+		
 		}
 	}
 
-	[Inject] HttpClient HttpClient { get; set; }
+	[Inject] HttpClient ?HttpClient { get; set; }
 	private CarDTO _carToCreate = new CarDTO() {  };
-	private bool _attemptingToCreate = false;
-	private bool _attemptToCreateFailed = false;
-	private bool _createSuccessful = false;
+	private bool _attemptingToCreate{ get; set; } = false;
+	private bool _attemptToCreateFailed{ get; set; } = false;
+	private bool _createSuccessful { get; set; }= false;
 	private async Task CreateCar()
 	{
 		_attemptingToCreate = true;
 
+		if(HttpClient != null)
+		{
 
-		HttpResponseMessage response = await HttpClient.PostAsJsonAsync<CarDTO>(APIEndpoints.s_cars, _carToCreate);
+			HttpResponseMessage response = await HttpClient.PostAsJsonAsync<CarDTO>(APIEndpoints.s_cars, _carToCreate);
 
 		
 
 		if (response.StatusCode == HttpStatusCode.Created)
 		{
-			Car addedCar = await response.Content.ReadFromJsonAsync<Car>();
+			Car ?addedCar = await response.Content.ReadFromJsonAsync<Car>();
 		
 			InMemoryDatabaseCache.Cars.Add(addedCar);
 
@@ -142,12 +150,15 @@
 		{
 			_attemptToCreateFailed = true;
 		}
+			
+		}
+
+		
 
 		_attemptingToCreate = false;
 	}
 
 	//@page "/admin/cars/create"
-	private bool _attemptToUploadFailed = false;
-	private string _reasonImageUploadFailed = null;
+	//private bool _attemptToUploadFailed = false;
+	//private string _reasonImageUploadFailed = null;
 	}
-}

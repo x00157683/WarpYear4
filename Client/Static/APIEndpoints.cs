@@ -21,6 +21,7 @@
         internal readonly static string s_carsDTO = $"{SererBaseUrl}/api/cars/dto";
         internal readonly static string s_signIn = $"{SererBaseUrl}/api/signin";
         internal readonly static string s_userRegister = $"{SererBaseUrl}/api/user/register";
+        internal static readonly string s_book = $"{SererBaseUrl}/api/bookings/book";
         internal readonly static string s_users = $"{SererBaseUrl}/api/user/";
         internal readonly static string s_userupdate = $"{SererBaseUrl}/api/user/update";
     }

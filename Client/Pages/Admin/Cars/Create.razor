@@ -4,10 +4,13 @@
 @using Client.Services
 @using System.Net.Http.Json;
 @using global::Shared.Models
+@using Client.Components.Public.Shared
+@using Client.Components.Admin
+
 
 <AuthorizeView Roles="Administrator">
 	<Authorized Context="Auth">
-	  <Client.Components.Admin.Nav></Client.Components.Admin.Nav>
+	  <NavB></NavB>
 
 		<html lang="en">
   <head>
@@ -204,15 +207,14 @@
 		
 	</Authorized>
 	<NotAuthorized>
-		<Client.Components.Admin.SignIn />
+		<SignIn />
 	</NotAuthorized>
 </AuthorizeView>
 
 @code
 {
 	[Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
-	[Inject] IJSRuntime JSRuntime { get; set; }
-	private ElementReference _quillJSEditorDiv;
+
 	protected async override Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
@@ -229,9 +231,9 @@
 
 	[Inject] HttpClient HttpClient { get; set; }
 	private CarDTO _carToCreate = new CarDTO() {  };
-	private bool _attemptingToCreate = false;
-	private bool _attemptToCreateFailed = false;
-	private bool _createSuccessful = false;
+	private bool _attemptingToCreate { get; set; }= false;
+	private bool _attemptToCreateFailed { get; set; }= false;
+	private bool _createSuccessful { get; set; }= false;
 	private async Task CreateCar()
 	{
 		_attemptingToCreate = true;
@@ -243,7 +245,7 @@
 
 		if (response.StatusCode == HttpStatusCode.Created)
 		{
-			Car addedCar = await response.Content.ReadFromJsonAsync<Car>();
+			Car ?addedCar = await response.Content.ReadFromJsonAsync<Car>();
 			addedCar.Category = await InMemoryDatabaseCache.GetCategoryByCategoryId(addedCar.CategoryId, false);
 			InMemoryDatabaseCache.Cars.Add(addedCar);
 
@@ -257,8 +259,5 @@
 		_attemptingToCreate = false;
 	}
 
-	
-	private bool _attemptToUploadFailed = false;
-	private string _reasonImageUploadFailed = null;
-	}
+
 }

@@ -7,6 +7,7 @@
 @using Client.Providers
 @using Client.Services
 @using Newtonsoft.Json
+@using System.Net
 @using global::Shared.Models
 @using System.Net.Http.Headers
 using System.Collections.Generic;
@@ -89,8 +90,8 @@ using System.Net.Http;
                                                 <InputDate @bind-Value="_booking.StartTime" id="first" @bind-Value:format="dd/MM/yyyy" class="form-control" placeholder= />
                                                 <ValidationMessage For="@(() => _booking.StartTime)" />
 
-                                                <label for="first">End Date</label>
-                                                <InputDate @bind-Value="_booking.StopTime" id="first" @bind-Value:format="dd/MM/yyyy" class="form-control" />
+                                                <label for="end">End Date</label>
+                                                <InputDate @bind-Value="_booking.StopTime" id="end" @bind-Value:format="dd/MM/yyyy" class="form-control" />
                                                 <ValidationMessage For="@(() => _booking.StopTime)" />
 
 
@@ -138,7 +139,7 @@ using System.Net.Http;
 
 @code {
 
-    [Inject] HttpClient? HttpClient { get; set; }
+    [Inject] HttpClient HttpClient { get; set; }
     [Inject] ILocalStorageService? LocalStorageService { get; set; }
     [Inject] NavigationManager? NavigationManager { get; set; }
     [Inject] InMemoryDatabaseCache? InMemoryDatabaseCache { get; set; }
@@ -152,14 +153,17 @@ using System.Net.Http;
     List<AppUser>? _users = null;
     AppUser ?_user = null;
 
-    private bool _attemptingToRegister = false;
-    private string? _attemptToRegisterFailed = "";
-    private bool _registerSuccessful = false;
-    private bool _registerFailed = false;
+    private bool _attemptingToCreate { get; set; }= false;
+    private bool _attemptToCreateFailed { get; set; }= false;
+    private bool _createSuccessful { get; set; }= false;
     private BookingDTO _booking = new BookingDTO() { };
     Car? ThisCar = null;
     public DateTime? StartValue { get; set; } = DateTime.Now;
     public DateTime? EndValue { get; set; } = DateTime.Now.AddDays(10);
+    private bool _attemptingToRegister = false;
+    private string? _attemptToRegisterFailed = "";
+    private bool _registerSuccessful = false;
+    private bool _registerFailed = false;
 
 
 
@@ -209,22 +213,40 @@ using System.Net.Http;
 
     }
 
-    private async Task CreateBooking()
-    {
+    private async Task<AppUser> GetUser(){
 
         var user2 = (await AuthenticationState).User;
 
-        _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
+        AppUser _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
+
+        Console.WriteLine("Userr is: "+_user.LastName);
+
+        return _user;
+    }
+
+    private async Task CreateBooking()
+    {
+
+        AppUser _user = await GetUser();
+
+        Console.WriteLine("Userr 2222: "+_user.LastName);
 
         _booking.UserEmail = _user.Email;
 
         _booking.Cost = 100;
 
-        HttpResponseMessage response = await HttpClient.PostAsJsonAsync<BookingDTO>(APIEndpoints.s_bookings, _booking);
+        _booking.Location = "Dublin";
 
-        if (response.IsSuccessStatusCode)
+        _attemptingToCreate = true;
+
+         //_bookingToCreate.StartTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync<BookingDTO>(APIEndpoints.s_book, _booking);
+
+
+    if (response.IsSuccessStatusCode)
         {
             _registerSuccessful = true;
+            NavigationManager.NavigateTo("/signin");
         }
         else
         {
@@ -234,7 +256,7 @@ using System.Net.Http;
 
         }
 
-        _attemptingToRegister = false;
+		_attemptingToCreate = false;
     }
 
 

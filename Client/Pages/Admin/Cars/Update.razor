@@ -1,12 +1,14 @@
 ﻿@page "/admin/cars/update/{CarId:int}"
 @using System.Net;
+@using Client.Components.Public.Shared
+@using Client.Components.Admin
 
 
 
 <AuthorizeView Roles="Administrator">
 	<Authorized Context="Auth">
 		<main class="admin-area-main">
-			<Client.Components.Admin.Sidebar />
+			<SideBarAdmin></SideBarAdmin>
 
 			<div class="admin-area-content container-fluid bg-white">
 				<div class="row g-0">
@@ -92,23 +94,6 @@
 							</EditForm>
 						}
 
-						<div class="position-fized bottom-0 end-5 z-index-5">
-
-							@if (_updateSuccessful == true)
-							{
-								<Toast IsError="false" ToastTitle="Update successful"
-								   ToastBody="Your changes have been saved to the database."
-								   ParentMethodToCallOnClickBtnClose="() => _updateSuccessful = false" />
-							}
-
-							@if (_attemptToUpdateFailed == true)
-							{
-								<Toast IsError="true" ToastTitle="Update failed"
-								   ToastBody="Update failed. Please try again and if the issue persists contact the administrator."
-								   ParentMethodToCallOnClickBtnClose="() => _attemptToUpdateFailed = false" />
-							}
-
-						</div>
 
 					</div>
 				</div>
@@ -116,18 +101,17 @@
 		</main>
 	</Authorized>
 	<NotAuthorized>
-		<Client.Components.Admin.SignIn />
+		<SignIn />
 	</NotAuthorized>
 </AuthorizeView>
 
 @code
 {
 	[Parameter] public int CarId { get; set; }
-
-	[Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
-	[Inject] IJSRuntime JSRuntime { get; set; }
-	private CarDTO _carToUpdate = null;
-	private ElementReference _quillJSEditorDiv;
+	[Inject] InMemoryDatabaseCache ?InMemoryDatabaseCache { get; set; }
+	[Inject] IJSRuntime ?JSRuntime { get; set; }
+	private CarDTO ?_carToUpdate = null;
+	
 	protected async override Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
@@ -140,30 +124,26 @@
 			}
 
 			StateHasChanged();
-
-		
-
-			
 		}
 	}
 
 	[Inject] HttpClient HttpClient { get; set; }
-	private bool _attemptingToUpdate = false;
-	private bool _attemptToUpdateFailed = false;
-	private bool _updateSuccessful = false;
+	private bool _attemptingToUpdate { get; set; }= false;
+	private bool _attemptToUpdateFailed { get; set; }= false;
+	private bool _updateSuccessful { get; set; }= false;
 	private async Task UpdateCar()
 	{
 		_attemptingToUpdate = true;
 
-
-
-		HttpResponseMessage response = await HttpClient.PutAsJsonAsync<CarDTO>($"{APIEndpoints.s_cars}/{_carToUpdate.CarDTOId}", _carToUpdate);
+		if(HttpClient!=null)
+		{
+			HttpResponseMessage response = await HttpClient.PutAsJsonAsync<CarDTO>($"{APIEndpoints.s_cars}/{_carToUpdate.CarDTOId}", _carToUpdate);
 
 		if (response.StatusCode == HttpStatusCode.Created)
 		{
-			Car updatedCar = await response.Content.ReadFromJsonAsync<Car>();
+			Car ?updatedCar = await response.Content.ReadFromJsonAsync<Car>();
 
-			Car unupdatedCarInList = await InMemoryDatabaseCache.GetCarByCarId(updatedCar.CarId);
+			Car ?unupdatedCarInList = await InMemoryDatabaseCache.GetCarByCarId(updatedCar.CarId);
 
 			updatedCar.Category = await InMemoryDatabaseCache.GetCategoryByCategoryId(updatedCar.CategoryId, false);
 
@@ -178,13 +158,14 @@
 		{
 			_attemptToUpdateFailed = true;
 		}
+		
+		
+		}
+
+		
 
 		_attemptingToUpdate = false;
 	}
 
-	private bool _attemptingToUploadImage = false;
-	private bool _attemptToUploadFailed = false;
-	private string _reasonImageUploadFailed = null;
-	
 	
 }
