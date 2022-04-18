@@ -31,12 +31,12 @@ namespace Server.Data.Migrations
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     PhoneNumber = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -181,31 +181,6 @@ namespace Server.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bookings",
-                columns: table => new
-                {
-                    BookingId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    StartTime = table.Column<string>(type: "TEXT", nullable: false),
-                    StopTime = table.Column<string>(type: "TEXT", nullable: true),
-                    Location = table.Column<string>(type: "TEXT", nullable: false),
-                    Cost = table.Column<double>(type: "REAL", nullable: false),
-                    IsCreated = table.Column<bool>(type: "INTEGER", nullable: false),
-                    IsComplete = table.Column<bool>(type: "INTEGER", nullable: false),
-                    UserEmail = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bookings", x => x.BookingId);
-                    table.ForeignKey(
-                        name: "FK_Bookings_AspNetUsers_UserEmail",
-                        column: x => x.UserEmail,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Cars",
                 columns: table => new
                 {
@@ -228,6 +203,37 @@ namespace Server.Data.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bookings",
+                columns: table => new
+                {
+                    BookingId = table.Column<string>(type: "TEXT", nullable: false),
+                    StartTime = table.Column<string>(type: "TEXT", nullable: false),
+                    StopTime = table.Column<string>(type: "TEXT", nullable: true),
+                    Location = table.Column<string>(type: "TEXT", nullable: false),
+                    Cost = table.Column<double>(type: "REAL", nullable: false),
+                    IsCreated = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsComplete = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CarId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserEmail = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bookings", x => x.BookingId);
+                    table.ForeignKey(
+                        name: "FK_Bookings_AspNetUsers_UserEmail",
+                        column: x => x.UserEmail,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bookings_Cars_CarId",
+                        column: x => x.CarId,
+                        principalTable: "Cars",
+                        principalColumn: "CarId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -314,6 +320,11 @@ namespace Server.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bookings_CarId",
+                table: "Bookings",
+                column: "CarId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bookings_UserEmail",
                 table: "Bookings",
                 column: "UserEmail");
@@ -345,9 +356,6 @@ namespace Server.Data.Migrations
                 name: "Bookings");
 
             migrationBuilder.DropTable(
-                name: "Cars");
-
-            migrationBuilder.DropTable(
                 name: "Licenses");
 
             migrationBuilder.DropTable(
@@ -355,6 +363,9 @@ namespace Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Cars");
 
             migrationBuilder.DropTable(
                 name: "Categories");

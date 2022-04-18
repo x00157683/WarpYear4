@@ -1,4 +1,4 @@
-﻿@page "/bookcar/{Id:int}"
+﻿@page "/bookcomplete/{Id}"
 @inject HttpClient Http
 @implements IDisposable
 @using Blazored.LocalStorage
@@ -64,12 +64,14 @@ using System.Net.Http;
 
                 <div class="row gx-5">
 
-                    @if (_cars != null)
+                    @if (_bookings != null)
                     {
-                        foreach (var x in _cars)
-                        {
 
-                            if (x.CarId == Id)
+                       
+                        foreach (var x in _bookings)
+                        {
+                    
+                            if (x.BookingId == Id)
                             {
                                 <div class="col-4">
                                 </div>
@@ -78,32 +80,15 @@ using System.Net.Http;
 
                                         <div class="card-body">
 
-                                            <h3 class="card-title">Make: @x.Make</h3>
-                                            <p class="card-text">Model: @x.Model</p>
-                                            <p class="card-text">Tier: @x.Category.Name</p>
-                                            <p class="card-text">Range: @x.Range Km</p>
-                                            <p class="card-text">Price: $@x.PricePerUnit</p>
-                                                   <EditForm Model="_booking" OnValidSubmit="CreateBooking">
-                                            <DataAnnotationsValidator />
-                                            <div class="form-group my-3 mx-2 ">
-                                                <label for="first">Start Date</label>
-                                                <InputDate @bind-Value="_booking.StartTime" id="first" @bind-Value:format="dd/MM/yyyy" class="form-control" placeholder= />
-                                                <ValidationMessage For="@(() => _booking.StartTime)" />
+                                            <h3 class="card-title">Make: @x.StartTime</h3>
+                                            <p class="card-text">Model: @x.Cost</p>
+                                    
+                                                  
 
-                                                <label for="end">End Date</label>
-                                                <InputDate @bind-Value="_booking.StopTime" id="end" @bind-Value:format="dd/MM/yyyy" class="form-control" />
-                                                <ValidationMessage For="@(() => _booking.StopTime)" />
-
-
-                                            </div>
-
-                                            <ValidationSummary />
-
-                                            <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
-                                                <i class="far fa-save"></i> Book
+                                            <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5">
+                                                <i class="far fa-save"></i> End Booking
                                             </button>
 
-                                        </EditForm>
                                         </div>
                                  
 
@@ -145,27 +130,16 @@ using System.Net.Http;
     [Inject] InMemoryDatabaseCache? InMemoryDatabaseCache { get; set; }
     [Inject] AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
 
-    [Parameter] public int Id { get; set; }
+    [Parameter] public string Id { get; set; }
     [CascadingParameter] protected Task<AuthenticationState>? AuthenticationState { get; set; }
 
 
     List<Car>? _cars = null;
     List<AppUser>? _users = null;
+    List<Booking>? _bookings = null;
     AppUser ?_user = null;
 
-    private bool _attemptingToCreate { get; set; }= false;
-    private bool _attemptToCreateFailed { get; set; }= false;
-    private bool _createSuccessful { get; set; }= false;
-    private BookingDTO _booking = new BookingDTO() { };
-    Car? ThisCar = null;
-    public DateTime? StartValue { get; set; } = DateTime.Now;
-    public DateTime? EndValue { get; set; } = DateTime.Now.AddDays(10);
-    private bool _attemptingToRegister = false;
-    private string? _attemptToRegisterFailed = "";
-    private bool _registerSuccessful = false;
-    private bool _registerFailed = false;
-
-
+    Booking? ThisCar = null;
 
     private static readonly HttpClient client = new HttpClient();
 
@@ -175,21 +149,22 @@ using System.Net.Http;
     {
         _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
 
+        _bookings = await HttpClient.GetFromJsonAsync<List<Booking>>(APIEndpoints.s_bookings);
+
+
         HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
 
 
         _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
 
 
-        foreach (var i in _cars)
+        foreach (var i in _bookings)
         {
-            if (i.CarId == Id)
+            if (i.BookingId == Id)
             {
                 ThisCar = i;
             }
         }
-
-
 
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
         {
@@ -219,45 +194,13 @@ using System.Net.Http;
 
         AppUser _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
 
-        Console.WriteLine("Userr is: "+_user.LastName);
-
         return _user;
     }
 
-    private async Task CreateBooking()
-    {
-
-        AppUser _user = await GetUser();
-
-        Console.WriteLine("Userr 2222: "+_user.LastName);
-
-        _booking.UserEmail = _user.Email;
-
-        _booking.Cost = 100;
-
-        _booking.Location = "Dublin";
-
-        _attemptingToCreate = true;
-
-         //_bookingToCreate.StartTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
-        HttpResponseMessage response = await HttpClient.PostAsJsonAsync<BookingDTO>(APIEndpoints.s_book, _booking);
+   
 
 
-    if (response.IsSuccessStatusCode)
-        {
-            _registerSuccessful = true;
-            NavigationManager.NavigateTo("/signin");
-        }
-        else
-        {
-            string serverError = await response.Content.ReadAsStringAsync();
-            _attemptToRegisterFailed = $"{serverError} The following error has occured";
-            _registerFailed = true;
-
-        }
-
-		_attemptingToCreate = false;
-    }
+   
 
 
     public void Dispose()

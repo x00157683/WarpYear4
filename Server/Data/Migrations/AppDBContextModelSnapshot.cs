@@ -206,8 +206,10 @@ namespace Server.Data.Migrations
 
             modelBuilder.Entity("Shared.Models.Booking", b =>
                 {
-                    b.Property<int>("BookingId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("BookingId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CarId")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("Cost")
@@ -234,6 +236,8 @@ namespace Server.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("BookingId");
+
+                    b.HasIndex("CarId");
 
                     b.HasIndex("UserEmail");
 
@@ -477,12 +481,20 @@ namespace Server.Data.Migrations
 
             modelBuilder.Entity("Shared.Models.Booking", b =>
                 {
+                    b.HasOne("Shared.Models.Car", "Car")
+                        .WithMany()
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Shared.Models.AppUser", "AppUser")
                         .WithMany("Bookings")
                         .HasForeignKey("UserEmail")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("AppUser");
+
+                    b.Navigation("Car");
                 });
 
             modelBuilder.Entity("Shared.Models.Car", b =>

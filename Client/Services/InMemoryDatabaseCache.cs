@@ -209,7 +209,7 @@ namespace Client.Services
             }
         }
 
-        internal async Task<Booking> GetBookingByBookingId(int bookingId)
+        internal async Task<Booking> GetBookingByBookingId(string bookingId)
         {
             if (_bookings == null)
             {

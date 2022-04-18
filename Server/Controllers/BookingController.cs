@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Shared.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -48,7 +49,7 @@ namespace Server.Controllers
 
         // website.com/api/Bookings/2
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
             Booking Booking = await GetBookingByBookingId(id, false);
 
@@ -62,13 +63,20 @@ namespace Server.Controllers
         {
             AppUser user = await GetUserById(bookingToCreateDTO.UserEmail);
 
-            Booking booking = new Booking();//_mapper.Map<Booking>(bookingToCreateDTO);
+            Car car = await GetCarbyId(bookingToCreateDTO.CarId);
 
+            Console.WriteLine("carr: "+car.Make);
+
+            Booking booking = _mapper.Map<Booking>(bookingToCreateDTO); // new Booking();//
+
+            booking.BookingId = bookingToCreateDTO.BookingDTOId;
             booking.StartTime = bookingToCreateDTO.StartTime.ToString();
             booking.StopTime = bookingToCreateDTO.StopTime.ToString();
             booking.AppUser = user;
             booking.Location = bookingToCreateDTO.Location;
             booking.Cost = bookingToCreateDTO.Cost;
+            booking.CarId = bookingToCreateDTO.CarId;
+            booking.Car = car;
 
 
             if (bookingToCreateDTO == null || !ModelState.IsValid)
@@ -94,11 +102,11 @@ namespace Server.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Booking updatedBookingDTO)
+        public async Task<IActionResult> Update(string id, [FromBody] Booking updatedBookingDTO)
         {
             try
             {
-                if (id < 1 || updatedBookingDTO == null || id != updatedBookingDTO.BookingId)
+                if ( updatedBookingDTO == null || id != updatedBookingDTO.BookingId)
                 {
                     return BadRequest(ModelState);
                 }
@@ -145,11 +153,11 @@ namespace Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             try
             {
-                if (id < 1)
+                if (id == null)
                 {
                     return BadRequest(ModelState);
                 }
@@ -202,11 +210,13 @@ namespace Server.Controllers
 
         [NonAction]
         [ApiExplorerSettings(IgnoreApi = true)]
-        private async Task<Booking> GetBookingByBookingId(int BookingId, bool withCars)
+        private async Task<Booking> GetBookingByBookingId(string Id, bool withCars)
         {
-            Booking BookingToGet = null;
+            //Booking BookingToGet = null;
 
-            BookingToGet = await _appDBContext.Bookings.FirstAsync(Booking => Booking.BookingId == BookingId);
+            Booking BookingToGet = await _appDBContext.Bookings.Where(Booking => Booking.BookingId.ToLower() == Id.ToLower()).FirstOrDefaultAsync();
+
+
             
 
             return BookingToGet;
@@ -222,6 +232,19 @@ namespace Server.Controllers
 
 
             return UserToGet;
+        }
+
+        [NonAction]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private async Task<Car> GetCarbyId(int carId)
+        {
+
+
+            Car carToGet = await _appDBContext.Cars
+                .Include(car => car.Category)
+                .FirstAsync(car => car.CarId == carId);
+
+            return carToGet;
         }
 
         #endregion

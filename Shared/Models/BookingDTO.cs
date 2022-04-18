@@ -11,7 +11,7 @@ namespace Shared.Models
     {
 
         [Key]
-        public int BookingDTOId { get; set; } //test
+        public string BookingDTOId { get; set; } //test
        
         public DateTime StartTime { get; set; }
 
@@ -26,7 +26,7 @@ namespace Shared.Models
         public bool IsComplete { get; set; }
 
 
-        //public int CarId { get; set; }
+        public int CarId { get; set; }
 
         //public Car Car { get; set; }
 
