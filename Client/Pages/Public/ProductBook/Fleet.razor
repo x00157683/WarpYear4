@@ -53,11 +53,13 @@
                 <div class="row gx-5 justify-content-center">
                     <div class="col-lg-8 col-xl-6">
                         <div class="text-center">
-                            <h2 class="fw-bolder">From our Fleet</h2>
-                            <p class="lead fw-normal text-muted mb-5">
-                                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                                Eaque fugit ratione dicta mollitia. Officiis ad.
-                            </p>
+                            <h2 class="fw-bolder">From our Feet</h2>
+                      <NotAuthorizeView>
+                          <div class="px-2">
+                          <a href="/register" class="my-3 btn btn-primary stretched-link">Sign Up</a>
+                          <br />
+                          </div>
+                          </NotAuthorizeView>
                         </div>
                     </div>
                 </div>
@@ -74,14 +76,15 @@
                                     <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />
                                     <div class="card-body">
 
-                                        <h3 class="card-title">@x.Make</h3>
-                                        <p class="card-text">@x.Model</p>
-                                        <p class="card-text">@x.Range</p>
-                                        <p class="card-text">@x.PricePerUnit</p>
+                                        <h3 class="card-title"> @x.Make @x.Model</h3>
+                                        <p class="card-text"></p>
+                                        <p class="card-text">Range: @x.Range</p>
+                                        <p class="card-text">Hour $@x.PricePerUnit</p>
+                                        <p class="card-text">Day $80</p>
 
                                         
                                           <Rating Color="Color.Primary" @bind-SelectedValue="@x.OverallRating" MaxValue="5" />
-                                    <p>input: @SelectedValue</p>
+                                    <p> @x.OverallRating</p>
                                     </div>
                                     <AuthorizeView>
                                         <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Book</a>
@@ -89,6 +92,7 @@
                                
                                 </div>
                             </div>
+                            <br />
                         }
                     }
                 </div>
@@ -117,32 +121,23 @@
 
 @code {
 
-    [Inject] HttpClient? HttpClient { get; set; }
-    [Inject] ILocalStorageService? LocalStorageService { get; set; }
-    [Inject] NavigationManager? NavigationManager { get; set; }
-    [Inject] InMemoryDatabaseCache? InMemoryDatabaseCache { get; set; }
-    [Inject] AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
-    [Parameter] public Category? Category { get; set; }
-    [Parameter] public Car? Cars { get; set; }
-    [Parameter] public Booking? Bookings { get; set; }
-    [CascadingParameter] protected Task<AuthenticationState>? AuthenticationState { get; set; }
+    [Inject] HttpClient HttpClient { get; set; }
+    [Inject] ILocalStorageService LocalStorageService { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
+    [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    [Parameter] public Car Cars { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
 
 
-    List<Car>? _cars = null;
-    List<Category>? _categories = null;
-    List<Booking>? _bookings = null;
+    List<Car> _cars = new List<Car>();
 
     int SelectedValue { get; set; } 
 
     private static readonly HttpClient client = new HttpClient();
 
-
-
     protected override async Task OnInitializedAsync()
     {
-
-
-
 
         HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
 
@@ -161,15 +156,6 @@
             StateHasChanged();
         }
 
-        var user = (await AuthenticationState).User;
-
-        if (user.Identity.IsAuthenticated == true)
-        {
-            Console.WriteLine(user.ToString());
-
-            Console.WriteLine(user.Identity.Name);
-        }
-
     }
 
     public int GetRating(int id){
@@ -184,9 +170,6 @@
         InMemoryDatabaseCache.OnCategoriesDataChanged -= StateHasChanged;
 
     }
-
-
-
 
 
 }

@@ -64,40 +64,13 @@ using System.Net.Http;
 
                 <div class="row gx-5">
 
-                    @if (_bookings != null)
-                    {
+                    <h2>Car is now available to unlock</h2>
 
-                       
-                        foreach (var x in _bookings)
-                        {
-                    
-                            if (x.BookingId == Id)
-                            {
-                                <div class="col-4">
-                                </div>
-                                <div class="col-4">
-                                    <div class="card shadow mb-2">
+                    <p>Keys will be inside the passenger glove box</p>
 
-                                        <div class="card-body">
 
-                                            <h3 class="card-title">Make: @x.StartTime</h3>
-                                            <p class="card-text">Model: @x.Cost</p>
-                                    
-                                                  
 
-                                            <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5">
-                                                <i class="far fa-save"></i> End Booking
-                                            </button>
-
-                                        </div>
-                                 
-
-                                    </div>
-                                </div>
-                            }
-
-                        }
-                    }
+               
                 </div>
             </div>
             <!-- Call to action-->

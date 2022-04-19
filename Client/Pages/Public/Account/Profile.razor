@@ -39,13 +39,7 @@
 
     <!--The div element for the map -->
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-
-    <main class="flex-shrink-0">
-
-        <div id="map"></div>
-
-        <div class="container px-5 my-2">
-            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 <ul class="nav">
                     <li class="nav-item nav-profile">
                         <a href="#" class="nav-link">
@@ -91,8 +85,14 @@
 
                 </ul>
             </nav>
+    <main class="flex-shrink-0">
+
+        <div id="map"></div>
+
+        <div class="container px-5 my-2">
+        
             <div class="row gx-5">
-                @if (ThisBooking != null)
+                @if (ThisBooking!= null && _car!=null)
                 {
 
                     <div class="col-4">
@@ -161,7 +161,7 @@
     List<AppUser> _users = new List<AppUser>();
     List<Booking> _bookings = new List<Booking>();
     AppUser _user = new AppUser();
-    Car _car = new Car();
+    Car _car = null;
     double _cost = 0;
 
     TimeSpan elapsed = new TimeSpan();

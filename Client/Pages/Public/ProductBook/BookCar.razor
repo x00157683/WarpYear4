@@ -243,17 +243,13 @@ using System.Net.Http;
 
         HttpResponseMessage response = await HttpClient.PostAsJsonAsync<BookingDTO>(APIEndpoints.s_book, _booking);
 
-
-        Console.WriteLine($"/bookcomplete/{_booking.BookingDTOId}");
-         Console.WriteLine(response.IsSuccessStatusCode);
-
         
 
         if (response.IsSuccessStatusCode)
         {
             _registerSuccessful = true;
             NavigationManager.NavigateTo($"/bookcomplete/{_booking.BookingDTOId}");
-            Console.WriteLine($"/bookcomplete/{_booking.BookingDTOId}");
+ 
          
 
         }
