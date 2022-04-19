@@ -166,8 +166,8 @@
     protected override async Task OnInitializedAsync()
     {
 
-          InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
-  
+        InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
+
         if (InMemoryDatabaseCache.Categories == null)
         {
             await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
@@ -177,11 +177,16 @@
 
         if (InMemoryDatabaseCache.Cars == null)
         {
-            await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
+            try{
+                await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
 
-            _cars = InMemoryDatabaseCache.Cars;
-            Console.WriteLine(_cars.Count);
 
+                _cars = InMemoryDatabaseCache.Cars;
+            }
+            catch(Exception e)
+            {
+                
+            }
         }
 
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))

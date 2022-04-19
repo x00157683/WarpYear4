@@ -9,9 +9,10 @@
 @using Newtonsoft.Json
 @using global::Shared.Models
 @using System.Net.Http.Headers
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Net.Http;
+@using System.Collections.Generic;
+@using System.Text.Json;
+@using System.Net.Http;
+@using Blazorise
 
 
 <head>
@@ -75,7 +76,12 @@ using System.Net.Http;
 
                                         <h3 class="card-title">@x.Make</h3>
                                         <p class="card-text">@x.Model</p>
-                                        <p class="card-text">@x.CategoryId</p>
+                                        <p class="card-text">@x.Range</p>
+                                        <p class="card-text">@x.PricePerUnit</p>
+
+                                        
+                                          <Rating Color="Color.Primary" @bind-SelectedValue="@x.OverallRating" MaxValue="5" />
+                                    <p>input: @SelectedValue</p>
                                     </div>
                                     <AuthorizeView>
                                         <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Book</a>
@@ -126,6 +132,8 @@ using System.Net.Http;
     List<Category>? _categories = null;
     List<Booking>? _bookings = null;
 
+    int SelectedValue { get; set; } 
+
     private static readonly HttpClient client = new HttpClient();
 
 
@@ -164,7 +172,11 @@ using System.Net.Http;
 
     }
 
+    public int GetRating(int id){
 
+        return 1;
+
+    }
 
     public void Dispose()
     {

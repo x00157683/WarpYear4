@@ -28,14 +28,39 @@ namespace Shared.Models
         public double PricePerUnit { get; set; }
         [Required]
         public bool isLocked { get; set; }
-       
+
+        public int Rating { get; set; }
+
+        public int Reviews { get; set; }
+
         public double RangeLeft { get; set; }
-        
-        public Category ?Category { get; set; }
 
-        public bool Active { get; set; }    
+        public Category? Category { get; set; }
 
-       
+        public bool Active { get; set; }
+
+        private int _overallRating;
+        public int OverallRating
+        {
+            get
+            {
+                if(Rating > 0 && Reviews > 0) 
+                {
+                    return Rating / Reviews;
+                }
+                else
+                {
+                    return 0;
+                }
+                
+            }
+            set
+            {
+                _overallRating = value;
+            }
+        }
+
+
 
     }
 }

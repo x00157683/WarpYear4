@@ -13,9 +13,9 @@ namespace Shared.Models
         [Key]
         public string BookingDTOId { get; set; } //test
        
-        public DateTime StartTime { get; set; }
+        public string StartTime { get; set; }
 
-        public DateTime ?StopTime { get; set; }
+        public string ?StopTime { get; set; }
 
         public double Cost { get; set; }
 
@@ -27,6 +27,8 @@ namespace Shared.Models
 
 
         public int CarId { get; set; }
+
+
 
         //public Car Car { get; set; }
 

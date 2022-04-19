@@ -103,7 +103,18 @@ namespace Server.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                Car updatedCar = _mapper.Map<Car>(updatedCarDTO);
+                Car updatedCar = new Car();//_mapper.Map<Car>(updatedCarDTO);
+
+                updatedCar.CarId = id;
+                updatedCar.CategoryId = updatedCarDTO.CategoryId;
+                updatedCar.Make = updatedCarDTO.Make;
+                updatedCar.Model = updatedCarDTO.Model;
+                updatedCar.Active = updatedCarDTO.Active;
+                updatedCar.PricePerUnit = updatedCarDTO.PricePerUnit;
+                updatedCar.isLocked = updatedCarDTO.isLocked;
+                updatedCar.Range = updatedCarDTO.Range;
+                updatedCar.Rating += updatedCarDTO.Rating;
+                updatedCar.Reviews++;
 
                 _appDBContext.Cars.Update(updatedCar);
 

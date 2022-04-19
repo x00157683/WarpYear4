@@ -37,13 +37,21 @@ namespace Server.Controllers {
 
         Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(username, password, false, false);
 
+
+
         if (signInResult.Succeeded)
         {
             AppUser identityUser = await _userManager.FindByNameAsync(username);
             string JSONWebTokenAsString = await GenerateJSONWebToken(identityUser);
             return Ok(JSONWebTokenAsString);
         }
-        else
+            //bool emailStatus = await _userManager.IsEmailConfirmedAsync(identityUser);
+            //if (emailStatus == false)
+            //{
+            //    ModelState.AddModelError(nameof(login.Email), "Email is unconfirmed, please confirm it first");
+            //}
+
+            else
         {
 
                 Console.WriteLine("Not today chap");

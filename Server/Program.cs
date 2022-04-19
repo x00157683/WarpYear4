@@ -11,16 +11,10 @@ using Microsoft.OpenApi.Models;
 using Server.Data;
 using Shared.Models;
 using System.Text;
-
-
-
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-
-
-
 
 // Add services to the container.
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -28,9 +22,14 @@ builder.Services.AddControllers().AddNewtonsoftJson(options => options.Serialize
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlite(
 builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+
 builder.Services.AddDefaultIdentity<AppUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AppDBContext>();
+
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

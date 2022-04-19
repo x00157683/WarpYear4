@@ -86,21 +86,21 @@ using System.Net.Http;
                                                    <EditForm Model="_booking" OnValidSubmit="CreateBooking">
                                             <DataAnnotationsValidator />
                                             <div class="form-group my-3 mx-2 ">
-                                                <label for="first">Start Date</label>
-                                                <InputDate @bind-Value="_booking.StartTime" id="first" @bind-Value:format="dd/MM/yyyy" class="form-control" placeholder= />
+                                              
+                                           @*       <label for="first">Start Date</label>
+                                                <InputText @bind-Value="_booking.StartTime" id="first" @bind-Value:format="dd/MM/yyyy" class="form-control" placeholder= />
                                                 <ValidationMessage For="@(() => _booking.StartTime)" />
 
                                                 <label for="end">End Date</label>
-                                                <InputDate @bind-Value="_booking.StopTime" id="end" @bind-Value:format="dd/MM/yyyy" class="form-control" />
-                                                <ValidationMessage For="@(() => _booking.StopTime)" />
-
+                                                <InputText @bind-Value="_booking.StopTime" id="end" @bind-Value:format="dd/MM/yyyy" class="form-control" />
+                                                <ValidationMessage For="@(() => _booking.StopTime)" />*@
 
                                             </div>
 
                                             <ValidationSummary />
 
                                             <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
-                                                <i class="far fa-save"></i> Book
+                                                <i class="far fa-save"></i> Unlock
                                             </button>
 
                                         </EditForm>
@@ -227,24 +227,25 @@ using System.Net.Http;
 
         _booking.BookingDTOId = Guid.NewGuid().ToString();
 
-        _booking.UserEmail = _user.Email;
+        _booking.UserEmail = _user.UserName;
 
         _booking.CarId = Id;
-
-        _booking.Cost = 100;
 
         _booking.Location = "Dublin";
 
         _booking.IsCreated = true;
 
-        _booking.StartTime = DateTime.UtcNow;
+        _booking.IsComplete = false;
+
+        _booking.StartTime = DateTime.UtcNow.ToString();
 
         _attemptingToCreate = true;
 
         HttpResponseMessage response = await HttpClient.PostAsJsonAsync<BookingDTO>(APIEndpoints.s_book, _booking);
 
 
-       
+        Console.WriteLine($"/bookcomplete/{_booking.BookingDTOId}");
+         Console.WriteLine(response.IsSuccessStatusCode);
 
         
 

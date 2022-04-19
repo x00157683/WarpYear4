@@ -154,6 +154,9 @@ namespace Server.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("Balance")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
@@ -264,6 +267,9 @@ namespace Server.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("OverallRating")
+                        .HasColumnType("INTEGER");
+
                     b.Property<double>("PricePerUnit")
                         .HasColumnType("REAL");
 
@@ -272,6 +278,12 @@ namespace Server.Data.Migrations
 
                     b.Property<double>("RangeLeft")
                         .HasColumnType("REAL");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Reviews")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("isLocked")
                         .HasColumnType("INTEGER");
@@ -290,9 +302,12 @@ namespace Server.Data.Migrations
                             CategoryId = 1,
                             Make = "Tesla",
                             Model = "Model X",
+                            OverallRating = 0,
                             PricePerUnit = 7.0,
                             Range = 250.0,
                             RangeLeft = 100.0,
+                            Rating = 0,
+                            Reviews = 0,
                             isLocked = true
                         },
                         new
@@ -302,9 +317,12 @@ namespace Server.Data.Migrations
                             CategoryId = 2,
                             Make = "Tesla",
                             Model = "Model S",
+                            OverallRating = 0,
                             PricePerUnit = 7.0,
                             Range = 200.0,
                             RangeLeft = 100.0,
+                            Rating = 0,
+                            Reviews = 0,
                             isLocked = true
                         },
                         new
@@ -314,9 +332,12 @@ namespace Server.Data.Migrations
                             CategoryId = 3,
                             Make = "Porsche",
                             Model = "Taycan",
+                            OverallRating = 0,
                             PricePerUnit = 7.0,
                             Range = 270.0,
                             RangeLeft = 100.0,
+                            Rating = 0,
+                            Reviews = 0,
                             isLocked = true
                         },
                         new
@@ -326,9 +347,12 @@ namespace Server.Data.Migrations
                             CategoryId = 1,
                             Make = "Nissan",
                             Model = "Leaf",
+                            OverallRating = 0,
                             PricePerUnit = 7.0,
                             Range = 150.0,
                             RangeLeft = 100.0,
+                            Rating = 0,
+                            Reviews = 0,
                             isLocked = true
                         },
                         new
@@ -338,9 +362,12 @@ namespace Server.Data.Migrations
                             CategoryId = 2,
                             Make = "Honda",
                             Model = "Up!",
+                            OverallRating = 0,
                             PricePerUnit = 7.0,
                             Range = 220.0,
                             RangeLeft = 100.0,
+                            Rating = 0,
+                            Reviews = 0,
                             isLocked = true
                         },
                         new
@@ -350,9 +377,12 @@ namespace Server.Data.Migrations
                             CategoryId = 3,
                             Make = "Toyota",
                             Model = "GT",
+                            OverallRating = 0,
                             PricePerUnit = 7.0,
                             Range = 200.0,
                             RangeLeft = 100.0,
+                            Rating = 0,
+                            Reviews = 0,
                             isLocked = true
                         });
                 });

@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 
-using Microsoft.AspNetCore.Components.Web;
 
 
 namespace Client
@@ -23,7 +25,7 @@ namespace Client
 
             builder.Services.AddBlazoredLocalStorage();
 
-    
+
             builder.Services.AddAuthorizationCore();
 
             builder.Services.AddScoped<AppAuthenticationStateProvider>();
@@ -33,11 +35,19 @@ namespace Client
             builder.Services.AddSingleton<HttpClient>();
             builder.Services.AddSingleton<InMemoryDatabaseCache>();
 
+            builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrapProviders()
+    .AddFontAwesomeIcons();
+
 
             //more code may be present here
 
             //make sure this is present to enable static files from a package
-            
+
 
             await builder.Build().RunAsync();
         }

@@ -45,9 +45,6 @@ namespace Server.Controllers
         }
 
 
-
-
-        // website.com/api/Bookings/2
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
@@ -67,14 +64,12 @@ namespace Server.Controllers
 
             Console.WriteLine("carr: "+car.Make);
 
-            Booking booking = _mapper.Map<Booking>(bookingToCreateDTO); // new Booking();//
+            Booking booking =  new Booking();//
 
             booking.BookingId = bookingToCreateDTO.BookingDTOId;
             booking.StartTime = bookingToCreateDTO.StartTime.ToString();
-            booking.StopTime = bookingToCreateDTO.StopTime.ToString();
             booking.AppUser = user;
             booking.Location = bookingToCreateDTO.Location;
-            booking.Cost = bookingToCreateDTO.Cost;
             booking.CarId = bookingToCreateDTO.CarId;
             booking.Car = car;
 
@@ -101,12 +96,13 @@ namespace Server.Controllers
         }
 
 
+       
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] Booking updatedBookingDTO)
+        public async Task<IActionResult> Update(string id, [FromBody] BookingDTO updatedBookingDTO)
         {
             try
             {
-                if ( updatedBookingDTO == null || id != updatedBookingDTO.BookingId)
+                if ( updatedBookingDTO == null || id != updatedBookingDTO.BookingDTOId)
                 {
                     return BadRequest(ModelState);
                 }
@@ -118,22 +114,28 @@ namespace Server.Controllers
                     return NotFound();
                 }
 
-                if (ModelState.IsValid == false)
+               
+
+                Booking _book = new Booking();
+
+                _book.BookingId = updatedBookingDTO.BookingDTOId;
+                _book.CarId = updatedBookingDTO.CarId;
+                _book.IsCreated = updatedBookingDTO.IsCreated;
+                _book.StartTime = updatedBookingDTO.StartTime;
+                _book.Cost = updatedBookingDTO.Cost;
+                _book.UserEmail = updatedBookingDTO.UserEmail;
+                _book.Location = updatedBookingDTO.Location;
+                _book.IsComplete = true;
+
+                if (_book.IsComplete == true)
                 {
-                    return BadRequest(ModelState);
-                }
 
-                Booking updatedBooking = _mapper.Map<Booking>(updatedBookingDTO);
-
-                if (updatedBooking.IsComplete == true)
-                {
-
-                    //updatedBooking.StopTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
+                    _book.StopTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
                     Console.WriteLine("Booking Complete");
 
                 }
 
-                _appDBContext.Bookings.Update(updatedBooking);
+                _appDBContext.Bookings.Update(_book);
 
                 bool changesPersistedToDatabase = await PersistChangesToDatabase();
 
@@ -143,7 +145,7 @@ namespace Server.Controllers
                 }
                 else
                 {
-                    return Created("Created",updatedBooking);
+                    return Created("Created",_book);
                 }
             }
             catch (Exception e)

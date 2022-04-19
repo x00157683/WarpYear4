@@ -23,6 +23,8 @@ namespace Shared.Models
 
         public string PhoneNumber { get; set; }
 
+        public double Balance { get; set; }
+
         [NotMapped]
         public override bool EmailConfirmed { get; set; }
         [NotMapped]

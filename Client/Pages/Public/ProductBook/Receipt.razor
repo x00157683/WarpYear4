@@ -1,4 +1,4 @@
-﻿@page "/bookcomplete/{Id}"
+﻿@page "/receipt/{Id}"
 @inject HttpClient Http
 @implements IDisposable
 @using Blazored.LocalStorage
@@ -10,9 +10,10 @@
 @using System.Net
 @using global::Shared.Models
 @using System.Net.Http.Headers
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Net.Http;
+@using System.Collections.Generic;
+@using System.Text.Json;
+@using System.Net.Http;
+@using Blazorise
 
 
 <head>
@@ -24,8 +25,14 @@ using System.Net.Http;
     <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+
+    <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
 
     <link rel="shortcut icon" href="assets/images/favicon.ico" />
+
 </head>
 
 
@@ -64,40 +71,41 @@ using System.Net.Http;
 
                 <div class="row gx-5">
 
-                    @if (_bookings != null)
+
+                    <h2>Thank You for Using Warp </h2>
+                    <h3> The following amount has been deducted from your account </h3>
+
+                    @if (ThisBooking != null)
                     {
 
-                       
-                        foreach (var x in _bookings)
-                        {
-                    
-                            if (x.BookingId == Id)
-                            {
-                                <div class="col-4">
+                        <div class="col-4">
+                        </div>
+                        <div class="col-4">
+                            <div class="card shadow mb-2">
+
+                                <div class="card-body">
+
+                                    <h3 class="card-title"><b>Total: </b>@ThisBooking.Cost</h3>
+                                    <p class="card-text"><b>Start Time:</b> @ThisBooking.StartTime </p>
+                                    <p class="card-text"><b>Stop Time</b> @ThisBooking.StopTime </p>
+                                    <p class="card-text>"><b>Email: </b>@ThisBooking.UserEmail</p>
+                                    <p> Don'f forget to rate your driving experience</p>
+                                    <Rating Color="Color.Primary" @bind-SelectedValue="@SelectedValue" MaxValue="5" />
+                                    <p>input: @SelectedValue</p>
+                                    <button onclick="@RateCar">Submit</button>
+
                                 </div>
-                                <div class="col-4">
-                                    <div class="card shadow mb-2">
 
-                                        <div class="card-body">
 
-                                            <h3 class="card-title">Make: @x.StartTime</h3>
-                                            <p class="card-text">Model: @x.Cost</p>
-                                    
-                                                  
+                            </div>
+                        </div>
 
-                                            <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5">
-                                                <i class="far fa-save"></i> End Booking
-                                            </button>
-
-                                        </div>
-                                 
-
-                                    </div>
-                                </div>
-                            }
-
-                        }
                     }
+
+
+
+
+
                 </div>
             </div>
             <!-- Call to action-->
@@ -122,6 +130,7 @@ using System.Net.Http;
 </body>
 
 
+
 @code {
 
     [Inject] HttpClient HttpClient { get; set; }
@@ -137,9 +146,18 @@ using System.Net.Http;
     List<Car>? _cars = null;
     List<AppUser>? _users = null;
     List<Booking>? _bookings = null;
-    AppUser ?_user = null;
+    AppUser? _user = null;
 
-    Booking? ThisCar = null;
+
+    Booking ThisBooking = new Booking();
+
+    TimeSpan elapsed = new TimeSpan();
+
+    double hours, mins = 0.0;
+
+    int SelectedValue { get; set; } = 0;
+
+
 
     private static readonly HttpClient client = new HttpClient();
 
@@ -151,9 +169,20 @@ using System.Net.Http;
 
         _bookings = await HttpClient.GetFromJsonAsync<List<Booking>>(APIEndpoints.s_bookings);
 
+        elapsed = await GetDuration();
 
+
+
+        hours = Math.Round(elapsed.TotalHours, 2);
+        mins = Math.Round(elapsed.TotalMinutes, 2);
+        Console.WriteLine(hours + " " + mins, " ");
         HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
 
+        TimeSpan s = elapsed.Duration();
+        hours = elapsed.Hours;
+        mins = elapsed.Minutes;
+        Console.WriteLine(hours + " " + mins, " ");
+        Console.WriteLine(s.Hours);
 
         _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
 
@@ -162,7 +191,7 @@ using System.Net.Http;
         {
             if (i.BookingId == Id)
             {
-                ThisCar = i;
+                ThisBooking = i;
             }
         }
 
@@ -188,7 +217,8 @@ using System.Net.Http;
 
     }
 
-    private async Task<AppUser> GetUser(){
+    private async Task<AppUser> GetUser()
+    {
 
         var user2 = (await AuthenticationState).User;
 
@@ -196,6 +226,64 @@ using System.Net.Http;
 
         return _user;
     }
+
+    public async Task<TimeSpan> GetDuration()
+    {
+        DateTime _dObject = new DateTime();
+        DateTime currentDate = new DateTime();
+
+
+        _dObject = Convert.ToDateTime(ThisBooking.StartTime);
+
+
+        currentDate = DateTime.Now;
+        long elapsedTicks = currentDate.Ticks - _dObject.Ticks;
+        TimeSpan elapsedSpan = new TimeSpan(elapsedTicks);
+
+        return elapsedSpan;
+
+    }
+    private async Task<Car> GetCar(int id)
+    {
+
+        Car _car = _cars.Where(m => m.CarId == id).FirstOrDefault();
+
+        return _car;
+    }
+    private async Task RateCar()
+    {
+        Car _carToBeUpdated = await GetCar(ThisBooking.CarId);
+
+        CarDTO _car = new CarDTO();
+
+        _car.CarDTOId = ThisBooking.CarId;
+        _car.CategoryId = _carToBeUpdated.CategoryId;
+        _car.Make = _carToBeUpdated.Make;
+        _car.Model = _carToBeUpdated.Model;
+        _car.Active = _carToBeUpdated.Active;
+        _car.PricePerUnit = _carToBeUpdated.PricePerUnit;
+        _car.isLocked = _carToBeUpdated.isLocked;
+        _car.Range = _carToBeUpdated.Range;
+        _car.Rating += SelectedValue;
+
+        if (HttpClient != null)
+        {
+            HttpResponseMessage response = await HttpClient.PutAsJsonAsync<CarDTO>($"{APIEndpoints.s_cars}/{_car.CarDTOId}", _car);
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+
+                NavigationManager.NavigateTo($"/");
+
+            }
+            else
+            {
+                Console.WriteLine("Failed");
+            }
+        }
+
+    }
+
 
     public void Dispose()
     {

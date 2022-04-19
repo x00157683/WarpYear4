@@ -31,12 +31,13 @@ namespace Server.Data.Migrations
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     PhoneNumber = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
+                    Balance = table.Column<double>(type: "REAL", nullable: false),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true)
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -192,8 +193,11 @@ namespace Server.Data.Migrations
                     CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
                     PricePerUnit = table.Column<double>(type: "REAL", nullable: false),
                     isLocked = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Rating = table.Column<int>(type: "INTEGER", nullable: false),
+                    Reviews = table.Column<int>(type: "INTEGER", nullable: false),
                     RangeLeft = table.Column<double>(type: "REAL", nullable: false),
-                    Active = table.Column<bool>(type: "INTEGER", nullable: false)
+                    Active = table.Column<bool>(type: "INTEGER", nullable: false),
+                    OverallRating = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -254,33 +258,33 @@ namespace Server.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
-                values: new object[] { 1, false, 1, "Tesla", "Model X", 7.0, 250.0, 100.0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 1, false, 1, "Tesla", "Model X", 0, 7.0, 250.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
-                values: new object[] { 2, false, 2, "Tesla", "Model S", 7.0, 200.0, 100.0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 2, false, 2, "Tesla", "Model S", 0, 7.0, 200.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
-                values: new object[] { 3, false, 3, "Porsche", "Taycan", 7.0, 270.0, 100.0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 3, false, 3, "Porsche", "Taycan", 0, 7.0, 270.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
-                values: new object[] { 4, false, 1, "Nissan", "Leaf", 7.0, 150.0, 100.0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 4, false, 1, "Nissan", "Leaf", 0, 7.0, 150.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
-                values: new object[] { 5, false, 2, "Honda", "Up!", 7.0, 220.0, 100.0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 5, false, 2, "Honda", "Up!", 0, 7.0, 220.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "PricePerUnit", "Range", "RangeLeft", "isLocked" },
-                values: new object[] { 6, false, 3, "Toyota", "GT", 7.0, 200.0, 100.0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 6, false, 3, "Toyota", "GT", 0, 7.0, 200.0, 100.0, 0, 0, true });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

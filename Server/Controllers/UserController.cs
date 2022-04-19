@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Server.Email;
 using Shared.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -43,6 +44,18 @@ public class UserController : ControllerBase
         IdentityResult identityResult = await _userManager.CreateAsync(user, password);
         if (identityResult.Succeeded == true)
         {
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action("ConfirmEmail", "Email", new { token, email = user.Email }, Request.Scheme);
+            EmailHelper emailHelper = new EmailHelper();
+            bool emailResponse = emailHelper.SendEmail(user.Email, confirmationLink);
+
+            if (emailResponse)
+                return RedirectToAction("Index");
+            else
+            {
+                // log email failed 
+            }
+
             return Ok(identityResult.Succeeded);
         }
         else
