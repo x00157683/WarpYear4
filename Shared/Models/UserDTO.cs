@@ -10,8 +10,8 @@ namespace Shared.Models
 
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress]
-        [Display(Name = "Email address")]
-        public string EmailAddress { get; set; }
+        [Display(Name = "Email")]
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
@@ -19,9 +19,9 @@ namespace Shared.Models
         [Display(Name = "Password")]
         public string Password { get; set; }
 
-        public string FirstName { get; set; }
+        public string Name { get; set; }
 
-        public string LastName { get; set; }
+        public string ConfirmPassword { get; set; }
 
         public DateOnly ?Dob { get; set; }
 

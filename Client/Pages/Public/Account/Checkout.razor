@@ -1,10 +1,13 @@
-﻿@page "/profile"
+﻿@page "/checkout"
+@inject IPaymentService _paymentService;
+@inject IJSRuntime _jsruntime;
 @using System.Net;
 @using Client.Components.Public.Warp
 @using Client.Providers
 @using Client.Services
 @using System.Net.Http.Json;
 @using System.Net.Http.Headers
+@using Server.Services
 @using global::Shared.Models;
 @using Microsoft.AspNetCore.Authorization;
 @using Microsoft.IdentityModel.Tokens;
@@ -16,6 +19,7 @@
 
 <head>
     <!-- Required meta tags -->
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Purple Admin</title>
@@ -28,126 +32,43 @@
     <link rel="shortcut icon" href="assets/images/favicon.ico" />
 
 
+
 </head>
 
-
+<Client.Components.Public.Shared.NavB />
 
 <PageTitle>Warp</PageTitle>
 
-<body class="d-flex flex-column h-100">
+<body>
+    <div class="togethere-background"></div>
+    <div class="sr-root">
+        <div class="sr-main">
+            <header class="sr-header">
+                <div class="sr-header__logo"></div>
+            </header>
+            <h1>Choose a collaboration plan</h1>
 
-
-    <!--The div element for the map -->
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-                <ul class="nav">
-                    <li class="nav-item nav-profile">
-                        <a href="#" class="nav-link">
-                            <div class="nav-profile-image">
-                                <!--<img src="" alt="profile">-->
-                                <span class="login-status online"></span>
-                                <!--change to offline or busy as needed-->
-                            </div>
-                            <div class="nav-profile-text d-flex flex-column">
-                                <span class="font-weight-bold mb-2">Admin</span>
-
-                            </div>
-                            <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin">
-                            <span class="menu-title">Profile</span>
-                            <i class="mdi mdi-home menu-icon"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/cars">
-                            <span class="menu-title">Account</span>
-                            <i class="menu-arrow"></i>
-                            <i class="mdi mdi-car-connected menu-icon"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/booking">
-                            <span class="menu-title">History</span>
-                            <i class="mdi mdi-contacts menu-icon"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/users">
-                            <span class="menu-title">Edit Profile</span>
-                            <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-                        </a>
-                    </li>
-
-
-
-                </ul>
-            </nav>
-    <main class="flex-shrink-0">
-
-        <div id="map"></div>
-
-        <div class="container px-5 my-2">
-        
-            <div class="row gx-5">
-                @if (_book!= null)
-                {
-
-                      <div class="py-4">
-        <div class=" row form-group ">
-            <div class="col-6 offset-3 ">
-                <div class="card border">
-                    <div class="card-body px-lg-5 pt-4">
-                   
-
-
-                                <h3 class="card-title">Make: @_book.StopTime</h3>
-                                <h3 class="card-title">Make: @_book.Location</h3>
-                                <h3 class="card-title">Make: @_book.UserEmail</h3>
-                                <p class="card-text">Amount Due: $@_cost</p>
-                      
-
-                                <button onclick="@EndBooking()" class="btn btn-success shadow d-block mt-5 md-f-size-1-5">
-                                    <i class="far fa-save"></i> End Booking
-                                </button>
-
-                     
-                    </div>
-              
+            <EditForm Model="_stripePayment" OnValidSubmit="HandleCheckout">
+                <DataAnnotationsValidator />
+                <div class="form-group my-3">
+                    <label for="email">Email address</label>
+                    <InputNumber @bind-Value="_stripePayment.Price" id="price" class="form-control" />
+                    <ValidationMessage For="() => _stripePayment.Price" />
                 </div>
-            </div>
+                <div class="form-group my-3">
+                    <label for="first">Name</label>
+                    <InputText @bind-Value="_stripePayment.Name" id="name" class="form-control" />
+                    <ValidationMessage For="() => _stripePayment.Name" />
+                </div>
+                <ValidationSummary />
+                <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
+                    <i class="far fa-save"></i> Pay
+                </button>
+
+            </EditForm>
         </div>
     </div>
-
-
-              
-                  
-                }
-            </div>
-        </div>
-
-
-    </main>
-    <!-- Footer-->
-    <footer class="bg-dark py-4 mt-auto">
-        <div class="container px-5">
-            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
-                <div class="col-auto">
-                    <a class="link-light small" href="#!">Privacy</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Terms</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Contact</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <!-- Bootstrap core JS-->
-    <!-- Core theme JS-->
-
+    <div id="error-message" class="error-message"></div>
 </body>
 
 
@@ -170,22 +91,22 @@
     List<AppUser> _users = new List<AppUser>();
     List<Booking> _bookings = new List<Booking>();
     AppUser _user = new AppUser();
-    Car _car = new Car();
+    StripePaymentDTO _stripePayment = new StripePaymentDTO();
+    Car _car = null;
     double _cost = 0;
 
     TimeSpan elapsed = new TimeSpan();
 
     BookingDTO ThisBooking = new BookingDTO();
-    BookingDTO _book = new BookingDTO();
 
     private static readonly HttpClient client = new HttpClient();
 
     protected override async Task OnInitializedAsync()
     {
 
-         Console.WriteLine("No booking?"+ThisBooking.UserEmail);
-
-          _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
+        try
+        {
+            _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
 
             _bookings = await HttpClient.GetFromJsonAsync<List<Booking>>(APIEndpoints.s_bookings);
 
@@ -196,27 +117,6 @@
             _user = await GetUser();
 
             ThisBooking = GetBooking();
-
-            Console.WriteLine("No booking?",ThisBooking.StartTime);
-            Console.WriteLine(ThisBooking.BookingDTOId);
-
-
-        try
-        {
-            _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
-
-            _bookings = await HttpClient.GetFromJsonAsync<List<Booking>>(APIEndpoints.s_bookings);
-
-            //HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
-
-            _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
-
-            _user = await GetUser();
-
-            ThisBooking = GetBooking();
-
-            
-            Console.WriteLine(ThisBooking.BookingDTOId);
 
             _car = GetCar(ThisBooking.CarId);
 
@@ -246,6 +146,24 @@
 
             StateHasChanged();
         }
+
+    }
+
+    private async Task HandleCheckout()
+    {
+
+
+        try
+        {
+            var result = await _paymentService.Checkout(_stripePayment);
+
+            await _jsruntime.InvokeVoidAsync("redirectToCheckout", result.Data.ToString());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
 
     }
 
@@ -313,18 +231,15 @@
 
     private BookingDTO GetBooking()
     {
-        
+        BookingDTO _book = new BookingDTO();
 
         if (_bookings != null)
         {
             foreach (var i in _bookings)
             {
-               
-                
 
-                if (i.UserEmail.ToUpper() == _user.UserName.ToUpper() && i.IsComplete != true)
+                if (i.UserEmail == _user.Email && i.IsComplete != true)
                 {
-                    
                     _book.BookingDTOId = i.BookingId;
                     _book.CarId = i.CarId;
                     _book.IsCreated = i.IsCreated;

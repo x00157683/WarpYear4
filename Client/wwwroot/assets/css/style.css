@@ -3528,7 +3528,7 @@ progress {
   color: #212529;
   background-color: color(white);
   background-clip: padding-box;
-  border: 1px solid #ced4da;
+  border: 1px solid #2e2929;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -3554,31 +3554,37 @@ progress {
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); }
   .form-control::-webkit-date-and-time-value {
     height: 1em; }
-  .form-control::-webkit-input-placeholder {
-    color: #c9c8c8;
-    opacity: 1; }
-  .form-control::-moz-placeholder {
-    color: #c9c8c8;
-    opacity: 1; }
-  .form-control:-ms-input-placeholder {
-    color: #c9c8c8;
-    opacity: 1; }
-  .form-control::-ms-input-placeholder {
-    color: #c9c8c8;
-    opacity: 1; }
-  .form-control::placeholder {
-    color: #c9c8c8;
-    opacity: 1; }
-  .form-control:disabled, .form-control[readonly] {
-    background-color: #e9ecef;
-    opacity: 1; }
-  .form-control::file-selector-button {
+.form-control::-webkit-input-placeholder {
+    color: #212529;
+    opacity: 1;
+}
+.form-control::-moz-placeholder {
+    color: #212529;
+    opacity: 1;
+}
+.form-control:-ms-input-placeholder {
+    color: #212529;
+    opacity: 1;
+}
+.form-control::-ms-input-placeholder {
+    color: #212529;
+    opacity: 1;
+}
+.form-control::placeholder {
+    color: #212529;
+    opacity: 1;
+}
+.form-control:disabled, .form-control[readonly] {
+    background-color: #212529;
+    opacity: 1;
+}
+.form-control::file-selector-button {
     padding: 0.94rem 1.375rem;
     margin: -0.94rem -1.375rem;
     -webkit-margin-end: 1.375rem;
     margin-inline-end: 1.375rem;
     color: #212529;
-    background-color: #e9ecef;
+    background-color: #212529;
     pointer-events: none;
     border-color: inherit;
     border-style: solid;
@@ -3588,7 +3594,8 @@ progress {
     -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out; }
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
     @media (prefers-reduced-motion: reduce) {
       .form-control::file-selector-button {
         -webkit-transition: none;
@@ -3786,7 +3793,7 @@ textarea.form-control-lg {
     .form-check-input:checked[type="radio"] {
       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e"); }
   .form-check-input[type="checkbox"]:indeterminate {
-    background-color: #0d6efd;
+    background-color: #0d6ef;
     border-color: #0d6efd;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e"); }
   .form-check-input:disabled {
@@ -11564,7 +11571,7 @@ code {
   margin-bottom: 0; }
 
 .template-demo .editable-form > .form-group {
-  border-bottom: 1px solid #ebedf2;
+  border-bottom: 1px solid #424449;
   padding-bottom: 0.8rem;
   margin-bottom: 0.8rem; }
 

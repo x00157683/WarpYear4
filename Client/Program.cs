@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
-
-
+using Server.Services;
 
 namespace Client
 {
@@ -25,10 +24,13 @@ namespace Client
 
             builder.Services.AddBlazoredLocalStorage();
 
-
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+        
             builder.Services.AddAuthorizationCore();
 
             builder.Services.AddScoped<AppAuthenticationStateProvider>();
+
+
             builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
                 provider.GetRequiredService<AppAuthenticationStateProvider>());
 

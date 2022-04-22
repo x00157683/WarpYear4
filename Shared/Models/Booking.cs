@@ -32,9 +32,9 @@ namespace Shared.Models
 
         public Car Car { get; set; }
 
-        public string ?UserEmail { get; set; }
+        public string UserEmail { get; set; }
 
-        public virtual AppUser? AppUser { get; set; }  
+        //public virtual AppUser? AppUser { get; set; }  
 
 
 

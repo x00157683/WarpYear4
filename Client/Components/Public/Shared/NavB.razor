@@ -111,7 +111,7 @@
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     [Inject] ILocalStorageService LocalStorageService { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
-    [CascadingParameter] protected Task<AuthenticationState> ?AuthenticationState { get; set; } 
+    [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; } 
 
     string UserName{ get;set; }
 
@@ -154,7 +154,7 @@
 
     private const string HomePageUri = "/";
     private const string FleetPageUri = "/fleet";
-    private const string RegisterPageUri = "/register";
+    private const string RegisterPageUri = "/register1";
     private const string AboutPageUri = "/about";
     private const string ContactPageUri = "/contact";
 

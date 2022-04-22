@@ -13,6 +13,8 @@ using Shared.Models;
 using System.Text;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Server.Services;
+using Stripe;
+using Server.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,9 +23,10 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlite(
 builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IEmailSender, EmailHelper>();
+//builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-builder.Services.AddTransient<IEmailSender, EmailSender>();
-builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
 builder.Services.AddDefaultIdentity<AppUser>()
                 .AddRoles<IdentityRole>()
@@ -95,6 +98,8 @@ app.UseSwaggerUI(swaggerUIOptions =>
     swaggerUIOptions.RoutePrefix = string.Empty;
 });
 
+//StripeConfiguration.ApiKey = "sk_test_zYxXpmar9kaDmUViMafPkRQx00FbDFbHAT";
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["ApiKey"];
 
 app.UseHttpsRedirection();
 

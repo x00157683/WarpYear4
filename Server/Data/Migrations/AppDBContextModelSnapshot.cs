@@ -161,17 +161,18 @@ namespace Server.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ConfirmPassword")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("Dob")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
+                    b.Property<string>("Name")
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
@@ -183,11 +184,15 @@ namespace Server.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
@@ -225,11 +230,9 @@ namespace Server.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Location")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StartTime")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StopTime")
@@ -241,8 +244,6 @@ namespace Server.Data.Migrations
                     b.HasKey("BookingId");
 
                     b.HasIndex("CarId");
-
-                    b.HasIndex("UserEmail");
 
                     b.ToTable("Bookings");
                 });
@@ -394,7 +395,6 @@ namespace Server.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
@@ -517,13 +517,6 @@ namespace Server.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Shared.Models.AppUser", "AppUser")
-                        .WithMany("Bookings")
-                        .HasForeignKey("UserEmail")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("AppUser");
-
                     b.Navigation("Car");
                 });
 
@@ -536,11 +529,6 @@ namespace Server.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Shared.Models.AppUser", b =>
-                {
-                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("Shared.Models.Category", b =>

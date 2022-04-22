@@ -9,7 +9,7 @@
 @using System.Net.Http.Headers
 
 
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,154 +17,165 @@
     <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="assets/css/style.css">
-     <link rel="stylesheet" href="assets/css/">
+    <link rel="stylesheet" href="assets/css/">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="assets/images/favicon.ico" />
-  </head>
-
-
+</head>
 <Client.Components.Public.Shared.NavB />
 
 <PageTitle>Warp</PageTitle>
 
-<body class="d-flex flex-column h-100">
 
-
-    <!--The div element for the map -->
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-
-
-
-    <main class="flex-shrink-0">
-        <!-- Navigation-->
-        <!-- Header-->
-        <header class="bg-dark py-5">
-            <div class="container px-5">
-                <div class="row gx-5 align-items-center justify-content-center">
-                    <div class="col-lg-8 col-xl-7 col-xxl-6">
-                        <div class="my-5 text-center text-xl-start">
-                            <h1 class="display-5 fw-bolder text-white mb-2">We Speacialize in Electric</h1>
-                            <p class="lead fw-normal text-white-50 mb-4">Quickly sign up and get driving in no time, we have a range of cars to suit your needs and they are all electric!</p>
-                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
-                                <a class="btn btn-primary btn-lg px-4 me-sm-3" href="#features">Get Started</a>
-                                <a class="btn btn-outline-light btn-lg px-4" href="">Learn More</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="Images/Tesla-Model-S-Plaid.jpeg" alt="..." /></div>
-                </div>
-            </div>
-        </header>
-        <!-- Features section-->
-        <!-- Testimonial section-->
-        <div class="py-5 bg-light">
-            <div class="container px-5 my-5">
-                <div class="row gx-5 justify-content-center">
-                    <div class="col-lg-10 col-xl-7">
-                        <div class="text-center">
-                            <div class="fs-4 mb-4 fst-italic">"Tons of development coming soon"</div>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
-                                <div class="fw-bold">
-                                    Darren McLean
-                                    <span class="fw-bold text-primary mx-1">/</span>
-                                    CEO, Warp
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Blog preview section-->
-        <div id="map"></div>
-
-
-        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-        <section class="py-5">
-            <div class="container px-5 my-5">
-                <div class="row gx-5 justify-content-center">
-                    <div class="col-lg-8 col-xl-6">
-                        <div class="text-center">
-                            <h2 class="fw-bolder">From our Fleet</h2>
-                            <p class="lead fw-normal text-muted mb-5">
-                                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                                Eaque fugit ratione dicta mollitia. Officiis ad.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row gx-5">
-
-               @*   @if (_cars != null)
-                    {
-                        foreach ( var x in _cars)
-                        {
-                            <div class ="col">
-                            
-                            <div class="card shadow mb-2">
-                                <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />
-                                <div class="card-body">
-                                   
-                                   <h3 class="card-title">@x.Make</h3>
-                                    <p class="card-text">@x.Model</p>
-                                    <p class="card-text">@x.CategoryId</p>
-                                </div>
-
-                                <a href="/" class="btn btn-primary stretched-link">Click</a>
-                            </div>
-                          </div>
-
-                        }
-                    }*@
-                      
-                </div>
-            </div>
-            <!-- Call to action-->
-           
-
-        </section>
-    </main>
-    <!-- Footer-->
-    <footer class="bg-dark py-4 mt-auto">
+<main class="flex-shrink-0">
+    <!-- Navigation-->
+    <!-- Header-->
+    <header class="bg-dark py-5">
         <div class="container px-5">
-            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
-                <div class="col-auto">
-                    <a class="link-light small" href="#!">Privacy</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Terms</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Contact</a>
+            <div class="row gx-5 align-items-center justify-content-center">
+                <div class="col-lg-8 col-xl-7 col-xxl-6">
+                    <div class="my-5 text-center text-xl-start">
+                        <h1 class="display-5 fw-bolder text-white mb-2">We Speacialize in Electric</h1>
+                        <p class="lead fw-normal text-white-50 mb-4">Quickly sign up and get driving in no time, we have a range of cars to suit your needs and they are all electric!</p>
+                        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                            <a class="btn btn-primary btn-lg px-4 me-sm-3" href="#features">Get Started</a>
+                            <a class="btn btn-outline-light btn-lg px-4" href="">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="Images/Tesla-Model-S-Plaid.jpeg" alt="..." /></div>
+            </div>
+        </div>
+    </header>
+    <!-- Features section-->
+    <!-- Testimonial section-->
+    <div class="py-5 bg-light">
+        <div class="container px-5 my-5">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-lg-10 col-xl-7">
+                    <div class="text-center">
+                        <div class="fs-4 mb-4 fst-italic">"Tons of development coming soon"</div>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
+                            <div class="fw-bold">
+                                Darren McLean
+                                <span class="fw-bold text-primary mx-1">/</span>
+                                CEO, Warp
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </footer>
-    <!-- Bootstrap core JS-->
-    <!-- Core theme JS-->
-
-</body>
+    </div>
+    <!-- Blog preview section-->
+    <div id="map"></div>
 
 
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <section class="py-5">
+        <div class="container px-5 my-5">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-lg-8 col-xl-6">
+                    <div class="text-center">
+                        <h2 class="fw-bolder">From our Fleet</h2>
+                        <p class="lead fw-normal text-muted mb-5">
+                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                            Eaque fugit ratione dicta mollitia. Officiis ad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row gx-5">
+
+                @*   @if (_cars != null)
+                    {
+                    foreach ( var x in _cars)
+                    {
+                    <div class ="col">
+
+                    <div class="card shadow mb-2">
+                    <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />
+                    <div class="card-body">
+
+                    <h3 class="card-title">@x.Make</h3>
+                    <p class="card-text">@x.Model</p>
+                    <p class="card-text">@x.CategoryId</p>
+                    </div>
+
+                    <a href="/" class="btn btn-primary stretched-link">Click</a>
+                    </div>
+                    </div>
+
+                    }
+                    }*@
+
+            </div>
+        </div>
+        <!-- Call to action-->
+    </section>
+</main>
+<!-- Footer-->
+<footer class="bg-dark py-4 mt-auto">
+    <div class="container px-5">
+        <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+            <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
+            <div class="col-auto">
+                <a class="link-light small" href="#!">Privacy</a>
+                <span class="text-white mx-1">&middot;</span>
+                <a class="link-light small" href="#!">Terms</a>
+                <span class="text-white mx-1">&middot;</span>
+                <a class="link-light small" href="#!">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Bootstrap core JS-->
+<!-- Core theme JS-->
 @code {
 
-    [Inject] HttpClient ?HttpClient { get; set; }
-    [Inject] ILocalStorageService ?LocalStorageService { get; set; }
-    [Inject] NavigationManager ?NavigationManager { get; set; }
-    [Inject] InMemoryDatabaseCache ?InMemoryDatabaseCache { get; set; }
-    [Inject] AuthenticationStateProvider ?AuthenticationStateProvider { get; set; }
-    [Parameter] public Category ?Category { get; set; }
-    [Parameter] public Car ?Cars { get; set; }
-    [Parameter] public Booking ?Bookings { get; set; }
-    [CascadingParameter] protected Task<AuthenticationState> ?AuthenticationState { get; set; } 
+    [Inject] HttpClient? HttpClient { get; set; }
+    [Inject] ILocalStorageService? LocalStorageService { get; set; }
+    [Inject] NavigationManager? NavigationManager { get; set; }
+    [Inject] InMemoryDatabaseCache? InMemoryDatabaseCache { get; set; }
+    [Inject] AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    [Parameter] public Category Category { get; set; }
+    [Parameter] public Car Cars { get; set; }
+    [Parameter] public Booking Bookings { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
 
 
-    List<Car> ?_cars =  null;
-    List<Category> ?_categories = null;
-    List<Booking> ?_bookings = null;
+    List<Car> _cars = null;
+    List<Category>? _categories = null;
+    List<Booking>? _bookings = null;
+
+    private static readonly HttpClient client = new HttpClient();
 
     protected override async Task OnInitializedAsync()
     {
+
+
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+
+            Console.WriteLine(savedToken);
+
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            Console.WriteLine("heroes"+ user.Identity.Name);
+
+            StateHasChanged();
+        }
+
+        HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
+
+        _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
+
 
         InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
 
@@ -177,43 +188,23 @@
 
         if (InMemoryDatabaseCache.Cars == null)
         {
-            try{
+            try
+            {
                 await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
 
 
                 _cars = InMemoryDatabaseCache.Cars;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                
+
             }
         }
 
-        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
-        {
-            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
 
-            Console.WriteLine(savedToken);
-
-            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
-
-            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
-
-            StateHasChanged();
-        }
-
-        var user = (await AuthenticationState).User;
-
-        if (user.Identity.IsAuthenticated == true)
-        {
-            Console.WriteLine(user.ToString());
-            Console.WriteLine("whatsupp");
-            Console.WriteLine(user.Identity.Name);
-        }   
-    
     }
 
-   
+
 
     public void Dispose()
     {
@@ -221,9 +212,9 @@
         InMemoryDatabaseCache.OnCategoriesDataChanged -= StateHasChanged;
 
     }
-    
-    
- 
-   
+
+
+
+
 
 }

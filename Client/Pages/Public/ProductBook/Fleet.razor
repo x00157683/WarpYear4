@@ -15,38 +15,8 @@
 @using Blazorise
 
 
-<head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Warp</title>
-    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/">
-
-    <link rel="shortcut icon" href="assets/images/favicon.ico" />
-</head>
-
-
-
 <NavB />
-
-<PageTitle>Warp</PageTitle>
-
-<body class="d-flex flex-column h-100">
-
-
-    <!--The div element for the map -->
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-
-
-
     <main class="flex-shrink-0">
-
-        <div id="map"></div>
-
-
         <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
         <section class="py-5">
             <div class="container px-5 my-5">
@@ -55,10 +25,13 @@
                         <div class="text-center">
                             <h2 class="fw-bolder">From our Feet</h2>
                       <NotAuthorizeView>
-                          <div class="px-2">
-                          <a href="/register" class="my-3 btn btn-primary stretched-link">Sign Up</a>
+                          @if (_isSignedOut == true)
+                            {
+                                <div class="px-2">
+                                    <a href="/register" class="my-3 btn btn-primary stretched-link">Sign Up</a>
                           <br />
                           </div>
+                            }
                           </NotAuthorizeView>
                         </div>
                     </div>
@@ -73,7 +46,7 @@
 
                             <div class="col-4">
                                 <div class="card shadow mb-2">
-                                    <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />
+                                   @* <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />*@
                                     <div class="card-body">
 
                                         <h3 class="card-title"> @x.Make @x.Model</h3>
@@ -83,8 +56,8 @@
                                         <p class="card-text">Day $80</p>
 
                                         
-                                          <Rating Color="Color.Primary" @bind-SelectedValue="@x.OverallRating" MaxValue="5" />
-                                    <p> @x.OverallRating</p>
+                                          @*<Rating Color="Color.Primary" @bind-SelectedValue="@x.OverallRating" MaxValue="5" />
+                                    <p> @x.OverallRating</p>*@
                                     </div>
                                     <AuthorizeView>
                                         <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Book</a>
@@ -116,7 +89,7 @@
         </div>
     </footer>
 
-</body>
+
 
 
 @code {
@@ -128,11 +101,12 @@
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     [Parameter] public Car Cars { get; set; }
     [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
-
+    bool _isSignedOut { get; set; } = true;
 
     List<Car> _cars = new List<Car>();
 
     int SelectedValue { get; set; } 
+    int OverallValue { get; set; } 
 
     private static readonly HttpClient client = new HttpClient();
 
@@ -155,6 +129,18 @@
 
             StateHasChanged();
         }
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+         Console.WriteLine("unnhelpp" + user.Identity.Name);
+
+        if (user.Identity.IsAuthenticated == true)
+        {
+            _isSignedOut = false;
+        }  
+
+
 
     }
 

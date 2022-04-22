@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Server.Data.Migrations
 {
-    public partial class addedFirst : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,16 +28,18 @@ namespace Server.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
-                    FirstName = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
+                    Password = table.Column<string>(type: "TEXT", maxLength: 80, nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
+                    ConfirmPassword = table.Column<string>(type: "TEXT", nullable: true),
+                    Dob = table.Column<DateOnly>(type: "TEXT", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
                     Balance = table.Column<double>(type: "REAL", nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,7 +53,7 @@ namespace Server.Data.Migrations
                     CategoryId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
                     PriceRate = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
@@ -215,9 +217,9 @@ namespace Server.Data.Migrations
                 columns: table => new
                 {
                     BookingId = table.Column<string>(type: "TEXT", nullable: false),
-                    StartTime = table.Column<string>(type: "TEXT", nullable: false),
+                    StartTime = table.Column<string>(type: "TEXT", nullable: true),
                     StopTime = table.Column<string>(type: "TEXT", nullable: true),
-                    Location = table.Column<string>(type: "TEXT", nullable: false),
+                    Location = table.Column<string>(type: "TEXT", nullable: true),
                     Cost = table.Column<double>(type: "REAL", nullable: false),
                     IsCreated = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsComplete = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -227,12 +229,6 @@ namespace Server.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bookings", x => x.BookingId);
-                    table.ForeignKey(
-                        name: "FK_Bookings_AspNetUsers_UserEmail",
-                        column: x => x.UserEmail,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Bookings_Cars_CarId",
                         column: x => x.CarId,
@@ -327,11 +323,6 @@ namespace Server.Data.Migrations
                 name: "IX_Bookings_CarId",
                 table: "Bookings",
                 column: "CarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bookings_UserEmail",
-                table: "Bookings",
-                column: "UserEmail");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cars_CategoryId",

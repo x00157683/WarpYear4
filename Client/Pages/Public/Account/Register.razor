@@ -11,35 +11,11 @@
 @using System.Text;
 
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Purple Admin</title>
-    <!-- plugins:css -->
-    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico" />
 
-</head>
-<Client.Components.Public.Shared.NavB />
 
 <PageTitle>Warp</PageTitle>
 
-<body class="d-flex flex-column h-100">
-
-
-    <!--The div element for the map -->
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-
+<div class=" pt-5">
 
 
     <main class="flex-shrink-0">
@@ -65,29 +41,25 @@
 
                             <EditForm Model="_userToRegister" OnValidSubmit="RegisterUser">
                                 <DataAnnotationsValidator />
-                                <div class="form-group my-3">
+                                <div class="form-group my-3 text-body">
                                     <label for="email">Email address</label>
-                                    <InputText @bind-Value="_userToRegister.EmailAddress" id="email" class="form-control" />
-                                    <ValidationMessage For="@(() => _userToRegister.EmailAddress)" />
+                                    <InputText @bind-Value="_userToRegister.Email" id="email" class="form-control" />
+                                    <ValidationMessage For="@(() => _userToRegister.Email)" />
                                 </div>
-                                <div class="form-group my-3">
+                                <div class="form-group my-3 text-body">
                                     <label for="first">First Name</label>
-                                    <InputText @bind-Value="_userToRegister.FirstName" id="first" class="form-control" />
-                                    <ValidationMessage For="@(() => _userToRegister.FirstName)" />
+                                    <InputText @bind-Value="_userToRegister.Name" id="first" class="form-control" />
+                                    <ValidationMessage For="@(() => _userToRegister.Name)" />
                                 </div>
-                                <div class="form-group my-3">
-                                    <label for="last">Last Name</label>
-                                    <InputText @bind-Value="_userToRegister.LastName" id="last" class="form-control" />
-                                    <ValidationMessage For="@(() => _userToRegister.LastName)" />
-                                </div>
+                             
 
-                                <div class="form-group my-3">
+                                <div class="form-group my-3 text-body">
                                     <label for="password">Password</label>
                                     <InputText @bind-Value="_userToRegister.Password" id="password" type="password" class="form-control" />
                                     <ValidationMessage For="@(() => _userToRegister.Password)" />
                                 </div>
 
-                                <div class="form-group my-3">
+                                <div class="form-group my-3 text-body">
                                     <label for="phonenumber">Phone Number</label>
                                     <InputText @bind-Value="_userToRegister.PhoneNumber" id="phonenumber" class="form-control" />
                                     <ValidationMessage For="@(() => _userToRegister.PhoneNumber)" />
@@ -103,7 +75,7 @@
                                 <ValidationSummary />
 
                                 <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
-                                    <i class="far fa-save"></i> Register
+                                    <i class="far fa-save text-body"></i> Register
                                 </button>
 
                             </EditForm>
@@ -143,7 +115,7 @@
     <!-- Bootstrap core JS-->
     <!-- Core theme JS-->
 
-</body>
+</div>
 
 
 

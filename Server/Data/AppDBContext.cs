@@ -29,12 +29,10 @@ namespace Server.Data
 
 
             modelBuilder.Entity<AppUser>()
-                .Property(e => e.FirstName)
+                .Property(e => e.Name)
                 .HasMaxLength(250);
 
-            modelBuilder.Entity<AppUser>()
-                .Property(e => e.LastName)
-                .HasMaxLength(250);
+     
 
             modelBuilder.Entity<AppUser>()
                 .Property(e => e.PhoneNumber)
@@ -65,10 +63,10 @@ namespace Server.Data
 
             });
 
-            modelBuilder.Entity<Booking>()
-          .HasOne(p => p.AppUser)
-          .WithMany(b => b.Bookings)
-          .HasForeignKey(p => p.UserEmail).OnDelete(DeleteBehavior.Cascade);
+          //  modelBuilder.Entity<Booking>()
+          //.HasOne(p => p.AppUser)
+          //.WithMany(b => b.Bookings)
+          //.HasForeignKey(p => p.UserEmail).OnDelete(DeleteBehavior.Cascade);
 
 
             #region Car Seed

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
+using Server.Email;
 using Shared.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +25,18 @@ namespace Server.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IEmailSender _emailSender;
+        //private readonly EmailHelper _emailHelper;
 
-        public BookingsController(AppDBContext appDBContext, IWebHostEnvironment webHostEnvironment, IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration)
+        public BookingsController(AppDBContext appDBContext, IEmailSender emailSender, IWebHostEnvironment webHostEnvironment, IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration)
         {
             _appDBContext = appDBContext;
             _webHostEnvironment = webHostEnvironment;
             _mapper = mapper;
             _userManager = userManager;
             _configuration = configuration;
+            _emailSender = emailSender;
+            //_emailHelper = emailHelper;
         }
 
         #region CRUD operations
@@ -39,7 +45,7 @@ namespace Server.Controllers
         public async Task<IActionResult> Get()
         {
             //.Include(booking => booking.User)
-            List<Booking> Bookings = await _appDBContext.Bookings.Include(b => b.AppUser).ToListAsync();
+            List<Booking> Bookings = await _appDBContext.Bookings.ToListAsync(); //Include(b => b.AppUser)
 
             return Ok(Bookings);
         }
@@ -58,28 +64,29 @@ namespace Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BookingDTO bookingToCreateDTO)
         {
-            AppUser user = await GetUserById(bookingToCreateDTO.UserEmail);
+          
+            //AppUser user = await GetUserByEmail(bookingToCreateDTO.UserEmail);
 
             Car car = await GetCarbyId(bookingToCreateDTO.CarId);
+            Booking booking = new Booking()
+            {
 
-            Console.WriteLine("carr: "+car.Make);
+                BookingId = bookingToCreateDTO.BookingDTOId,
+                StartTime = bookingToCreateDTO.StartTime.ToString(),
+                UserEmail = bookingToCreateDTO.UserEmail,
+                //AppUser = _user,
+                Location = bookingToCreateDTO.Location,
+                CarId = bookingToCreateDTO.CarId,
+                Car = car,
+            };
 
-            Booking booking =  new Booking();//
-
-            booking.BookingId = bookingToCreateDTO.BookingDTOId;
-            booking.StartTime = bookingToCreateDTO.StartTime.ToString();
-            booking.AppUser = user;
-            booking.Location = bookingToCreateDTO.Location;
-            booking.CarId = bookingToCreateDTO.CarId;
-            booking.Car = car;
-
-
+            await _emailSender.SendEmailAsync("deemclean46@gmail.com", "Booking Sucessful", "New Booking has been created " + booking.BookingId);
+ 
             if (bookingToCreateDTO == null || !ModelState.IsValid)
                 return BadRequest();
             
 
             await _appDBContext.Bookings.AddAsync(booking);
-
 
             bool changesPersistedToDatabase = await PersistChangesToDatabase();
 
@@ -89,14 +96,13 @@ namespace Server.Controllers
             }
             else
             {
+                await _emailSender.SendEmailAsync("deemclean46@gmail.com","Booking Sucessful","New Booking has been created "+booking.BookingId);
+
                 return NoContent();
             }
 
-
         }
 
-
-       
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] BookingDTO updatedBookingDTO)
         {
@@ -226,7 +232,7 @@ namespace Server.Controllers
 
         [NonAction]
         [ApiExplorerSettings(IgnoreApi = true)]
-        private async Task<AppUser> GetUserById(string emailIn)
+        private async Task<AppUser> GetUserByEmail(string emailIn)
         {
              
 

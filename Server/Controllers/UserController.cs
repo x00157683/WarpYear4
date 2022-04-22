@@ -35,9 +35,10 @@ public class UserController : ControllerBase
 
         if (userForRegistration == null || !ModelState.IsValid)
             return BadRequest();
-        var user = new AppUser { UserName = userForRegistration.EmailAddress, Email = userForRegistration.EmailAddress,
-                                FirstName = userForRegistration.FirstName,LastName=userForRegistration.LastName,
-                                PhoneNumber=userForRegistration.PhoneNumber};
+        var user = new AppUser { UserName = userForRegistration.Email, Email = userForRegistration.Email,
+                                Name = userForRegistration.Name,
+                                PhoneNumber=userForRegistration.PhoneNumber,
+                                Password = password};
 
         
 
@@ -45,16 +46,7 @@ public class UserController : ControllerBase
         if (identityResult.Succeeded == true)
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var confirmationLink = Url.Action("ConfirmEmail", "Email", new { token, email = user.Email }, Request.Scheme);
-            EmailHelper emailHelper = new EmailHelper();
-            bool emailResponse = emailHelper.SendEmail(user.Email, confirmationLink);
-
-            if (emailResponse)
-                return RedirectToAction("Index");
-            else
-            {
-                // log email failed 
-            }
+         
 
             return Ok(identityResult.Succeeded);
         }
@@ -76,27 +68,33 @@ public class UserController : ControllerBase
     [AllowAnonymous]
     [Route("signin")]
     [HttpPost]
-    public async Task<IActionResult> SignIn([FromBody] User userForSignIn)
+    public async Task<IActionResult> SignIn([FromBody] User user)
     {
-        string username = userForSignIn.EmailAddress;
-        string password = userForSignIn.Password;
+        string username = user.EmailAddress;
+        string password = user.Password;
 
-        Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(username,password,false,false);
+        Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(username, password, false, false);
 
 
-        if (signInResult.Succeeded == true)
+
+        if (signInResult.Succeeded)
         {
-            AppUser identityUser = await _userManager.FindByIdAsync(username);
+            AppUser identityUser = await _userManager.FindByNameAsync(username);
             string JSONWebTokenAsString = await GenerateJSONWebToken(identityUser);
-            return Ok(JSONWebTokenAsString);
+            return Ok(JSONWebTokenAsString+identityUser.Email);
         }
+        //bool emailStatus = await _userManager.IsEmailConfirmedAsync(identityUser);
+        //if (emailStatus == false)
+        //{
+        //    ModelState.AddModelError(nameof(login.Email), "Email is unconfirmed, please confirm it first");
+        //}
+
         else
         {
-            return Unauthorized(userForSignIn);
-        }
-      
 
-        return StatusCode(201);
+            Console.WriteLine("Not today chap");
+            return Unauthorized(user);
+        }
     }
 
     [NonAction]
@@ -189,15 +187,14 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> UpdateUser([FromBody] UserDTO userForRegistration)
     {
-        AppUser user = await _userManager.FindByIdAsync(userForRegistration.EmailAddress);
+        AppUser user = await _userManager.FindByIdAsync(userForRegistration.Email);
 
 
         if (user != null)
         {
-            user.UserName = userForRegistration.EmailAddress;
-            user.Email = userForRegistration.EmailAddress;
-            user.FirstName = userForRegistration.FirstName;
-            user.LastName = userForRegistration.LastName;
+            user.UserName = userForRegistration.Email;
+            user.Email = userForRegistration.Email;
+            user.Name = userForRegistration.Name;
             user.PhoneNumber = userForRegistration.PhoneNumber;
             IdentityResult identityResult = await _userManager.UpdateAsync(user);
 

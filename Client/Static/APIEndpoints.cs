@@ -24,5 +24,6 @@
         internal static readonly string s_book = $"{SererBaseUrl}/api/bookings/book";
         internal readonly static string s_users = $"{SererBaseUrl}/api/user/";
         internal readonly static string s_userupdate = $"{SererBaseUrl}/api/user/update";
+        internal readonly static string s_email = $"{SererBaseUrl}/api/email/password";
     }
 }

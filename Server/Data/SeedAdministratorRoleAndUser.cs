@@ -41,11 +41,11 @@ namespace Server.Data
 
                 var user = new AppUser { 
                
-                    FirstName = AdministratorUserName,
+                    Name = AdministratorUserName,
                     UserName = AdministratorUserName, 
                     Email = AdministratorUserName,
-                    LastName = AdministratorUserName,
                     PhoneNumber = "0869887410",
+                    Password = "Year4!"
 
                 
                 };

@@ -1,6 +1,5 @@
 ﻿@page "/bookcar/{Id:int}"
 @inject HttpClient Http
-
 @using Blazored.LocalStorage
 @using Client.Components.Public.Shared
 @using Client.Components.Public.Warp
@@ -10,24 +9,9 @@
 @using System.Net
 @using global::Shared.Models
 @using System.Net.Http.Headers
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Net.Http;
-
-
-<head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Warp</title>
-    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/">
-
-    <link rel="shortcut icon" href="assets/images/favicon.ico" />
-</head>
-
+@using System.Collections.Generic;
+@using System.Text.Json;
+@using System.Net.Http;
 
 
 <NavB />
@@ -140,56 +124,39 @@ using System.Net.Http;
 @code {
 
     [Inject] HttpClient HttpClient { get; set; }
-    [Inject] ILocalStorageService? LocalStorageService { get; set; }
-    [Inject] NavigationManager? NavigationManager { get; set; }
-    [Inject] InMemoryDatabaseCache? InMemoryDatabaseCache { get; set; }
-    [Inject] AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    [Inject] ILocalStorageService LocalStorageService { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
+    [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
     [Parameter] public int Id { get; set; }
-    [CascadingParameter] protected Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
 
 
-    List<Car>? _cars = null;
-    List<AppUser>? _users = null;
-    AppUser ?_user = null;
+    List<Car> _cars = null;
+    List<AppUser> _users = null;
+    AppUser _user = new AppUser();
 
     private bool _attemptingToCreate { get; set; }= false;
     private bool _attemptToCreateFailed { get; set; }= false;
     private bool _createSuccessful { get; set; }= false;
-    private BookingDTO _booking = new BookingDTO() { };
-    Car? ThisCar = null;
+    private BookingDTO _booking = new BookingDTO();
+    Car ThisCar = null;
     public DateTime? StartValue { get; set; } = DateTime.Now;
     public DateTime? EndValue { get; set; } = DateTime.Now.AddDays(10);
     private bool _attemptingToRegister = false;
     private string? _attemptToRegisterFailed = "";
     private bool _registerSuccessful = false;
     private bool _registerFailed = false;
-
-
-
     private static readonly HttpClient client = new HttpClient();
 
 
 
     protected override async Task OnInitializedAsync()
     {
-        _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
-
-        HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
 
 
-        _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
-
-
-        foreach (var i in _cars)
-        {
-            if (i.CarId == Id)
-            {
-                ThisCar = i;
-            }
-        }
-
-        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
         {
             string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
 
@@ -202,12 +169,29 @@ using System.Net.Http;
             StateHasChanged();
         }
 
-        var user = (await AuthenticationState).User;
+        _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
 
-        if (user.Identity.IsAuthenticated == true)
+        HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
+
+
+        _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
+
+
+        AppUser _user = await GetUser();
+
+        Console.WriteLine("In usasyncc", _user.Email.ToString());
+
+        foreach (var i in _cars)
         {
-
+            if (i.CarId == Id)
+            {
+                ThisCar = i;
+            }
         }
+
+       
+
+     
 
     }
 
@@ -215,7 +199,11 @@ using System.Net.Http;
 
         var user2 = (await AuthenticationState).User;
 
+        Console.WriteLine("In GetUser"+  user2.Identity.Name.ToString());
+
         AppUser _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
+
+        Console.WriteLine("In user???" + _user.Email);
 
         return _user;
     }
@@ -227,7 +215,7 @@ using System.Net.Http;
 
         _booking.BookingDTOId = Guid.NewGuid().ToString();
 
-        _booking.UserEmail = _user.UserName;
+        _booking.UserEmail = _user.Email;
 
         _booking.CarId = Id;
 
@@ -245,12 +233,13 @@ using System.Net.Http;
 
         
 
+        
+
         if (response.IsSuccessStatusCode)
         {
             _registerSuccessful = true;
+
             NavigationManager.NavigateTo($"/bookcomplete/{_booking.BookingDTOId}");
- 
-         
 
         }
         else
