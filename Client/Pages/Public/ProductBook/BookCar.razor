@@ -37,14 +37,15 @@
                 <div class="row gx-5 justify-content-center">
                     <div class="col-lg-8 col-xl-6">
                         <div class="text-center">
-                            <h2 class="fw-bolder">From our Fleet</h2>
-                            <p class="lead fw-normal text-muted mb-5">
-                                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                                Eaque fugit ratione dicta mollitia. Officiis ad.
-                            </p>
+                            <h5 class="fw-bolder">Insurance Included</h5>
+                            <h5 class="fw-bolder">First 20Km Free</h5>
                         </div>
                     </div>
                 </div>
+
+
+
+
 
                 <div class="row gx-5">
 
@@ -67,29 +68,20 @@
                                             <p class="card-text">Tier: @x.Category.Name</p>
                                             <p class="card-text">Range: @x.Range Km</p>
                                             <p class="card-text">Price: $@x.PricePerUnit</p>
-                                                   <EditForm Model="_booking" OnValidSubmit="CreateBooking">
-                                            <DataAnnotationsValidator />
-                                            <div class="form-group my-3 mx-2 ">
-                                              
-                                           @*       <label for="first">Start Date</label>
-                                                <InputText @bind-Value="_booking.StartTime" id="first" @bind-Value:format="dd/MM/yyyy" class="form-control" placeholder= />
-                                                <ValidationMessage For="@(() => _booking.StartTime)" />
+                                            <EditForm Model="_booking" OnValidSubmit="CreateBooking">
+                                                <DataAnnotationsValidator />
+                                                <div class="form-group my-3 mx-2 ">
+                                                </div>
 
-                                                <label for="end">End Date</label>
-                                                <InputText @bind-Value="_booking.StopTime" id="end" @bind-Value:format="dd/MM/yyyy" class="form-control" />
-                                                <ValidationMessage For="@(() => _booking.StopTime)" />*@
+                                                <ValidationSummary />
 
-                                            </div>
+                                                <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
+                                                    <i class="far fa-save"></i> Unlock
+                                                </button>
 
-                                            <ValidationSummary />
-
-                                            <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
-                                                <i class="far fa-save"></i> Unlock
-                                            </button>
-
-                                        </EditForm>
+                                            </EditForm>
                                         </div>
-                                 
+
 
                                     </div>
                                 </div>
@@ -98,7 +90,37 @@
                         }
                     }
                 </div>
+                <div class="row" id=map>
+
+                    <div class="d-flex align-items-center justify-content-center">
+
+                        <h3>
+                            <RadzenCheckBox @bind-Value="@showMarker">
+
+                            </RadzenCheckBox>
+                        </h3>
+
+                        <RadzenGoogleMap style="height:450px; width:850px;" Zoom="13" Center="@(new GoogleMapPosition(){Lat=53.350140, Lng =-6.266155 })" MapClick="@OnMapClick" MarkerClick="@OnMarkerClick">
+
+                            <Markers>
+                                <RadzenGoogleMapMarker Title="Car" Label="Car" Position="@(new GoogleMapPosition(){Lat=53.350140, Lng =-6.266155 })"></RadzenGoogleMapMarker>
+
+                                @if (showMarker)
+                                {
+
+                                    <RadzenGoogleMapMarker Title="Car1" Label="Car2" Position="@(new GoogleMapPosition(){Lat=52.350140, Lng =-7.266155 })"></RadzenGoogleMapMarker>
+                                }
+
+                            </Markers>
+
+                        </RadzenGoogleMap>
+
+                    </div>
+                    <div class="col-xl-6"></div>
+                    <label>Position: </label> @clickedPositon
+                </div>
             </div>
+
             <!-- Call to action-->
         </section>
     </main>
@@ -137,26 +159,32 @@
     List<AppUser> _users = null;
     AppUser _user = new AppUser();
 
-    private bool _attemptingToCreate { get; set; }= false;
-    private bool _attemptToCreateFailed { get; set; }= false;
-    private bool _createSuccessful { get; set; }= false;
     private BookingDTO _booking = new BookingDTO();
     Car ThisCar = null;
     public DateTime? StartValue { get; set; } = DateTime.Now;
     public DateTime? EndValue { get; set; } = DateTime.Now.AddDays(10);
-    private bool _attemptingToRegister = false;
-    private string? _attemptToRegisterFailed = "";
-    private bool _registerSuccessful = false;
-    private bool _registerFailed = false;
+    public int zoom = 7;
+    bool showMarker;
+    string clickedPositon = "";
     private static readonly HttpClient client = new HttpClient();
 
+    void OnMapClick(GoogleMapClickEventArgs args)
+    {
+        clickedPositon = $"Map is clicked LAT :{args.Position.Lat} LNG :{args.Position.Lng}";
 
+    }
+
+    void OnMarkerClick(RadzenGoogleMapMarker args)
+    {
+        clickedPositon = $" {args.Title} is clicked LAT :{args.Position.Lat} LNG :{args.Position.Lng}";
+
+    }
 
     protected override async Task OnInitializedAsync()
     {
 
 
-         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
         {
             string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
 
@@ -179,8 +207,6 @@
 
         AppUser _user = await GetUser();
 
-        Console.WriteLine("In usasyncc", _user.Email.ToString());
-
         foreach (var i in _cars)
         {
             if (i.CarId == Id)
@@ -189,17 +215,14 @@
             }
         }
 
-       
-
-     
-
     }
 
-    private async Task<AppUser> GetUser(){
+    private async Task<AppUser> GetUser()
+    {
 
         var user2 = (await AuthenticationState).User;
 
-        Console.WriteLine("In GetUser"+  user2.Identity.Name.ToString());
+        Console.WriteLine("In GetUser" + user2.Identity.Name.ToString());
 
         AppUser _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
 
@@ -227,17 +250,17 @@
 
         _booking.StartTime = DateTime.UtcNow.ToString();
 
-        _attemptingToCreate = true;
+
 
         HttpResponseMessage response = await HttpClient.PostAsJsonAsync<BookingDTO>(APIEndpoints.s_book, _booking);
 
-        
 
-        
+
+
 
         if (response.IsSuccessStatusCode)
         {
-            _registerSuccessful = true;
+
 
             NavigationManager.NavigateTo($"/bookcomplete/{_booking.BookingDTOId}");
 
@@ -245,12 +268,12 @@
         else
         {
             string serverError = await response.Content.ReadAsStringAsync();
-            _attemptToRegisterFailed = $"{serverError} The following error has occured";
-            _registerFailed = true;
+            String error = $"{serverError} The following error has occured";
+
 
         }
 
-		_attemptingToCreate = false;
+
     }
 
 

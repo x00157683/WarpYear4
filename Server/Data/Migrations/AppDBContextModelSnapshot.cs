@@ -260,6 +260,9 @@ namespace Server.Data.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Make")
                         .IsRequired()
                         .HasColumnType("TEXT");

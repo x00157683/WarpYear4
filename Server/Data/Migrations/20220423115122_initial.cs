@@ -196,6 +196,7 @@ namespace Server.Data.Migrations
                     PricePerUnit = table.Column<double>(type: "REAL", nullable: false),
                     isLocked = table.Column<bool>(type: "INTEGER", nullable: false),
                     Rating = table.Column<int>(type: "INTEGER", nullable: false),
+                    Location = table.Column<string>(type: "TEXT", nullable: true),
                     Reviews = table.Column<int>(type: "INTEGER", nullable: false),
                     RangeLeft = table.Column<double>(type: "REAL", nullable: false),
                     Active = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -254,33 +255,33 @@ namespace Server.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
-                values: new object[] { 1, false, 1, "Tesla", "Model X", 0, 7.0, 250.0, 100.0, 0, 0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Location", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 1, false, 1, null, "Tesla", "Model X", 0, 7.0, 250.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
-                values: new object[] { 2, false, 2, "Tesla", "Model S", 0, 7.0, 200.0, 100.0, 0, 0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Location", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 2, false, 2, null, "Tesla", "Model S", 0, 7.0, 200.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
-                values: new object[] { 3, false, 3, "Porsche", "Taycan", 0, 7.0, 270.0, 100.0, 0, 0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Location", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 3, false, 3, null, "Porsche", "Taycan", 0, 7.0, 270.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
-                values: new object[] { 4, false, 1, "Nissan", "Leaf", 0, 7.0, 150.0, 100.0, 0, 0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Location", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 4, false, 1, null, "Nissan", "Leaf", 0, 7.0, 150.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
-                values: new object[] { 5, false, 2, "Honda", "Up!", 0, 7.0, 220.0, 100.0, 0, 0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Location", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 5, false, 2, null, "Honda", "Up!", 0, 7.0, 220.0, 100.0, 0, 0, true });
 
             migrationBuilder.InsertData(
                 table: "Cars",
-                columns: new[] { "CarId", "Active", "CategoryId", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
-                values: new object[] { 6, false, 3, "Toyota", "GT", 0, 7.0, 200.0, 100.0, 0, 0, true });
+                columns: new[] { "CarId", "Active", "CategoryId", "Location", "Make", "Model", "OverallRating", "PricePerUnit", "Range", "RangeLeft", "Rating", "Reviews", "isLocked" },
+                values: new object[] { 6, false, 3, null, "Toyota", "GT", 0, 7.0, 200.0, 100.0, 0, 0, true });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

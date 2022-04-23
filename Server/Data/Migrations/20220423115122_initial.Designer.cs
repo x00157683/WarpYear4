@@ -11,7 +11,7 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20220422135107_initial")]
+    [Migration("20220423115122_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -261,6 +261,9 @@ namespace Server.Data.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Make")
                         .IsRequired()

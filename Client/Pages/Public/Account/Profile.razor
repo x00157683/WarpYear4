@@ -39,96 +39,83 @@
 
     <!--The div element for the map -->
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-                <ul class="nav">
-                    <li class="nav-item nav-profile">
-                        <a href="#" class="nav-link">
-                            <div class="nav-profile-image">
-                                <!--<img src="" alt="profile">-->
-                                <span class="login-status online"></span>
-                                <!--change to offline or busy as needed-->
-                            </div>
-                            <div class="nav-profile-text d-flex flex-column">
-                                <span class="font-weight-bold mb-2">Admin</span>
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+            <li class="nav-item nav-profile">
+                <a href="#" class="nav-link">
+                    <div class="nav-profile-image">
+                        <!--<img src="" alt="profile">-->
+                        <span class="login-status online"></span>
+                        <!--change to offline or busy as needed-->
+                    </div>
+                    <div class="nav-profile-text d-flex flex-column">
+                        <span class="font-weight-bold mb-2">Admin</span>
 
-                            </div>
-                            <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin">
-                            <span class="menu-title">Profile</span>
-                            <i class="mdi mdi-home menu-icon"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/cars">
-                            <span class="menu-title">Account</span>
-                            <i class="menu-arrow"></i>
-                            <i class="mdi mdi-car-connected menu-icon"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/booking">
-                            <span class="menu-title">History</span>
-                            <i class="mdi mdi-contacts menu-icon"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/users">
-                            <span class="menu-title">Edit Profile</span>
-                            <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-                        </a>
-                    </li>
-
-
-
-                </ul>
-            </nav>
+                    </div>
+                    <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">
+                    <span class="menu-title">Profile</span>
+                    <i class="mdi mdi-home menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/cars">
+                    <span class="menu-title">Account</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-car-connected menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/booking">
+                    <span class="menu-title">History</span>
+                    <i class="mdi mdi-contacts menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/users">
+                    <span class="menu-title">Edit Profile</span>
+                    <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
     <main class="flex-shrink-0">
 
         <div id="map"></div>
 
         <div class="container px-5 my-2">
-        
+
             <div class="row gx-5">
-                @if (_book!= null)
+                @if (_book != null)
                 {
 
-                      <div class="py-4">
-        <div class=" row form-group ">
-            <div class="col-6 offset-3 ">
-                <div class="card border">
-                    <div class="card-body px-lg-5 pt-4">
-                   
+                    <div class="py-4">
+                        <div class=" row form-group ">
+                            <div class="col-6 offset-3 ">
+                                <div class="card border">
+                                    <div class="card-body px-lg-5 pt-4">
 
+                                        <h3 class="card-title">Make: @_book.StopTime</h3>
+                                        <h3 class="card-title">Make: @_book.Location</h3>
+                                        <h3 class="card-title">Make: @_book.UserEmail</h3>
+                                        @*<h3 class="card-title">Make: @_car.Location</h3>*@
+                                        <p class="card-text">Amount Due: $@_cost</p>
 
-                                <h3 class="card-title">Make: @_book.StopTime</h3>
-                                <h3 class="card-title">Make: @_book.Location</h3>
-                                <h3 class="card-title">Make: @_book.UserEmail</h3>
-                                <p class="card-text">Amount Due: $@_cost</p>
-                      
-
-                                <button onclick="@EndBooking()" class="btn btn-success shadow d-block mt-5 md-f-size-1-5">
-                                    <i class="far fa-save"></i> End Booking
-                                </button>
-
-                     
+                                        <button onclick="@EndBooking()" class="btn btn-success shadow d-block mt-5 md-f-size-1-5">
+                                            <i class="far fa-save"></i> End Booking
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-              
-                </div>
-            </div>
-        </div>
-    </div>
 
-
-              
-                  
                 }
             </div>
         </div>
-
-
     </main>
     <!-- Footer-->
     <footer class="bg-dark py-4 mt-auto">
@@ -290,7 +277,7 @@
 
     private BookingDTO GetBooking()
     {
-        
+
 
         if (_bookings != null)
         {
@@ -299,7 +286,7 @@
 
                 if (i.UserEmail.ToUpper() == _user.UserName.ToUpper() && i.IsComplete != true)
                 {
-                    
+
                     _book.BookingDTOId = i.BookingId;
                     _book.CarId = i.CarId;
                     _book.IsCreated = i.IsCreated;

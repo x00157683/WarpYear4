@@ -1,0 +1,160 @@
+﻿@page "/fleet/{CategoryName}"
+@inject HttpClient Http
+@implements IDisposable
+@using Blazored.LocalStorage
+@using Client.Components.Public.Shared
+@using Client.Components.Public.Warp
+@using Client.Providers
+@using Client.Services
+@using Newtonsoft.Json
+@using global::Shared.Models
+@using System.Net.Http.Headers
+@using System.Collections.Generic;
+@using System.Text.Json;
+@using System.Net.Http;
+@using Blazorise
+
+
+<NavB />
+    <main class="flex-shrink-0">
+        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+        <section class="py-5">
+            <div class="container px-5 my-5">
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-8 col-xl-6">
+                        <div class="text-center">
+                            <h2 class="fw-bolder">From our Feet</h2>
+                      <NotAuthorizeView>
+                          @if (_isSignedOut == true)
+                            {
+                                <div class="px-2">
+                                    <a href="/register" class="my-3 btn btn-primary stretched-link">Sign Up</a>
+                          <br />
+                          </div>
+                            }
+                          </NotAuthorizeView>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row gx-5">
+
+                    @if (_cars != null)
+                    {
+                        foreach (var x in _cars)
+                        {
+
+                            <div class="col-4">
+                                <div class="card shadow mb-2">
+                                   @* <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />*@
+                                    <div class="card-body">
+
+                                        <h3 class="card-title"> @x.Make @x.Model</h3>
+                                        <p class="card-text"></p>
+                                        <p class="card-text">Range: @x.Range</p>
+                                        <p class="card-text">Hour $@x.PricePerUnit</p>
+                                        <p class="card-text">Day $80</p>
+
+                                        
+                                          @*<Rating Color="Color.Primary" @bind-SelectedValue="@x.OverallRating" MaxValue="5" />
+                                    <p> @x.OverallRating</p>*@
+                                    </div>
+                                    <AuthorizeView>
+                                        <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Book</a>
+                                    </AuthorizeView>
+                               
+                                </div>
+                            </div>
+                            <br />
+                        }
+                    }
+                </div>
+            </div>
+            <!-- Call to action-->
+        </section>
+    </main>
+    <!-- Footer-->
+    <footer class="bg-dark py-4 mt-auto">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#!">Privacy</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Terms</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+
+@code {
+
+    [Inject] HttpClient HttpClient { get; set; }
+    [Inject] ILocalStorageService LocalStorageService { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
+    [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    [Parameter] public string CategoryName { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
+    bool _isSignedOut { get; set; } = true;
+
+    List<Car> _cars = new List<Car>();
+
+    int SelectedValue { get; set; } 
+    int OverallValue { get; set; } 
+
+    private static readonly HttpClient client = new HttpClient();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_categoriesWithCars);
+
+        _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
+
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+
+            Console.WriteLine(savedToken);
+
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+            StateHasChanged();
+        }
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated == true)
+        {
+            _isSignedOut = false;
+        }  
+
+
+
+    }
+
+    public int GetRating(int id){
+
+        return 1;
+
+    }
+
+    public void Dispose()
+    {
+
+        InMemoryDatabaseCache.OnCategoriesDataChanged -= StateHasChanged;
+
+    }
+
+
+}
+

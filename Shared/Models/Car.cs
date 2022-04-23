@@ -31,6 +31,7 @@ namespace Shared.Models
 
         public int Rating { get; set; }
 
+        public string Location { get; set; }
         public int Reviews { get; set; }
 
         public double RangeLeft { get; set; }

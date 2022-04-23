@@ -16,78 +16,81 @@
 
 
 <NavB />
-    <main class="flex-shrink-0">
-        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-        <section class="py-5">
-            <div class="container px-5 my-5">
-                <div class="row gx-5 justify-content-center">
-                    <div class="col-lg-8 col-xl-6">
-                        <div class="text-center">
-                            <h2 class="fw-bolder">From our Feet</h2>
-                      <NotAuthorizeView>
-                          @if (_isSignedOut == true)
+<main class="flex-shrink-0">
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <section class="py-5">
+        <div class="container px-5 my-5">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-lg-8 col-xl-6">
+                    <div class="text-center">
+                        <h2 class="fw-bolder">From our Feet</h2>
+
+                       
+
+                        <NotAuthorizeView>
+                            @if (_isSignedOut == true)
                             {
                                 <div class="px-2">
                                     <a href="/register" class="my-3 btn btn-primary stretched-link">Sign Up</a>
-                          <br />
-                          </div>
+                                    <br />
+                                </div>
                             }
-                          </NotAuthorizeView>
-                        </div>
+                        </NotAuthorizeView>
                     </div>
                 </div>
-
-                <div class="row gx-5">
-
-                    @if (_cars != null)
-                    {
-                        foreach (var x in _cars)
-                        {
-
-                            <div class="col-4">
-                                <div class="card shadow mb-2">
-                                   @* <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />*@
-                                    <div class="card-body">
-
-                                        <h3 class="card-title"> @x.Make @x.Model</h3>
-                                        <p class="card-text"></p>
-                                        <p class="card-text">Range: @x.Range</p>
-                                        <p class="card-text">Hour $@x.PricePerUnit</p>
-                                        <p class="card-text">Day $80</p>
-
-                                        
-                                          @*<Rating Color="Color.Primary" @bind-SelectedValue="@x.OverallRating" MaxValue="5" />
-                                    <p> @x.OverallRating</p>*@
-                                    </div>
-                                    <AuthorizeView>
-                                        <a href="/bookcar/@x.CarId" class="btn btn-primary stretched-link">Book</a>
-                                    </AuthorizeView>
-                               
-                                </div>
-                            </div>
-                            <br />
-                        }
-                    }
-                </div>
             </div>
-            <!-- Call to action-->
-        </section>
-    </main>
-    <!-- Footer-->
-    <footer class="bg-dark py-4 mt-auto">
-        <div class="container px-5">
-            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
-                <div class="col-auto">
-                    <a class="link-light small" href="#!">Privacy</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Terms</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Contact</a>
+
+            <div class="row gx-5 " id="ads">
+
+                @if (_cars != null)
+                {
+                    foreach (var x in _cars)
+                    {
+                           <div class="col-md-4 py-2">
+        <div class="card rounded shadow mb-2">
+            <div class="card-image">
+                <span class="card-notify-badge">@x.Category.Name</span>
+                <span class="card-notify-year">2021</span>
+                <img class="img-fluid" src="https://imageonthefly.autodatadirect.com/images/?USER=eDealer&PW=edealer872&IMG=CAC80HOC021B121001.jpg&width=440&height=262" alt="Alternate Text" />
+            </div>
+            <div class="card-image-overlay m-auto">
+                <span class="card-detail-badge">$80 p/d</span>
+                <span class="card-detail-badge">@x.PricePerUnit p/h</span>
+                <span class="card-detail-badge">Distance: @x.Range KM</span>
+            </div>
+            <div class="card-body text-center">
+                <div class="ad-title m-auto">
+                    <h5>@x.Make @x.Model</h5>
                 </div>
+                <a class="ad-btn" href="/bookcar/@x.CarId">View</a>
             </div>
         </div>
-    </footer>
+    </div>
+    <br />
+    <br />
+                   
+                    }
+                }
+            </div>
+        </div>
+        <!-- Call to action-->
+    </section>
+</main>
+<!-- Footer-->
+<footer class="bg-dark py-4 mt-auto">
+    <div class="container px-5">
+        <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+            <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
+            <div class="col-auto">
+                <a class="link-light small" href="#!">Privacy</a>
+                <span class="text-white mx-1">&middot;</span>
+                <a class="link-light small" href="#!">Terms</a>
+                <span class="text-white mx-1">&middot;</span>
+                <a class="link-light small" href="#!">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
 
 
 
@@ -105,8 +108,8 @@
 
     List<Car> _cars = new List<Car>();
 
-    int SelectedValue { get; set; } 
-    int OverallValue { get; set; } 
+    int SelectedValue { get; set; }
+    int OverallValue { get; set; }
 
     private static readonly HttpClient client = new HttpClient();
 
@@ -133,18 +136,19 @@
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-         Console.WriteLine("unnhelpp" + user.Identity.Name);
+        Console.WriteLine("unnhelpp" + user.Identity.Name);
 
         if (user.Identity.IsAuthenticated == true)
         {
             _isSignedOut = false;
-        }  
+        }
 
 
 
     }
 
-    public int GetRating(int id){
+    public int GetRating(int id)
+    {
 
         return 1;
 
