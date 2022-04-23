@@ -12,7 +12,7 @@ namespace Server.Controllers
 
         [HttpPost]
         [ActionName("create")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Create([FromBody] StripePaymentDTO paymentModel)
         {
             try
@@ -24,6 +24,7 @@ namespace Server.Controllers
                     Mode = "payment",
                     SuccessUrl = domain + "/profile",
                     CancelUrl = domain + "/",
+                    PaymentMethodTypes = new List<string> { "card" },
 
 
                     LineItems = new List<SessionLineItemOptions>

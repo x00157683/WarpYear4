@@ -1,4 +1,4 @@
-﻿@page "/checkout"
+﻿@page "/checkout/{Id}"
 @inject IPaymentService _paymentService;
 @inject IJSRuntime _jsruntime;
 @using System.Net;
@@ -46,24 +46,63 @@
             <header class="sr-header">
                 <div class="sr-header__logo"></div>
             </header>
+            <div class="container px-5 my-5">
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-8 col-xl-6">
+                        <div class="text-center">
+                            <h2 class="fw-bolder">From our Fleet</h2>
+                            <p class="lead fw-normal text-muted mb-5">
+                                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                                Eaque fugit ratione dicta mollitia. Officiis ad.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h1>Choose a collaboration plan</h1>
 
             <EditForm Model="_stripePayment" OnValidSubmit="HandleCheckout">
                 <DataAnnotationsValidator />
-                <div class="form-group my-3">
+                <div class="row gx-5">
+
+
+
+                    <div class="py-4">
+                        <div class=" row form-group ">
+                            <div class="col-6 offset-3 ">
+                                <div class="card border">
+                                    <div class="card-body px-lg-5 pt-4">
+
+                                        <h3 class="card-title">Make: @ThisBooking.StopTime</h3>
+                                        <h3 class="card-title">Make: @ThisBooking.Location</h3>
+                                        <h3 class="card-title">Make: @ThisBooking.UserEmail</h3>
+                                        @*<h3 class="card-title">Make: @_car.Location</h3>*@
+                                        <p class="card-text">Amount Due: $@_cost</p>
+
+                                        <ValidationSummary />
+                                        <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
+                                            <i class="far fa-save"></i> Pay
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                @* <div class="form-group my-3">
                     <label for="email">Email address</label>
                     <InputNumber @bind-Value="_stripePayment.Price" id="price" class="form-control" />
                     <ValidationMessage For="() => _stripePayment.Price" />
-                </div>
-                <div class="form-group my-3">
+                    </div>
+                    <div class="form-group my-3">
                     <label for="first">Name</label>
                     <InputText @bind-Value="_stripePayment.Name" id="name" class="form-control" />
                     <ValidationMessage For="() => _stripePayment.Name" />
-                </div>
-                <ValidationSummary />
-                <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
-                    <i class="far fa-save"></i> Pay
-                </button>
+                    </div>*@
+
 
             </EditForm>
         </div>
@@ -106,6 +145,8 @@
 
         try
         {
+
+
             _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
 
             _bookings = await HttpClient.GetFromJsonAsync<List<Booking>>(APIEndpoints.s_bookings);
@@ -118,13 +159,27 @@
 
             ThisBooking = GetBooking();
 
+
+
             _car = GetCar(ThisBooking.CarId);
 
-            elapsed = GetCost();
+            TimeSpan interval = GetCost();
 
+           
+             Console.WriteLine(" sss"+ ThisBooking.StartTime.ToString());
 
+            Console.WriteLine("   {0,-35} {1,20}", "Value of Days Component:", interval.Days);
+            Console.WriteLine("   {0,-35} {1,20}", "Total Number of Days:", interval.TotalDays);
+            Console.WriteLine("   {0,-35} {1,20}", "Value of Hours Component:", interval.Hours);
+            Console.WriteLine("   {0,-35} {1,20}", "Total Number of Hours:", interval.TotalHours);
+            Console.WriteLine("   {0,-35} {1,20}", "Value of Minutes Component:", interval.Minutes);
+            Console.WriteLine("   {0,-35} {1,20}", "Total Number of Minutes:", interval.TotalMinutes);
+            Console.WriteLine("   {0,-35} {1,20:N0}", "Value of Seconds Component:", interval.Seconds);
+            Console.WriteLine("   {0,-35} {1,20:N0}", "Total Number of Seconds:", interval.TotalSeconds);
+            Console.WriteLine("   {0,-35} {1,20:N0}", "Value of Milliseconds Component:", interval.Milliseconds);
+            Console.WriteLine("   {0,-35} {1,20:N0}", "Total Number of Milliseconds:", interval.TotalMilliseconds);
+            Console.WriteLine("   {0,-35} {1,20:N0}", "Ticks:", interval.Ticks);
 
-            _cost = Math.Round(_car.PricePerUnit * elapsed.TotalMinutes, 2);
 
 
         }
@@ -155,9 +210,40 @@
 
         try
         {
-            var result = await _paymentService.Checkout(_stripePayment);
+            _cost = 400;
+
+            var payment = new StripePaymentDTO()
+                {
+
+                    Price = _cost,
+                    Name = ThisBooking.UserEmail,
+                    Booking = ThisBooking
+
+                };
+            //_stripePayment.Price = _cost;
+            //_stripePayment.Name = ThisBooking.UserEmail;
+            //_stripePayment.Booking = ThisBooking;
+
+            var result = await _paymentService.Checkout(payment);
+
+            HttpResponseMessage response = await HttpClient.PutAsJsonAsync<BookingDTO>($"{APIEndpoints.s_bookings}/{ThisBooking.BookingDTOId}", ThisBooking);
 
             await _jsruntime.InvokeVoidAsync("redirectToCheckout", result.Data.ToString());
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                _attemptingToUpdate = false;
+                _updateSuccessful = true;
+                NavigationManager.NavigateTo($"/receipt/{ThisBooking.BookingDTOId}");
+
+            }
+            else
+            {
+                _attemptToUpdateFailed = true;
+            }
+
+
+
         }
         catch (Exception ex)
         {
@@ -172,18 +258,7 @@
 
         _attemptingToUpdate = true;
 
-        try
-        {
 
-            elapsed = GetCost();
-            _cost = Math.Round(_car.PricePerUnit * elapsed.TotalMinutes, 2);
-            ThisBooking.Cost = _cost;
-
-        }
-        catch (Exception ex)
-        {
-
-        }
 
         if (HttpClient != null)
         {
@@ -237,9 +312,11 @@
         {
             foreach (var i in _bookings)
             {
-
-                if (i.UserEmail == _user.Email && i.IsComplete != true)
+                Console.WriteLine("TId " + i.BookingId);
+                if (i.BookingId == Id)
                 {
+
+                    Console.WriteLine("This22 " + i.BookingId);
                     _book.BookingDTOId = i.BookingId;
                     _book.CarId = i.CarId;
                     _book.IsCreated = i.IsCreated;

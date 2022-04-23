@@ -19,9 +19,7 @@ namespace Shared.Models
 
         public string Location { get; set; }
 
- 
         public double Cost { get; set; }
-
 
         public bool IsCreated { get; set; }
 
@@ -33,12 +31,6 @@ namespace Shared.Models
         public Car Car { get; set; }
 
         public string UserEmail { get; set; }
-
-        //public virtual AppUser? AppUser { get; set; }  
-
-
-
-
 
 
     }

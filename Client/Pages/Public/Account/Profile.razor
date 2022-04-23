@@ -12,6 +12,7 @@
 @using System.Security.Claims;
 @using System.Text;
 @using Blazored.LocalStorage
+@using Microsoft.EntityFrameworkCore
 
 
 <head>
@@ -39,83 +40,85 @@
 
     <!--The div element for the map -->
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-    <nav class="sidebar sidebar-offcanvas" id="sidebar">
-        <ul class="nav">
-            <li class="nav-item nav-profile">
-                <a href="#" class="nav-link">
-                    <div class="nav-profile-image">
-                        <!--<img src="" alt="profile">-->
-                        <span class="login-status online"></span>
-                        <!--change to offline or busy as needed-->
-                    </div>
-                    <div class="nav-profile-text d-flex flex-column">
-                        <span class="font-weight-bold mb-2">Admin</span>
 
-                    </div>
-                    <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin">
-                    <span class="menu-title">Profile</span>
-                    <i class="mdi mdi-home menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/cars">
-                    <span class="menu-title">Account</span>
-                    <i class="menu-arrow"></i>
-                    <i class="mdi mdi-car-connected menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/booking">
-                    <span class="menu-title">History</span>
-                    <i class="mdi mdi-contacts menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/users">
-                    <span class="menu-title">Edit Profile</span>
-                    <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
     <main class="flex-shrink-0">
 
-        <div id="map"></div>
 
-        <div class="container px-5 my-2">
 
-            <div class="row gx-5">
-                @if (_book != null)
-                {
 
-                    <div class="py-4">
-                        <div class=" row form-group ">
-                            <div class="col-6 offset-3 ">
-                                <div class="card border">
-                                    <div class="card-body px-lg-5 pt-4">
 
-                                        <h3 class="card-title">Make: @_book.StopTime</h3>
-                                        <h3 class="card-title">Make: @_book.Location</h3>
-                                        <h3 class="card-title">Make: @_book.UserEmail</h3>
-                                        @*<h3 class="card-title">Make: @_car.Location</h3>*@
-                                        <p class="card-text">Amount Due: $@_cost</p>
 
-                                        <button onclick="@EndBooking()" class="btn btn-success shadow d-block mt-5 md-f-size-1-5">
-                                            <i class="far fa-save"></i> End Booking
-                                        </button>
+        <div class="container">
+            <div class="row py-5">
+                <div class="col">
+                    <RadzenCard>
+
+                        <RadzenDataList WrapItems="true" AllowPaging="true" Data="@_userBookings" TItem="BookingDTO" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+                            <Template Context="product">
+                                <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-lg-3 p-3 product-title">
+                                                @( GetCar(product.CarId)?.Make)
+                                            </div>
+                                            <div class="col-lg-7 p-3">
+                                                <div class="row d-flex">
+                                                    <div class="col-md-6 col-lg-2">
+                                                        <h5 class="mb-0">Is Active</h5>
+                                                        <p class="mb-sm-2 mb-lg-0">@(product.IsComplete)</p>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-2">
+                                                        <h5 class="mb-0">Location</h5>
+                                                        <p class="mb-sm-2 mb-lg-0">@(product.Location)</p>
+                                                    </div>
+                                                    <div class="col-md-6 col-lg-5">
+                                                        <h5 class="mb-0">Email</h5>
+                                                        <p class="mb-sm-2 mb-lg-0">@(product.UserEmail)</p>
+                                                    </div>
+                                                    <div class="col-md-6 order-first order-lg-last col-lg-3 text-sm-left text-lg-right mb-3 mb-lg-0">
+                                                        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Class="price-badge" Text="zz" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @if (product.IsComplete == false)
+                                            {
+                                                
+                                                <button @onclick="@(() => EndBooking(product))" class="btn btn-success shadow d-block mt-2 md-f-size-1-2">
+                                                    <i class="far fa-save"></i> End Booking
+                                                </button>
+                                            }
+
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                </RadzenCard>
+                            </Template>
+                        </RadzenDataList>
 
-                }
+                    </RadzenCard>
+                </div>
             </div>
         </div>
+
+        <style>
+            .product-title {
+                min-height: 72px;
+                color: #da0074;
+                background-color: rgba(255, 41, 155, .1);
+                font-size: 20px;
+                font-weight: bold;
+                line-height: 20px;
+                letter-spacing: -0.02em;
+            }
+
+            .price-badge {
+                font-size: 16px;
+                font-weight: bold;
+                line-height: 20px;
+                padding: 8px;
+            }
+        </style>
+
     </main>
     <!-- Footer-->
     <footer class="bg-dark py-4 mt-auto">
@@ -156,6 +159,7 @@
     List<Car> _cars = new List<Car>();
     List<AppUser> _users = new List<AppUser>();
     List<Booking> _bookings = new List<Booking>();
+    List<BookingDTO> _userBookings = new List<BookingDTO>();
     AppUser _user = new AppUser();
     Car _car = new Car();
     double _cost = 0;
@@ -181,6 +185,8 @@
             _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
 
             _user = await GetUser();
+
+
 
             ThisBooking = GetBooking();
 
@@ -213,7 +219,7 @@
 
     }
 
-    private async Task EndBooking()
+    private async Task EndBooking(BookingDTO toEnd)
     {
 
         _attemptingToUpdate = true;
@@ -233,13 +239,14 @@
 
         if (HttpClient != null)
         {
-            HttpResponseMessage response = await HttpClient.PutAsJsonAsync<BookingDTO>($"{APIEndpoints.s_bookings}/{ThisBooking.BookingDTOId}", ThisBooking);
+            HttpResponseMessage response = await HttpClient.PutAsJsonAsync<BookingDTO>($"{APIEndpoints.s_bookings}/{toEnd.BookingDTOId}", toEnd);
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
                 _attemptingToUpdate = false;
                 _updateSuccessful = true;
-                NavigationManager.NavigateTo($"/receipt/{ThisBooking.BookingDTOId}");
+                    Console.WriteLine("String " + toEnd.BookingDTOId);
+                NavigationManager.NavigateTo($"/checkout/{toEnd.BookingDTOId}");
 
             }
             else
@@ -266,7 +273,6 @@
 
     private Car GetCar(int id)
     {
-        Car _car = new Car();
 
         if (_cars != null)
         {
@@ -275,10 +281,20 @@
         return _car;
     }
 
-    private BookingDTO GetBooking()
+    private BookingDTO GetBookingsByEmail()
     {
 
 
+        if (_bookings != null)
+        {
+
+
+        }
+        return _book;
+    }
+
+    private BookingDTO GetBooking()
+    {
         if (_bookings != null)
         {
             foreach (var i in _bookings)
@@ -294,6 +310,21 @@
                     _book.UserEmail = i.UserEmail;
                     _book.Location = i.Location;
                     _book.IsComplete = true;
+
+                }
+                if (i.UserEmail.ToUpper() == _user.UserName.ToUpper())
+                {
+                    BookingDTO _b = new BookingDTO();
+
+                    _b.BookingDTOId = i.BookingId;
+                    _b.CarId = i.CarId;
+                    _b.IsCreated = i.IsCreated;
+                    _b.StartTime = i.StartTime;
+                    _b.Cost = i.Cost;
+                    _b.UserEmail = i.UserEmail;
+                    _b.Location = i.Location;
+                    _b.IsComplete = false;
+                    _userBookings.Add(_b);
 
                 }
             }

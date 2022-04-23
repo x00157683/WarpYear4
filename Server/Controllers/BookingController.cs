@@ -49,6 +49,15 @@ namespace Server.Controllers
 
             return Ok(Bookings);
         }
+        [HttpGet]
+        [Route("email")]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            //.Include(booking => booking.User)
+            List<Booking> Bookings = await _appDBContext.Bookings.Where(b=>b.UserEmail == email).ToListAsync(); //Include(b => b.AppUser)
+
+            return Ok(Bookings);
+        }
 
 
         [HttpGet("{id}")]
@@ -72,10 +81,12 @@ namespace Server.Controllers
             {
 
                 BookingId = bookingToCreateDTO.BookingDTOId,
-                StartTime = bookingToCreateDTO.StartTime.ToString(),
+                //StartTime = bookingToCreateDTO.StartTime.ToString(),
                 UserEmail = bookingToCreateDTO.UserEmail,
                 //AppUser = _user,
                 Location = bookingToCreateDTO.Location,
+                IsComplete = false,
+                IsCreated = true,
                 CarId = bookingToCreateDTO.CarId,
                 Car = car,
             };
@@ -131,7 +142,7 @@ namespace Server.Controllers
                 _book.Cost = updatedBookingDTO.Cost;
                 _book.UserEmail = updatedBookingDTO.UserEmail;
                 _book.Location = updatedBookingDTO.Location;
-                _book.IsComplete = true;
+                _book.IsComplete = false;
 
                 if (_book.IsComplete == true)
                 {
