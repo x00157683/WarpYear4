@@ -183,9 +183,9 @@
     protected override async Task OnInitializedAsync()
     {
 
-         Console.WriteLine("No booking?"+ThisBooking.UserEmail);
-
-          _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
+        try
+        {
+            _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
 
             _bookings = await HttpClient.GetFromJsonAsync<List<Booking>>(APIEndpoints.s_bookings);
 
@@ -197,32 +197,9 @@
 
             ThisBooking = GetBooking();
 
-            Console.WriteLine("No booking?",ThisBooking.StartTime);
-            Console.WriteLine(ThisBooking.BookingDTOId);
-
-
-        try
-        {
-            _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
-
-            _bookings = await HttpClient.GetFromJsonAsync<List<Booking>>(APIEndpoints.s_bookings);
-
-            //HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
-
-            _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
-
-            _user = await GetUser();
-
-            ThisBooking = GetBooking();
-
-            
-            Console.WriteLine(ThisBooking.BookingDTOId);
-
             _car = GetCar(ThisBooking.CarId);
 
             elapsed = GetCost();
-
-
 
             _cost = Math.Round(_car.PricePerUnit * elapsed.TotalMinutes, 2);
 
@@ -319,8 +296,6 @@
         {
             foreach (var i in _bookings)
             {
-               
-                
 
                 if (i.UserEmail.ToUpper() == _user.UserName.ToUpper() && i.IsComplete != true)
                 {
