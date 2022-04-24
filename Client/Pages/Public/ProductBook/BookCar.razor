@@ -95,7 +95,7 @@
                                             <EditForm Model="_booking" OnValidSubmit="CreateBooking">
                                                 <DataAnnotationsValidator />
                                                 <ValidationSummary />
-                                                <AuthorizeView>
+                                                <AuthorizeView Context="InForm">
                                                 <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
                                                     <i class="far fa-save"></i> Reserve
                                                 </button>
