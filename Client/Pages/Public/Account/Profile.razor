@@ -45,67 +45,63 @@
 
 
 
-
-
-
         <div class="container">
-            <div class="row py-5">
-                <div class="col">
-                    <RadzenCard>
+    <div class="row py-5">
+        <div class="col">
+            <RadzenCard>
 
-                        <RadzenDataList WrapItems="true" AllowPaging="true" Data="@_userBookings" TItem="BookingDTO" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
-                            <Template Context="product">
-                                <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col-lg-3 p-3 product-title">
-                                                @( GetCar(product.CarId)?.Make)
+                  <RadzenDataList WrapItems="true" AllowPaging="true" Data="@_userBookings" TItem="BookingDTO" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+                    <Template Context="product">
+                        <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-3 p-3 product-title">
+                                        <h5 class="mb-0 text-secondary">Booking ID:</h5>
+                                            @(product.BookingDTOId)
+                                    </div>
+                                    <div class="col-lg-7 p-3">
+                                        <div class="row d-flex">
+                                            <div class="col-md-6 col-lg-2">
+                                                <h5 class="mb-0">Model</h5>
+                                                <p class="mb-sm-2 mb-lg-0"> @( GetCar(product.CarId)?.Make) @( GetCar(product.CarId)?.Model)</p>
                                             </div>
-                                            <div class="col-lg-7 p-3">
-                                                <div class="row d-flex">
-                                                    <div class="col-md-6 col-lg-2">
-                                                        <h5 class="mb-0">Is Active</h5>
-                                                        <p class="mb-sm-2 mb-lg-0">@(product.IsComplete)</p>
-                                                    </div>
-                                                    <div class="col-md-6 col-lg-2">
-                                                        <h5 class="mb-0">Location</h5>
-                                                        <p class="mb-sm-2 mb-lg-0">@(product.Location)</p>
-                                                    </div>
-                                                    <div class="col-md-6 col-lg-5">
-                                                        <h5 class="mb-0">Email</h5>
-                                                        <p class="mb-sm-2 mb-lg-0">@(product.UserEmail)</p>
-                                                    </div>
-                                                    <div class="col-md-6 order-first order-lg-last col-lg-3 text-sm-left text-lg-right mb-3 mb-lg-0">
-                                                        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Class="price-badge" Text="zz" />
-                                                    </div>
-                                                </div>
+                                            <div class="col-md-6 col-lg-2">
+                                                 <h5 class="mb-0">Email</h5>
+                                                <p class="mb-sm-2 mb-lg-0">@(product.UserEmail)</p>
                                             </div>
-
-                                            @if (product.IsComplete == false)
-                                            {
-                                                
-                                                <button @onclick="@(() => EndBooking(product))" class="btn btn-success shadow d-block mt-2 md-f-size-1-2">
-                                                    <i class="far fa-save"></i> End Booking
-                                                </button>
-                                            }
-
+                                            <div class="col-md-6 col-lg-5">
+                                              
+                                                <h5 class="mb-0">Start Time</h5>
+                                                <p class="mb-sm-2 mb-lg-0">@(product.StartTime)</p>
+                                            </div>
+                                            <div class="col-md-6 order-first order-lg-last col-lg-3 text-sm-left text-lg-right mb-3 mb-lg-0">
+                                                <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Class="price-badge" Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", product?.Cost)}") />
+                                            </div>
                                         </div>
                                     </div>
-                                </RadzenCard>
-                            </Template>
-                        </RadzenDataList>
+                                    <div class="col-lg-2 p-3">
+                                        <RadzenButton Text = "End Booking" Click="@(() => EndBooking(product))" Class="w-100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </RadzenCard>
+                    </Template>
+                </RadzenDataList>
 
-                    </RadzenCard>
-                </div>
-            </div>
+            </RadzenCard>
         </div>
+    </div>
+</div>
+
+
+      
 
         <style>
             .product-title {
                 min-height: 72px;
                 color: #da0074;
-                background-color: rgba(255, 41, 155, .1);
-                font-size: 20px;
+               
+                font-size: 14px;
                 font-weight: bold;
                 line-height: 20px;
                 letter-spacing: -0.02em;
@@ -192,9 +188,7 @@
 
             _car = GetCar(ThisBooking.CarId);
 
-            elapsed = GetCost();
 
-            _cost = Math.Round(_car.PricePerUnit * elapsed.TotalMinutes, 2);
 
 
         }
@@ -227,9 +221,7 @@
         try
         {
 
-            elapsed = GetCost();
-            _cost = Math.Round(_car.PricePerUnit * elapsed.TotalMinutes, 2);
-            ThisBooking.Cost = _cost;
+
 
         }
         catch (Exception ex)
@@ -245,7 +237,7 @@
             {
                 _attemptingToUpdate = false;
                 _updateSuccessful = true;
-                    Console.WriteLine("String " + toEnd.BookingDTOId);
+                Console.WriteLine("String " + toEnd.BookingDTOId);
                 NavigationManager.NavigateTo($"/checkout/{toEnd.BookingDTOId}");
 
             }
@@ -320,10 +312,10 @@
                     _b.CarId = i.CarId;
                     _b.IsCreated = i.IsCreated;
                     _b.StartTime = i.StartTime;
-                    _b.Cost = i.Cost;
                     _b.UserEmail = i.UserEmail;
                     _b.Location = i.Location;
                     _b.IsComplete = false;
+                    _b.Cost = GetCost(_b);
                     _userBookings.Add(_b);
 
                 }
@@ -332,18 +324,26 @@
         return _book;
     }
 
-    public TimeSpan GetCost()
+    public double GetCost(BookingDTO _b)
     {
         DateTime _dObject = new DateTime();
         DateTime currentDate = new DateTime();
 
 
-        _dObject = Convert.ToDateTime(ThisBooking.StartTime);
+        _dObject = Convert.ToDateTime(_b.StartTime);
         currentDate = DateTime.Now;
         long elapsedTicks = currentDate.Ticks - _dObject.Ticks;
         TimeSpan elapsedSpan = new TimeSpan(elapsedTicks);
 
-        return elapsedSpan;
+        Console.WriteLine("_cost" + _b.StartTime);
+        Console.WriteLine("_costcc" + currentDate);
+           Console.WriteLine("minss" +elapsedSpan.TotalMinutes);
+
+        _cost = Math.Round(11.00 * elapsedSpan.TotalMinutes, 2);
+
+        Console.WriteLine("_cost" + _cost);
+
+        return _cost;
 
     }
 

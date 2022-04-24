@@ -32,6 +32,7 @@ namespace Server.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var result = JsonConvert.DeserializeObject<SuccessModelDTO>(responseResult);
+                    result.IsPaid = true;
                     return result;
                 }
                 else

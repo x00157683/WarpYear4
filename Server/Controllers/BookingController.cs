@@ -81,7 +81,7 @@ namespace Server.Controllers
             {
 
                 BookingId = bookingToCreateDTO.BookingDTOId,
-                //StartTime = bookingToCreateDTO.StartTime.ToString(),
+                StartTime = DateTime.UtcNow.ToString(),
                 UserEmail = bookingToCreateDTO.UserEmail,
                 //AppUser = _user,
                 Location = bookingToCreateDTO.Location,
@@ -142,14 +142,13 @@ namespace Server.Controllers
                 _book.Cost = updatedBookingDTO.Cost;
                 _book.UserEmail = updatedBookingDTO.UserEmail;
                 _book.Location = updatedBookingDTO.Location;
-                _book.IsComplete = false;
+                _book.IsComplete = true;
 
                 if (_book.IsComplete == true)
                 {
 
                     _book.StopTime = DateTime.UtcNow.ToString("dd/MM/yyyy hh:mm");
-                    Console.WriteLine("Booking Complete");
-
+                    
                 }
 
                 _appDBContext.Bookings.Update(_book);

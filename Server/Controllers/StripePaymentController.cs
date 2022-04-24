@@ -22,7 +22,7 @@ namespace Server.Controllers
 
                 {
                     Mode = "payment",
-                    SuccessUrl = domain + "/profile",
+                    SuccessUrl = domain + $"/receipt/{ paymentModel.Booking.BookingDTOId }",
                     CancelUrl = domain + "/",
                     PaymentMethodTypes = new List<string> { "card" },
 

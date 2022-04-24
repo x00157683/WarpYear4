@@ -46,21 +46,20 @@
             <header class="sr-header">
                 <div class="sr-header__logo"></div>
             </header>
+            <br />
+            <br />
+            <br />
             <div class="container px-5 my-5">
                 <div class="row gx-5 justify-content-center">
                     <div class="col-lg-8 col-xl-6">
                         <div class="text-center">
-                            <h2 class="fw-bolder">From our Fleet</h2>
-                            <p class="lead fw-normal text-muted mb-5">
-                                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                                Eaque fugit ratione dicta mollitia. Officiis ad.
-                            </p>
+                          <h1>Confirm Payment</h1>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <h1>Choose a collaboration plan</h1>
+          
 
             <EditForm Model="_stripePayment" OnValidSubmit="HandleCheckout">
                 <DataAnnotationsValidator />
@@ -74,11 +73,12 @@
                                 <div class="card border">
                                     <div class="card-body px-lg-5 pt-4">
 
-                                        <h3 class="card-title">Make: @ThisBooking.StopTime</h3>
-                                        <h3 class="card-title">Make: @ThisBooking.Location</h3>
+                                        <h3 class="card-title">Id: @ThisBooking.BookingDTOId</h3>
+                                        <h3 class="card-title">Start: @ThisBooking.StartTime</h3>
+                                        <h3 class="card-title">Stop: @ThisBooking.StopTime</h3>
                                         <h3 class="card-title">Make: @ThisBooking.UserEmail</h3>
                                         @*<h3 class="card-title">Make: @_car.Location</h3>*@
-                                        <p class="card-text">Amount Due: $@_cost</p>
+                                        <p class="card-text">Amount Due: $@ThisBooking.Cost</p>
 
                                         <ValidationSummary />
                                         <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
@@ -157,28 +157,14 @@
 
             _user = await GetUser();
 
-            ThisBooking = GetBooking();
+            ThisBooking = GetBooking(Id);
+
 
 
 
             _car = GetCar(ThisBooking.CarId);
+            _car = GetCar(ThisBooking.CarId);
 
-            TimeSpan interval = GetCost();
-
-           
-             Console.WriteLine(" sss"+ ThisBooking.StartTime.ToString());
-
-            Console.WriteLine("   {0,-35} {1,20}", "Value of Days Component:", interval.Days);
-            Console.WriteLine("   {0,-35} {1,20}", "Total Number of Days:", interval.TotalDays);
-            Console.WriteLine("   {0,-35} {1,20}", "Value of Hours Component:", interval.Hours);
-            Console.WriteLine("   {0,-35} {1,20}", "Total Number of Hours:", interval.TotalHours);
-            Console.WriteLine("   {0,-35} {1,20}", "Value of Minutes Component:", interval.Minutes);
-            Console.WriteLine("   {0,-35} {1,20}", "Total Number of Minutes:", interval.TotalMinutes);
-            Console.WriteLine("   {0,-35} {1,20:N0}", "Value of Seconds Component:", interval.Seconds);
-            Console.WriteLine("   {0,-35} {1,20:N0}", "Total Number of Seconds:", interval.TotalSeconds);
-            Console.WriteLine("   {0,-35} {1,20:N0}", "Value of Milliseconds Component:", interval.Milliseconds);
-            Console.WriteLine("   {0,-35} {1,20:N0}", "Total Number of Milliseconds:", interval.TotalMilliseconds);
-            Console.WriteLine("   {0,-35} {1,20:N0}", "Ticks:", interval.Ticks);
 
 
 
@@ -210,7 +196,7 @@
 
         try
         {
-            _cost = 400;
+            _cost = ThisBooking.Cost;
 
             var payment = new StripePaymentDTO()
                 {
@@ -226,24 +212,26 @@
 
             var result = await _paymentService.Checkout(payment);
 
-            HttpResponseMessage response = await HttpClient.PutAsJsonAsync<BookingDTO>($"{APIEndpoints.s_bookings}/{ThisBooking.BookingDTOId}", ThisBooking);
-
-            await _jsruntime.InvokeVoidAsync("redirectToCheckout", result.Data.ToString());
-
-            if (response.StatusCode == HttpStatusCode.Created)
+            if (result.IsPaid == true)
             {
-                _attemptingToUpdate = false;
-                _updateSuccessful = true;
-                NavigationManager.NavigateTo($"/receipt/{ThisBooking.BookingDTOId}");
+                HttpResponseMessage response = await HttpClient.PutAsJsonAsync<BookingDTO>($"{APIEndpoints.s_bookings}/{ThisBooking.BookingDTOId}", ThisBooking);
+
+                await _jsruntime.InvokeVoidAsync("redirectToCheckout", result.Data.ToString());
+
+                if (result.IsPaid == true)
+                {
+                    _attemptingToUpdate = false;
+                    _updateSuccessful = true;
+                   
+
+                }
+                else
+                {
+                    NavigationManager.NavigateTo($"/failed");
+                }
+
 
             }
-            else
-            {
-                _attemptToUpdateFailed = true;
-            }
-
-
-
         }
         catch (Exception ex)
         {
@@ -304,7 +292,7 @@
         return _car;
     }
 
-    private BookingDTO GetBooking()
+    private BookingDTO GetBooking(string _id)
     {
         BookingDTO _book = new BookingDTO();
 
@@ -312,12 +300,13 @@
         {
             foreach (var i in _bookings)
             {
-                Console.WriteLine("TId " + i.BookingId);
-                if (i.BookingId == Id)
+
+                if (i.BookingId == _id)
                 {
 
-                    Console.WriteLine("This22 " + i.BookingId);
+
                     _book.BookingDTOId = i.BookingId;
+                    _book.Cost = i.Cost;
                     _book.CarId = i.CarId;
                     _book.IsCreated = i.IsCreated;
                     _book.StartTime = i.StartTime;

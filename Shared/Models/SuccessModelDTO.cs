@@ -15,5 +15,7 @@ namespace Shared.Models
 
         public string Data { get; set; }
 
+        public bool IsPaid { get; set; }
+
     }
 }
