@@ -11,8 +11,8 @@ using Server.Data;
 namespace Server.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20220423115122_initial")]
-    partial class initial
+    [Migration("20220424132832_initial3")]
+    partial class initial3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -262,6 +262,12 @@ namespace Server.Data.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("Lat")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Lng")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("Location")
                         .HasColumnType("TEXT");
 
@@ -306,6 +312,8 @@ namespace Server.Data.Migrations
                             CarId = 1,
                             Active = false,
                             CategoryId = 1,
+                            Lat = 53.15014,
+                            Lng = -6.5661550000000002,
                             Make = "Tesla",
                             Model = "Model X",
                             OverallRating = 0,
@@ -321,6 +329,8 @@ namespace Server.Data.Migrations
                             CarId = 2,
                             Active = false,
                             CategoryId = 2,
+                            Lat = 53.250140000000002,
+                            Lng = -6.1661549999999998,
                             Make = "Tesla",
                             Model = "Model S",
                             OverallRating = 0,
@@ -336,6 +346,8 @@ namespace Server.Data.Migrations
                             CarId = 3,
                             Active = false,
                             CategoryId = 3,
+                            Lat = 53.15014,
+                            Lng = -6.6661549999999998,
                             Make = "Porsche",
                             Model = "Taycan",
                             OverallRating = 0,
@@ -351,6 +363,8 @@ namespace Server.Data.Migrations
                             CarId = 4,
                             Active = false,
                             CategoryId = 1,
+                            Lat = 53.15014,
+                            Lng = -6.6661549999999998,
                             Make = "Nissan",
                             Model = "Leaf",
                             OverallRating = 0,
@@ -366,6 +380,8 @@ namespace Server.Data.Migrations
                             CarId = 5,
                             Active = false,
                             CategoryId = 2,
+                            Lat = 53.750140000000002,
+                            Lng = -6.866155,
                             Make = "Honda",
                             Model = "Up!",
                             OverallRating = 0,
@@ -381,6 +397,8 @@ namespace Server.Data.Migrations
                             CarId = 6,
                             Active = false,
                             CategoryId = 3,
+                            Lat = 53.450139999999998,
+                            Lng = -6.366155,
                             Make = "Toyota",
                             Model = "GT",
                             OverallRating = 0,
@@ -418,22 +436,22 @@ namespace Server.Data.Migrations
                         new
                         {
                             CategoryId = 1,
-                            Description = "Description 1",
-                            Name = "Category 1",
+                            Description = "Insurance Covered and up to 10 hours free driving",
+                            Name = "Standard Tier",
                             PriceRate = 0.0
                         },
                         new
                         {
                             CategoryId = 2,
-                            Description = "Description 2",
-                            Name = "Category 2",
+                            Description = "Insurance Covered and up to 20 hours free driving",
+                            Name = "Gold Tier",
                             PriceRate = 0.0
                         },
                         new
                         {
                             CategoryId = 3,
-                            Description = "Description 3",
-                            Name = "Category 3",
+                            Description = "Insurance Covered and up to 30 hours free driving",
+                            Name = "Premium Tier",
                             PriceRate = 0.0
                         });
                 });

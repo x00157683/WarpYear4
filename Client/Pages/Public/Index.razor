@@ -9,26 +9,15 @@
 @using System.Net.Http.Headers
 
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Warp</title>
-    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico" />
-</head>
+<!-- Navigation-->
 <Client.Components.Public.Shared.NavB />
 
 <PageTitle>Warp</PageTitle>
 
 
 <main class="flex-shrink-0">
-    <!-- Navigation-->
-    <!-- Header-->
+
+    @*Header*@
     <header class="bg-dark py-5">
         <div class="container px-5">
             <div class="row gx-5 align-items-center justify-content-center">
@@ -37,8 +26,8 @@
                         <h1 class="display-5 fw-bolder text-white mb-2">We Speacialize in Electric</h1>
                         <p class="lead fw-normal text-white-50 mb-4">Quickly sign up and get driving in no time, we have a range of cars to suit your needs and they are all electric!</p>
                         <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
-                            <a class="btn btn-primary btn-lg px-4 me-sm-3" href="#features">Get Started</a>
-                            <a class="btn btn-outline-light btn-lg px-4" href="">Learn More</a>
+                            <a class="btn btn-primary btn-lg px-4 me-sm-3" href="/register">Get Started</a>
+                            <a class="btn btn-outline-light btn-lg px-4" href="/about">Learn More</a>
                         </div>
                     </div>
                 </div>
@@ -46,32 +35,51 @@
             </div>
         </div>
     </header>
-    <!-- Features section-->
-    <!-- Testimonial section-->
+
     <div class="py-5 bg-light">
         <div class="container px-5 my-5">
             <div class="row gx-5 justify-content-center">
-                <div class="col-lg-10 col-xl-7">
-                    <div class="text-center">
-                        <div class="fs-4 mb-4 fst-italic">"Tons of development coming soon"</div>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
-                            <div class="fw-bold">
-                                Darren McLean
-                                <span class="fw-bold text-primary mx-1">/</span>
-                                CEO, Warp
+                @if (_cars != null)
+                {
+                    <RadzenCard class="m-3">
+                        <div class="row gx-5 justify-content-center">
+                            <div class="col-lg-8 col-xl-6">
+                                <div class="text-center">
+                                    <h2 class="">Get Driving From our Select Locations</h2>
+
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+
+
+                        <RadzenGoogleMap style="height:450px; width:1200px; py-6;" Zoom="8" Center="@(new GoogleMapPosition(){Lat=53.350140, Lng =-6.266155 })" MarkerClick="@OnMarkerClick">
+
+                            <Markers>
+                                <RadzenGoogleMapMarker Title="Car" Label="Car" Position="@(new GoogleMapPosition(){Lat=53.350140, Lng =-6.266155 })"></RadzenGoogleMapMarker>
+                                @foreach (var i in _cars)
+                                {
+
+                                    <RadzenGoogleMapMarker Title="@i.CarId.ToString()" Label="@i.Model" Position="@(new GoogleMapPosition(){Lat=i.Lat, Lng =i.Lng })"></RadzenGoogleMapMarker>
+
+                                }
+
+                                @if (showMarker)
+                                {
+
+                                }
+                            </Markers>
+
+                        </RadzenGoogleMap>
+
+                        <label>Position: </label> @clickedPositon
+
+                    </RadzenCard>
+                }
             </div>
         </div>
     </div>
-    <!-- Blog preview section-->
-    <div id="map"></div>
 
 
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
     <section class="py-5">
         <div class="container px-5 my-5">
             <div class="row gx-5 justify-content-center">
@@ -79,36 +87,38 @@
                     <div class="text-center">
                         <h2 class="fw-bolder">From our Fleet</h2>
                         <p class="lead fw-normal text-muted mb-5">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Eaque fugit ratione dicta mollitia. Officiis ad.
+                            Over 30 Cars in our range starting from $10 per hour
+
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="row gx-5">
+            <div class="row my-5">
 
-                @*   @if (_cars != null)
+                @if (_categories != null)
+                {
+                    @foreach (var i in _categories)
                     {
-                    foreach ( var x in _cars)
-                    {
-                    <div class ="col">
-
-                    <div class="card shadow mb-2">
-                    <img src="@($"https://dummyimage.com/600x350/ced4da/6c757d")" class="card-img-top" alt="Category thumbnail image" />
-                    <div class="card-body">
-
-                    <h3 class="card-title">@x.Make</h3>
-                    <p class="card-text">@x.Model</p>
-                    <p class="card-text">@x.CategoryId</p>
-                    </div>
-
-                    <a href="/" class="btn btn-primary stretched-link">Click</a>
-                    </div>
-                    </div>
-
+                        
+                        <div class="col-lg-4 col-xl-4 offset-lg-3 offset-xl-4">
+                            
+                            <RadzenCard class="m-3">
+                                <h3 class="h5">Contact</h3>
+                                <div class="d-flex flex-row">
+                                    <RadzenImage Path="Images/Tesla-Model-S-Plaid.jpeg" Class="rounded-circle float-left mr-3" Style="width: 80px; height: 80px;" />
+                                    <div>
+                                        <div>Tier</div>
+                                        <b>@(i.Name)</b>
+                                        <div class="mt-3">Price Rate</div>
+                                        <b>@i.Description</b>
+                                    </div>
+                                </div>
+                            </RadzenCard>
+                            
+                        </div>
+                      
                     }
-                    }*@
-
+                }
             </div>
         </div>
         <!-- Call to action-->
@@ -133,88 +143,107 @@
 <!-- Core theme JS-->
 @code {
 
-    [Inject] HttpClient? HttpClient { get; set; }
-    [Inject] ILocalStorageService? LocalStorageService { get; set; }
-    [Inject] NavigationManager? NavigationManager { get; set; }
-    [Inject] InMemoryDatabaseCache? InMemoryDatabaseCache { get; set; }
-    [Inject] AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    [Inject] HttpClient HttpClient { get; set; }
+    [Inject] ILocalStorageService LocalStorageService { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
+    [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     [Parameter] public Category Category { get; set; }
     [Parameter] public Car Cars { get; set; }
-    [Parameter] public Booking Bookings { get; set; }
     [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
-
-
-    List<Car> _cars = null;
-    List<Category>? _categories = null;
-    List<Booking>? _bookings = null;
 
     private static readonly HttpClient client = new HttpClient();
 
-    protected override async Task OnInitializedAsync()
+    List<Car> _cars = null;
+    List<Category> _categories = null;
+
+
+    private bool showMarker;
+    string clickedPositon = "";
+    public int zoom = 7;
+
+
+    void OnMapClick(GoogleMapClickEventArgs args)
     {
-
-
-        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
-        {
-            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
-
-            Console.WriteLine(savedToken);
-
-            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
-
-            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
-
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-
-            Console.WriteLine("heroes"+ user.Identity.Name);
-
-            StateHasChanged();
-        }
-
-        HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
-
-        _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
-
-
-        InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
-
-        if (InMemoryDatabaseCache.Categories == null)
-        {
-            await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
-            _categories = InMemoryDatabaseCache.Categories;
-
-        }
-
-        if (InMemoryDatabaseCache.Cars == null)
-        {
-            try
-            {
-                await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
-
-
-                _cars = InMemoryDatabaseCache.Cars;
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
+        clickedPositon = $"Map is clicked LAT :{args.Position.Lat} LNG :{args.Position.Lng}";
 
     }
 
+    void OnMarkerClick(RadzenGoogleMapMarker args)
+    {
+
+        NavigationManager.NavigateTo($"/bookcar/{args.Title}");  //Gets ID from the marker title and redirects with parameter
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
+
+            _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
+
+            if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+            {
+                string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+
+                Console.WriteLine(savedToken);
+
+                await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+                StateHasChanged();
+            }
+
+            InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
+
+            if (InMemoryDatabaseCache.Categories == null)
+            {
+                await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
+                _categories = InMemoryDatabaseCache.Categories;
+
+            }
+
+            if (InMemoryDatabaseCache.Cars == null)
+            {
+                try
+                {
+                    await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
 
 
+                    _cars = InMemoryDatabaseCache.Cars;
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+        }
+
+        catch (Exception ex)
+        {
+
+
+            new ErrorModelDTO()  //Error Model
+                {
+                    ErrorMessage = ex.Message
+                };
+
+            Console.WriteLine("Error: " + ex.Message);
+        }
+    }
+
+
+    //Avoid Memory Leak
     public void Dispose()
     {
 
         InMemoryDatabaseCache.OnCategoriesDataChanged -= StateHasChanged;
 
     }
-
-
-
-
 
 }

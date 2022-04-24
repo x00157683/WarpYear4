@@ -49,18 +49,9 @@
 
                 <div class="row gx-5">
 
-                    @if (_cars != null)
+                    @if (ThisCar != null)
                     {
-                        foreach (var x in _cars)
-                        {
-
-                            if (x.CarId == Id)
-                            {
-
-
-
-
-
+                       
                                 <div class="row">
 
                                     <RadzenCard class="m-3">
@@ -68,15 +59,15 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div>Make</div>
-                                                <b>@(@x.Make) @(@x.Model)</b>
+                                                <b>@(@ThisCar.Make) @(@ThisCar.Model)</b>
                                                 <div class="mt-3">Vehicle Class:</div>
-                                                <b>@(@x.Category.Name)</b>
+                                                <b>@(@ThisCar.Category.Name)</b>
                                             </div>
                                             <div class="col-md-8">
                                                 <div>Distance</div>
-                                                <b>@x.Range Km</b>
+                                                <b>@ThisCar.Range Km</b>
                                                 <div class="mt-3">Hourly Rate</div>
-                                                <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}",@x.PricePerUnit)</b>
+                                                <b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}",@ThisCar.PricePerUnit)</b>
 
 
                                             </div>
@@ -88,27 +79,19 @@
                                                 </RadzenCheckBox>
                                             </h3>
 
-                                            <RadzenGoogleMap style="height:450px; width:850px;" Zoom="13" Center="@(new GoogleMapPosition(){Lat=53.350140, Lng =-6.266155 })" MapClick="@OnMapClick" MarkerClick="@OnMarkerClick">
+                                            <RadzenGoogleMap style="height:450px; width:850px;" Zoom="13" Center="@(new GoogleMapPosition(){Lat=ThisCar.Lat, Lng =ThisCar.Lng })" MapClick="@OnMapClick" MarkerClick="@OnMarkerClick">
 
                                                 <Markers>
-                                                    <RadzenGoogleMapMarker Title="Car" Label="Car" Position="@(new GoogleMapPosition(){Lat=53.350140, Lng =-6.266155 })"></RadzenGoogleMapMarker>
-
-                                                    @if (showMarker)
-                                                    {
-
-                                                        <RadzenGoogleMapMarker Title="Car1" Label="Car2" Position="@(new GoogleMapPosition(){Lat=52.350140, Lng =-7.266155 })"></RadzenGoogleMapMarker>
-                                                    }
-
+                                                    
+                                                
+                                                            
+                                                       <RadzenGoogleMapMarker Title="@ThisCar.Make" Label="@ThisCar.Model" Position="@(new GoogleMapPosition(){Lat=ThisCar.Lat, Lng =ThisCar.Lng })"></RadzenGoogleMapMarker>
+                                                    
                                                 </Markers>
 
                                             </RadzenGoogleMap>
 
-
-
                                             <label>Position: </label> @clickedPositon
-
-
-
                                             <EditForm Model="_booking" OnValidSubmit="CreateBooking">
                                                 <DataAnnotationsValidator />
                                                 <ValidationSummary />
@@ -124,8 +107,6 @@
                                 </div>
 
                             }
-
-                        }
                     }
                 </div>
 
@@ -192,7 +173,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+         HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
 
+
+        _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
+
+         _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
 
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
         {
@@ -207,12 +193,9 @@
             StateHasChanged();
         }
 
-        _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
+       
 
-        HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
-
-
-        _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
+       
 
 
         AppUser _user = await GetUser();

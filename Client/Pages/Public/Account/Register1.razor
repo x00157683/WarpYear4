@@ -41,9 +41,12 @@
                                 <h3 class="col-12 text-success text-center py-2">
                                     <strong>Sign Up</strong>
                                 </h3>
-                                @if (_registerSuccessful)
-                                {
 
+          
+
+                                @if (_attemptingToRegister == false)
+                                {
+                                    <p>_attemptToRegisterFailed</p>
                                 }
 
                                 <div class="py-2">
@@ -115,7 +118,7 @@ else
 
     private UserDTO _userToRegister = new UserDTO() { };
     private bool _attemptingToRegister = false;
-    private string? _attemptToRegisterFailed = "";
+    private string _attemptToRegisterFailed = "";
     private bool _registerSuccessful = false;
     private bool _registerFailed = false;
     string UserName { get; set; }
@@ -136,23 +139,29 @@ else
     {
         _attemptingToRegister = true;
 
-
-        HttpResponseMessage response = await HttpClient.PostAsJsonAsync<UserDTO>(APIEndpoints.s_userRegister, _userToRegister);
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            _registerSuccessful = true;
-            NavigationManager.NavigateTo("/registercomplete");
+            HttpResponseMessage response = await HttpClient.PostAsJsonAsync<UserDTO>(APIEndpoints.s_userRegister, _userToRegister);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _registerSuccessful = true;
+                NavigationManager.NavigateTo("/registercomplete");
+            }
+            else
+            {
+                string serverError = await response.Content.ReadAsStringAsync();
+                _attemptToRegisterFailed = $"{serverError} The following error has occured";
+                _registerFailed = true;
+
+            }
+
+            _attemptingToRegister = false;
         }
-        else
+        catch(Exception ex)
         {
-            string serverError = await response.Content.ReadAsStringAsync();
-            _attemptToRegisterFailed = $"{serverError} The following error has occured";
-            _registerFailed = true;
-
+            Console.WriteLine(ex.Message);
         }
-
-        _attemptingToRegister = false;
     }
     private async Task SignOut()
     {

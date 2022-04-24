@@ -17,7 +17,7 @@
 
 <NavB />
 <main class="flex-shrink-0">
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+
     <section class="py-5">
         <div class="container px-5 my-5">
             <div class="row gx-5 justify-content-center">
@@ -25,8 +25,7 @@
                     <div class="text-center">
                         <h2 class="fw-bolder">From our Feet</h2>
 
-                       
-
+                            <!-- If Not Signed in -->
                         <NotAuthorizeView>
                             @if (_isSignedOut == true)
                             {
@@ -46,34 +45,34 @@
                 {
                     foreach (var x in _cars)
                     {
-                           <div class="col-md-4 py-2">
-        <div class="card rounded shadow mb-2">
-            <div class="card-image">
-                <span class="card-notify-badge">@x.Category.Name</span>
-                <span class="card-notify-year">2021</span>
-                <img class="img-fluid" src="https://imageonthefly.autodatadirect.com/images/?USER=eDealer&PW=edealer872&IMG=CAC80HOC021B121001.jpg&width=440&height=262" alt="Alternate Text" />
-            </div>
-            <div class="card-image-overlay m-auto">
-                <span class="card-detail-badge">$80 p/d</span>
-                <span class="card-detail-badge">@x.PricePerUnit p/h</span>
-                <span class="card-detail-badge">Distance: @x.Range KM</span>
-            </div>
-            <div class="card-body text-center">
-                <div class="ad-title m-auto">
-                    <h5>@x.Make @x.Model</h5>
-                </div>
-                <a class="ad-btn" href="/bookcar/@x.CarId">View</a>
-            </div>
-        </div>
-    </div>
-    <br />
-    <br />
-                   
+                        <div class="col-md-4 py-2">
+                            <div class="card rounded shadow mb-2">
+                                <div class="card-image">
+                                    <span class="card-notify-badge">@x.Category.Name</span>
+                                    <span class="card-notify-year">2021</span>
+                                    <img class="img-fluid" src="https://imageonthefly.autodatadirect.com/images/?USER=eDealer&PW=edealer872&IMG=CAC80HOC021B121001.jpg&width=440&height=262" alt="Alternate Text" />
+                                </div>
+                                <div class="card-image-overlay m-auto">
+                                    <span class="card-detail-badge">$80 p/d</span>
+                                    <span class="card-detail-badge">@x.PricePerUnit p/h</span>
+                                    <span class="card-detail-badge">Distance: @x.Range KM</span>
+                                    <span class="card-detail-badge">Distance: @x.Rating KM</span>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="ad-title m-auto">
+                                        <h5>@x.Make @x.Model</h5>
+                                    </div>
+                                    <a class="ad-btn" href="/bookcar/@x.CarId">View</a>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+
                     }
                 }
             </div>
         </div>
-        <!-- Call to action-->
     </section>
 </main>
 <!-- Footer-->
@@ -102,7 +101,7 @@
     [Inject] NavigationManager NavigationManager { get; set; }
     [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-    [Parameter] public Car Cars { get; set; }
+    [Parameter] public int Id { get; set; }
     [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
     bool _isSignedOut { get; set; } = true;
 
@@ -133,24 +132,16 @@
             StateHasChanged();
         }
 
+        //checking if user is signed in and authenticated
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        Console.WriteLine("unnhelpp" + user.Identity.Name);
+
 
         if (user.Identity.IsAuthenticated == true)
         {
             _isSignedOut = false;
         }
-
-
-
-    }
-
-    public int GetRating(int id)
-    {
-
-        return 1;
 
     }
 

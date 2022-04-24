@@ -15,36 +15,13 @@
 @using Microsoft.EntityFrameworkCore
 
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Purple Admin</title>
-    <!-- plugins:css -->
-    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
-
-    <link rel="stylesheet" href="assets/css/style.css">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico" />
-
-
-</head>
-
-
 
 <PageTitle>Warp</PageTitle>
 
-<body class="d-flex flex-column h-100">
+<NavB />
 
-
-    <!--The div element for the map -->
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
 
     <main class="flex-shrink-0">
-
-
-
         <div class="container">
     <div class="row py-5">
         <div class="col">
@@ -94,8 +71,24 @@
 </div>
 
 
-      
-
+   
+    </main>
+    <!-- Footer-->
+    <footer class="bg-dark py-4 mt-auto">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#!">Privacy</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Terms</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
         <style>
             .product-title {
                 min-height: 72px;
@@ -115,29 +108,6 @@
             }
         </style>
 
-    </main>
-    <!-- Footer-->
-    <footer class="bg-dark py-4 mt-auto">
-        <div class="container px-5">
-            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
-                <div class="col-auto">
-                    <a class="link-light small" href="#!">Privacy</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Terms</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Contact</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <!-- Bootstrap core JS-->
-    <!-- Core theme JS-->
-
-</body>
-
-
-
 @code {
 
     [Inject] HttpClient HttpClient { get; set; }
@@ -147,7 +117,7 @@
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
 
     [Parameter] public string Id { get; set; }
-    [CascadingParameter] protected Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
 
     private bool _attemptingToUpdate { get; set; } = false;
     private bool _attemptToUpdateFailed { get; set; } = false;
@@ -226,7 +196,8 @@
         }
         catch (Exception ex)
         {
-
+            ErrorModelDTO error = new ErrorModelDTO { ErrorMessage = ex.Message };
+            Console.WriteLine(error.ErrorMessage);
         }
 
         if (HttpClient != null)
@@ -237,7 +208,6 @@
             {
                 _attemptingToUpdate = false;
                 _updateSuccessful = true;
-                Console.WriteLine("String " + toEnd.BookingDTOId);
                 NavigationManager.NavigateTo($"/checkout/{toEnd.BookingDTOId}");
 
             }

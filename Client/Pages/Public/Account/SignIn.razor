@@ -36,109 +36,62 @@
 
 <PageTitle>Warp</PageTitle>
 
-<body class="d-flex flex-column h-100">
-
-
-    <!--The div element for the map -->
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
 
 
 
-    <main class="flex-shrink-0">
-        <!-- Navigation-->
-        <!-- Header-->
-        <!-- Features section-->
-        <!-- Testimonial section-->
-        <!-- Blog preview section-->
-        <div id="map"></div>
-
-
-        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-        <section class="py-5">
-            <div class="container px-5 my-5">
-
-                <div class="row gx-5">
-
-                    <div class="col">
-                        @if (_signinSuccessful == false)
-                        {
-
-                            <EditForm Model="_userToSignin" OnValidSubmit="SigninUser">
-                                <DataAnnotationsValidator />
-                                <div class="form-group my-3">
-                                    <label for="email">Email address</label>
-                                    <InputText @bind-Value="_userToSignin.EmailAddress" id="email" class="form-control" />
-                                    <ValidationMessage For="@(() => _userToSignin.EmailAddress)" />
-                                </div>
-
-
-                                <div class="form-group my-3">
-                                    <label for="password">Password</label>
-                                    <InputText @bind-Value="_userToSignin.Password" id="password" type="password" class="form-control" />
-                                    <ValidationMessage For="@(() => _userToSignin.Password)" />
-                                </div>
+<!--The div element for the map -->
+<!-- Async script executes immediately and must be after any DOM elements used in callback. -->
 
 
 
-                                <!-- partial
-                                <div class="form-group my-3">
-                                <label for="dob">Date Of Birth</label>
-                                <InputDate @bind-Value="_userToCreate1.Dob" id="dob" class="form-control" />
-                                <ValidationMessage For="@(() => _userToCreate1.Dob)" />
-                                </div>-->
-
-                            <ValidationSummary />
-
-                                <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
-                                    <i class="far fa-save"></i> Signin
-                                </button>
-
-                            </EditForm>
-                            @if (_signinFailed == true)
-                            {
-                                <p class="my-3 text-danger"> Sign In Failed, Please check username/password</p>
-                            }
+<main class="flex-shrink-0">
 
 
-                        }
-                        else
-                        {
+    <div class="row d-flex px-3">
+         <div class="col-xl-4 p-3">
+             </div>
+         <div class="col-xl-4 p-3">
+        <RadzenCard>
+            <h2 class="mb-4">Register and password reset</h2>
+            <RadzenTemplateForm Data=@("LoginWithRegisterAndReset")>
+                <RadzenLogin Login=@(args => OnLogin(args, "Login with register and password reset"))
+                             ResetPassword=@(args => OnResetPassword(args, "Login with register and password reset"))
+                             Register=@(args => OnRegister("Login with register and password reset")) />
+            </RadzenTemplateForm>
+        </RadzenCard>
+    </div>
 
-                            <h4>Signin Sucessfull click to return</h4>
 
-                            <a href="/" class="btn btn-primary shadow mt-5 md-f-size-1-5">
-                                <i class="fas fa-arrow-left"></i> Return
-                            </a>
-                        }
-                    </div>
+    </div>
+    <!-- Navigation-->
+    <!-- Header-->
+    <!-- Features section-->
+    <!-- Testimonial section-->
+    <!-- Blog preview section-->
+   
 
-                </div>
-            </div>
-            <!-- Call to action-->
 
-       
-        </section>
-    </main>
- 
-    <!-- Bootstrap core JS-->
-    <!-- Core theme JS-->
 
-</body>
-   <!-- Footer-->
-    <footer class="bg-dark py-4 mt-auto">
-        <div class="container px-5">
-            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
-                <div class="col-auto">
-                    <a class="link-light small" href="#!">Privacy</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Terms</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Contact</a>
-                </div>
+
+</main>
+
+<!-- Bootstrap core JS-->
+<!-- Core theme JS-->
+<!-- Footer-->
+<footer class="bg-dark py-4 mt-auto">
+    <div class="container px-5">
+        <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+            <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2021</div></div>
+            <div class="col-auto">
+                <a class="link-light small" href="#!">Privacy</a>
+                <span class="text-white mx-1">&middot;</span>
+                <a class="link-light small" href="#!">Terms</a>
+                <span class="text-white mx-1">&middot;</span>
+                <a class="link-light small" href="#!">Contact</a>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
 
 @code
@@ -151,31 +104,43 @@
     [Inject] AppAuthenticationStateProvider appAuthenticationStateProvider { get; set; }
     [Inject] public NavigationManager NavigationManager { get; set; }
 
-    //protected async override Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        if (InMemoryDatabaseCache.Cars == null)
-    //        {
-    //            await InMemoryDatabaseCache.GetCarsFromDatabaseAndCache();
-    //            StateHasChanged();
-    //        }
-    //    }
-    //}
+
+    string userName = "admin";
+    string password = "admin";
 
 
+    void OnLogin(LoginArgs args, string name)
+    {
+
+
+        SigninUser(args);
+    }
+
+    void OnRegister(string name)
+    {
+        NavigationManager.NavigateTo($"/register");
+    }
+
+    void OnResetPassword(string value, string name)
+    {
+        NavigationManager.NavigateTo($"/forgotpassword");
+    }
 
     private User _userToSignin = new User();
     private bool _attemptingToSignin = false;
     private bool _signinSuccessful = false;
     private bool _signinFailed = false;
 
-    private async Task SigninUser()
+    private async Task SigninUser(LoginArgs args)
     {
         _attemptingToSignin = false;
 
+        User userToSign = new User();
 
-        HttpResponseMessage response = await HttpClient.PostAsJsonAsync<User>(APIEndpoints.s_signIn, _userToSignin);
+        userToSign.EmailAddress = args.Username;
+        userToSign.Password = args.Password;
+
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync<User>(APIEndpoints.s_signIn, userToSign);
 
         if (response.IsSuccessStatusCode)
         {
@@ -189,9 +154,9 @@
 
             _signinSuccessful = true;
 
-             StateHasChanged();
-             NavigationManager.NavigateTo("/");
-            
+            StateHasChanged();
+            NavigationManager.NavigateTo("/");
+
         }
         else
         {
@@ -202,5 +167,5 @@
 
     }
 
-	}
+	
 }
