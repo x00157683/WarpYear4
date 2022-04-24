@@ -201,10 +201,11 @@
 
             InMemoryDatabaseCache.OnCategoriesDataChanged += StateHasChanged;
 
-            if (InMemoryDatabaseCache.Categories == null)
+            if (_categories == null)
             {
-                await InMemoryDatabaseCache.GetCategoriesFromDatabaseAndCache(false);
-                _categories = InMemoryDatabaseCache.Categories;
+                HttpResponseMessage response1 = await HttpClient.GetAsync(APIEndpoints.s_categories);
+
+                _categories = await response.Content.ReadFromJsonAsync<List<Category>>();
 
             }
 

@@ -99,7 +99,7 @@
     [Inject] HttpClient HttpClient { get; set; }
     [Inject] ILocalStorageService LocalStorageService { get; set; }
     [Inject] NavigationManager NavigationManager { get; set; }
-    [Inject] InMemoryDatabaseCache InMemoryDatabaseCache { get; set; }
+    
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
     [Parameter] public int Id { get; set; }
     [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; }
@@ -145,12 +145,6 @@
 
     }
 
-    public void Dispose()
-    {
-
-        InMemoryDatabaseCache.OnCategoriesDataChanged -= StateHasChanged;
-
-    }
 
 
 }
