@@ -95,10 +95,20 @@
                                             <EditForm Model="_booking" OnValidSubmit="CreateBooking">
                                                 <DataAnnotationsValidator />
                                                 <ValidationSummary />
-
+                                                <AuthorizeView>
                                                 <button class="btn btn-success shadow d-block mt-5 md-f-size-1-5" type="submit">
                                                     <i class="far fa-save"></i> Reserve
                                                 </button>
+                                                </AuthorizeView>
+                                           <NotAuthorizeView>
+                            @if (_isSignedOut == true)
+                            {
+                                <div class="px-2">
+                                    <a href="/register" class="my-3 btn btn-primary stretched-link">Sign Up</a>
+                                    <br />
+                                </div>
+                            }
+                        </NotAuthorizeView>
 
                                             </EditForm>
 
@@ -156,6 +166,7 @@
     public DateTime? EndValue { get; set; } = DateTime.Now.AddDays(10);
     public int zoom = 7;
     bool showMarker;
+    bool _isSignedOut;
     string clickedPositon = "";
     private static readonly HttpClient client = new HttpClient();
 
@@ -194,7 +205,15 @@
         }
 
        
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
 
+
+
+        if (user.Identity.IsAuthenticated == true)
+        {
+            _isSignedOut = false;
+        }
        
 
 
