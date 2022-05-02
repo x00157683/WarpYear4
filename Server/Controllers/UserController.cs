@@ -62,7 +62,7 @@ public class UserController : ControllerBase
 
             return StatusCode(StatusCodes.Status500InternalServerError,errorsToReturn);
         }
-        return StatusCode(201);
+        
     }
 
     [AllowAnonymous]

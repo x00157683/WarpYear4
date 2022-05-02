@@ -46,6 +46,7 @@ namespace TestProject
 
 
             using var ctx = new TestContext();
+
             ctx.Services.AddBlazoredLocalStorage();
             ctx.Services.AddAuthorizationCore();
             ctx.JSInterop.Mode = JSRuntimeMode.Loose;
