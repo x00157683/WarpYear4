@@ -61,7 +61,17 @@ namespace Server.Controllers
                     return BadRequest(ModelState);
                 }
 
-                Car carToCreate = _mapper.Map<Car>(carToCreateDTO);
+                Car carToCreate = new Car();
+
+                carToCreate.CarId = carToCreateDTO.CarDTOId;
+                carToCreate.Make = carToCreateDTO.Make;
+                carToCreate.Model = carToCreateDTO.Model;
+                carToCreate.Active= carToCreateDTO.Active;
+                carToCreate.CategoryId = carToCreateDTO.CategoryId;
+                carToCreate.PricePerUnit= carToCreateDTO.PricePerUnit;
+                carToCreate.Lat = carToCreateDTO.Lat;
+                carToCreate.Lng = carToCreateDTO.Lng;
+                carToCreate.Range= carToCreateDTO.Range;
 
                 await _appDBContext.Cars.AddAsync(carToCreate);
 
@@ -110,6 +120,8 @@ namespace Server.Controllers
                 updatedCar.Make = updatedCarDTO.Make;
                 updatedCar.Model = updatedCarDTO.Model;
                 updatedCar.Active = updatedCarDTO.Active;
+                updatedCar.Lat = updatedCarDTO.Lat;
+                updatedCar.Lng = updatedCarDTO.Lng;
                 updatedCar.PricePerUnit = updatedCarDTO.PricePerUnit;
                 updatedCar.isLocked = updatedCarDTO.isLocked;
                 updatedCar.Range = updatedCarDTO.Range;

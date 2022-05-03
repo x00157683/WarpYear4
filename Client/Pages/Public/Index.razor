@@ -46,7 +46,7 @@
                             <div class="col-lg-8 col-xl-6">
                                 <div class="text-center">
                                     <h2 class="">Get Driving From our Select Locations</h2>
-                                     <h2 class="">Click a car from the map to get started</h2>
+                                    <h2 class="">Click a car from the map to get started</h2>
 
                                 </div>
                             </div>
@@ -100,9 +100,9 @@
                 {
                     @foreach (var i in _categories)
                     {
-                        
+
                         <div class="col-lg-4 col-xl-4 offset-lg-3 offset-xl-4">
-                            
+
                             <RadzenCard class="m-3">
                                 <h3 class="h5">Contact</h3>
                                 <div class="d-flex flex-row">
@@ -115,9 +115,9 @@
                                     </div>
                                 </div>
                             </RadzenCard>
-                            
+
                         </div>
-                      
+
                     }
                 }
             </div>
@@ -184,6 +184,10 @@
 
             _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
 
+            HttpResponseMessage response1 = await HttpClient.GetAsync(APIEndpoints.s_categories);
+
+            _categories = await response1.Content.ReadFromJsonAsync<List<Category>>();
+
             if (await LocalStorageService.ContainKeyAsync("bearerToken"))
             {
                 string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
@@ -203,9 +207,9 @@
 
             if (_categories == null)
             {
-                HttpResponseMessage response1 = await HttpClient.GetAsync(APIEndpoints.s_categories);
+                HttpResponseMessage response2 = await HttpClient.GetAsync(APIEndpoints.s_categories);
 
-                _categories = await response.Content.ReadFromJsonAsync<List<Category>>();
+                _categories = await response2.Content.ReadFromJsonAsync<List<Category>>();
 
             }
 

@@ -30,6 +30,9 @@ namespace Shared.Models
         public bool isLocked { get; set; }
        
         public int Rating { get; set; }
+        public double Lat { get; set; }
+
+        public double Lng { get; set; }
 
         public int Reviews { get; set; }
         public double RangeLeft { get; set; }

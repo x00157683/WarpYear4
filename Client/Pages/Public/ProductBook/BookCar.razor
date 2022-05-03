@@ -116,7 +116,7 @@
                                     </RadzenCard>
                                 </div>
 
-                            }
+                            
                     }
                 </div>
 
@@ -184,63 +184,82 @@
 
     protected override async Task OnInitializedAsync()
     {
-         HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
-
-
-        _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
-
-         _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
-
-        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        try
         {
-            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
-
-            Console.WriteLine(savedToken);
-
-            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
-
-            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
-
-            StateHasChanged();
-        }
-
-       
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+            HttpResponseMessage response = await HttpClient.GetAsync(APIEndpoints.s_cars);
 
 
+            _cars = await response.Content.ReadFromJsonAsync<List<Car>>();
 
-        if (user.Identity.IsAuthenticated == true)
-        {
-            _isSignedOut = false;
-        }
-       
+            _users = await HttpClient.GetFromJsonAsync<List<AppUser>>(APIEndpoints.s_users);
 
-
-        AppUser _user = await GetUser();
-
-        foreach (var i in _cars)
-        {
-            if (i.CarId == Id)
+            if (await LocalStorageService.ContainKeyAsync("bearerToken"))
             {
-                ThisCar = i;
+                string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+
+                Console.WriteLine(savedToken);
+
+                await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+                StateHasChanged();
+            }
+
+
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+
+
+            if (user.Identity.IsAuthenticated == true)
+            {
+                _isSignedOut = false;
+            }
+
+
+
+            AppUser _user = await GetUser();
+
+            foreach (var i in _cars)
+            {
+                if (i.CarId == Id)
+                {
+                    ThisCar = i;
+                }
             }
         }
+        catch(Exception e){
+
+            Console.WriteLine(e.Message);
+        }
+
 
     }
 
+
     private async Task<AppUser> GetUser()
     {
+        try
+        {
+            var user2 = (await AuthenticationState).User;
 
-        var user2 = (await AuthenticationState).User;
+            Console.WriteLine("In GetUser" + user2.Identity.Name.ToString());
 
-        Console.WriteLine("In GetUser" + user2.Identity.Name.ToString());
+            AppUser _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
 
-        AppUser _user = _users.Where(m => m.Email == user2.Identity.Name).FirstOrDefault();
+            Console.WriteLine("In user???" + _user.Email);
 
-        Console.WriteLine("In user???" + _user.Email);
+            return _user;
+        }
+        catch(Exception e){
 
-        return _user;
+            Console.WriteLine(e.Message);
+
+            return new AppUser();
+
+    }
+        
     }
 
     private async Task CreateBooking()

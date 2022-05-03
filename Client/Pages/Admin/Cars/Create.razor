@@ -115,7 +115,7 @@
 						@if (_attemptingToCreate == true)
 						{
 							<h1>Creating car...</h1>
-							<LoadingDot />
+							
 						}
 						else if (_createSuccessful == false && _attemptingToCreate == false)
 						{
@@ -143,21 +143,35 @@
 									<label for="carMake">Car Make</label>
 									<InputText @bind-Value="_carToCreate.Make" class="form-control" id="carMake"></InputText>
 								</div>
-
+									<div class="form-group mb-5">
+									<label for="carModel">Car Model</label>
+									<InputText @bind-Value="_carToCreate.Model" class="form-control" id="carModel"></InputText>
+								</div>
 								<div class="form-group mb-5">
 									<label for="carRange">Car Range</label>
 									<InputNumber @bind-Value="_carToCreate.Range" class="form-control" id="carRange"></InputNumber>
+								</div>
+								<div class="form-group mb-5">
+									<label for="carModel">Category Id</label>
+									<InputNumber @bind-Value="_carToCreate.CategoryId" class="form-control" id="catId"></InputNumber>
 								</div>
 
 								<div class="form-group mb-5">
 									<label for="carPricePerUnti">Car Price Per Unit</label>
 									<InputNumber @bind-Value="_carToCreate.PricePerUnit" class="form-control" id="carPrice"></InputNumber>
 								</div>
-						
+
 								<div class="form-group mb-5">
-									<label for="carModel">Car Model</label>
-									<InputText @bind-Value="_carToCreate.Model" class="form-control" id="carModel"></InputText>
+									<label for="carModel">Lat</label>
+									<InputNumber @bind-Value="_carToCreate.Lat" class="form-control" id="carLat"></InputNumber>
 								</div>
+
+								<div class="form-group mb-5">
+									<label for="carModel">Lng</label>
+									<InputNumber @bind-Value="_carToCreate.Lng" class="form-control" id="carLng"></InputNumber>
+								</div>
+						
+							
 
 							
 
