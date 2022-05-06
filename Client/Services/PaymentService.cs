@@ -26,7 +26,7 @@ namespace Server.Services
             {
                 var content = JsonConvert.SerializeObject(model);
                 var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("https://localhost:5003/api/stripepayment/create", bodyContent);
+                var response = await _httpClient.PostAsync("https://year4pipev5.azurewebsites.net/api/stripepayment/create", bodyContent);
                 string responseResult = response.Content.ReadAsStringAsync().Result;
 
                 if (response.IsSuccessStatusCode)

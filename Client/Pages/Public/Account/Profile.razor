@@ -305,13 +305,10 @@
         long elapsedTicks = currentDate.Ticks - _dObject.Ticks;
         TimeSpan elapsedSpan = new TimeSpan(elapsedTicks);
 
-        Console.WriteLine("_cost" + _b.StartTime);
-        Console.WriteLine("_costcc" + currentDate);
-        Console.WriteLine("minss" +elapsedSpan.TotalMinutes);
+     
 
         _cost = Math.Round(11.00 * elapsedSpan.TotalHours, 2);
 
-        Console.WriteLine("_cost" + _cost);
 
         return _cost;
 

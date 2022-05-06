@@ -17,7 +17,7 @@ namespace Server.Controllers
         {
             try
             {
-                var domain = "https://localhost:7274";
+                var domain = "https://victorious-desert-01a818203.1.azurestaticapps.net/";
                 var options = new SessionCreateOptions
 
                 {

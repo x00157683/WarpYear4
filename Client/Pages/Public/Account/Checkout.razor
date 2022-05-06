@@ -206,9 +206,7 @@
                     Booking = ThisBooking
 
                 };
-            //_stripePayment.Price = _cost;
-            //_stripePayment.Name = ThisBooking.UserEmail;
-            //_stripePayment.Booking = ThisBooking;
+
 
             var result = await _paymentService.Checkout(payment);
 
@@ -227,7 +225,7 @@
                 }
                 else
                 {
-                    NavigationManager.NavigateTo($"/failed");
+                    NavigationManager.NavigateTo($"/");
                 }
 
 
